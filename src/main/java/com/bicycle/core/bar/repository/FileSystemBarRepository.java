@@ -30,9 +30,6 @@ public class FileSystemBarRepository implements BarRepository {
         this.fileSystemBhavcopyRepository = new FileSystemBhavcopyRepository(symbolRepository);
     }
 
-    @Override
-    public void close() throws Exception {}
-
     private Path getPath(Symbol symbol, Timeframe timeframe) {
         return FileUtils.createParentDirectoriesIfNotExist(Paths.get(
                 Constant.HOME, symbol.exchange().name(), timeframe.name(), symbol.code()));

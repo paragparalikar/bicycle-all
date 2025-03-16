@@ -1,4 +1,4 @@
-package com.bicycle.core.bar.repository;
+package com.bicycle.core.bar.downloader;
 
 import com.bicycle.Constant;
 import com.bicycle.core.bar.Timeframe;
