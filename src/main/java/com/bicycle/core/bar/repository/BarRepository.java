@@ -21,6 +21,8 @@ public interface BarRepository {
 
     void replace(Symbol symbol, Timeframe timeframe, List<Bar> bars);
 
+    int countBySymbolAndTimeframe(Symbol symbol, Timeframe timeframe);
+
     List<Bar> findBySymbolAndTimeframe(Symbol symbol, Timeframe timeframe);
     
     BarReader readBySymbolAndTimeframe(Symbol symbol, Timeframe timeframe);

@@ -20,7 +20,7 @@ import java.util.List;
 public class BarDataDownloaderMain {
 
     public static void main(String[] args) {
-        final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider();
+        final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
         final KiteBrokerClientFactory brokerClientFactory = new KiteBrokerClientFactory();
         final BarDataDownloader barDataDownloader = createBarDataDownloader(brokerClientFactory, symbolDataProvider);
 

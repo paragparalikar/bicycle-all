@@ -1,5 +1,6 @@
 package com.bicycle.core.bar.downloader;
 
+import com.bicycle.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.provider.BarDataProvider;
@@ -9,6 +10,7 @@ import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.Symbol;
 import com.bicycle.core.symbol.repository.SymbolRepository;
+import com.bicycle.util.NamedThreadFactory;
 import lombok.Builder;
 import lombok.SneakyThrows;
 
@@ -19,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 public class BarDataDownloader {
     private static final int MAX_RETRY_COUNT = 3;
@@ -43,7 +46,8 @@ public class BarDataDownloader {
 
     @SneakyThrows
     public void download(Collection<Exchange> exchanges, Collection<Timeframe> timeframes) {
-        try (ExecutorService executorService = Executors.newFixedThreadPool(20)) {
+        final ThreadFactory threadFactory = new NamedThreadFactory("bar-downloader-", true);
+        try (ExecutorService executorService = Executors.newFixedThreadPool(20, threadFactory)) {
             for(Exchange exchange : exchanges){
                 for (Symbol symbol : symbolRepository.findByExchange(exchange)) {
                     for (Timeframe timeframe : timeframes) {
@@ -56,8 +60,7 @@ public class BarDataDownloader {
     
     private void download(Symbol symbol, Timeframe timeframe, int attempt) {
         if(attempt >= MAX_RETRY_COUNT) {
-            System.err.printf("Maximum retry count of %d exceeded for %s %s\n",
-                    MAX_RETRY_COUNT, symbol.code(), timeframe.name());
+            System.out.printf("%-20s %8s Failed\n", symbol.code(), timeframe.name());
             return;
         }
         try {
@@ -77,11 +80,12 @@ public class BarDataDownloader {
     private void download(BarQuery barQuery, int attempt) {
         try{
             final List<Bar> bars = barDataProvider.get(barQuery);
-            barDataVerifier.verify(bars);
-            barRepository.append(barQuery.symbol(), barQuery.timeframe(), bars);
-            System.out.printf("Downloaded %8d bars for %-20s\n", bars.size(), barQuery.symbol().code());
+            final List<Bar> verifiedBars = barDataVerifier.verify(bars);
+            barRepository.append(barQuery.symbol(), barQuery.timeframe(), verifiedBars);
+            System.out.printf("%-20s %8d Downloaded\n", barQuery.symbol().code(), verifiedBars.size());
         } catch (InvalidDataException ide) {
-            System.out.println(ide.getMessage());
+            System.out.printf("%-20s %8s Gap on %s %f %f \n", barQuery.symbol().code(), barQuery.timeframe().name(),
+                    Constant.DATE_TIME_FORMATTER.format(ide.getTimestamp()), ide.getCloseValue(), ide.getOpenValue());
             barRepository.deleteAll(barQuery.symbol(), barQuery.timeframe());
             download(barQuery.symbol(), barQuery.timeframe(), ++attempt);
         }

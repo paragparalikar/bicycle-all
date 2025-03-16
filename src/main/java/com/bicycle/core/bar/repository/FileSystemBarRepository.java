@@ -32,7 +32,7 @@ public class FileSystemBarRepository implements BarRepository {
 
     private Path getPath(Symbol symbol, Timeframe timeframe) {
         return FileUtils.createParentDirectoriesIfNotExist(Paths.get(
-                Constant.HOME, symbol.exchange().name(), timeframe.name(), symbol.code()));
+                Constant.HOME, "bars", symbol.exchange().name(), timeframe.name(), symbol.code()));
     }
 
     @SneakyThrows
@@ -118,6 +118,13 @@ public class FileSystemBarRepository implements BarRepository {
     @SneakyThrows
     public void deleteAll(Symbol symbol, Timeframe timeframe){
         Files.deleteIfExists(getPath(symbol, timeframe));
+    }
+
+    @Override
+    @SneakyThrows
+    public int countBySymbolAndTimeframe(Symbol symbol, Timeframe timeframe){
+        final Path path = getPath(symbol, timeframe);
+        return Files.exists(path) ? (int) (Files.size(path) / BYTES) : 0;
     }
 
     @Override

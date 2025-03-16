@@ -36,8 +36,8 @@ public class KiteSymbolDataProvider implements SymbolDataProvider {
         return new FilteredSymbolDataProvider(this, symbol -> 
             Strings.hasText(symbol.name())
             && !symbol.code().endsWith("BEES")
-            && !"INDICES".equalsIgnoreCase(symbol.segment())
-            && !symbol.name().endsWith("ETF") 
+            //&& !"INDICES".equalsIgnoreCase(symbol.segment())
+            //&& !symbol.name().endsWith("ETF")
             && !symbol.name().contains("-"));
     }
 
