@@ -1,4 +1,4 @@
-package com.bicycle.core.bar.dataSource;
+package com.bicycle.core.bar.repository;
 
 import com.bicycle.Constant;
 import com.bicycle.core.bar.Bar;
@@ -7,6 +7,9 @@ import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.repository.SymbolRepository;
 import com.bicycle.util.Dates;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -22,11 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
-public class FileSystemBarDataSource implements BarDataSource {
+public class FileSystemBhavcopyRepository {
     private static final int BYTES = Integer.BYTES + Long.BYTES + 4 * Float.BYTES + Integer.BYTES;
     
     private final SymbolRepository symbolRepository;
@@ -40,19 +41,16 @@ public class FileSystemBarDataSource implements BarDataSource {
         return cache.computeIfAbsent(path, DateLocationIndex::new);
     }
     
-    @Override
     public ZonedDateTime getEndDate(Exchange exchange, Timeframe timeframe) {
         final Path path = getPath(exchange, timeframe);
         return Dates.toZonedDateTime(getIndex(path).tail());
     }
 
-    @Override
     public ZonedDateTime getStartDate(Exchange exchange, Timeframe timeframe) {
         final Path path = getPath(exchange, timeframe);
         return Dates.toZonedDateTime(getIndex(path).head());
     }
 
-    @Override
     @SneakyThrows
     public BarReader get(Exchange exchange, Timeframe timeframe) {
         final Path path = getPath(exchange, timeframe);
@@ -67,7 +65,6 @@ public class FileSystemBarDataSource implements BarDataSource {
         };
     }
 
-    @Override
     @SneakyThrows
     public BarReader get(Exchange exchange, Timeframe timeframe, ZonedDateTime fromInclusive, ZonedDateTime toInclusive) {
         final Path path = getPath(exchange, timeframe);
@@ -116,7 +113,6 @@ public class FileSystemBarDataSource implements BarDataSource {
         output.writeInt(bar.volume());
     }
     
-    @Override
     @SneakyThrows
     public void persist(Exchange exchange, Timeframe timeframe, Map<Long, List<Bar>> data) {
         if(data.isEmpty()) return;

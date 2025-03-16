@@ -5,7 +5,7 @@ import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.dataSource.BarDataSource;
-import com.bicycle.core.bar.dataSource.FileSystemBarDataSource;
+import com.bicycle.core.bar.repository.FileSystemBhavcopyRepository;
 import com.bicycle.core.bar.provider.BarDataProvider;
 import com.bicycle.core.bar.provider.LoadBalancedBarDataProvider;
 import com.bicycle.core.bar.repository.BarRepository;
@@ -32,11 +32,10 @@ public class JobMain {
     final BarDataProvider barDataProvider = new LoadBalancedBarDataProvider(portfolioRepository, brokerClientFactory);
     final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
     final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
-    final BarDataSource barDataSource = new FileSystemBarDataSource(symbolRepository);
 
     final BarDownloadJob barDownloadJob = new BarDownloadJob(barRepository, barDataProvider);
     final BarCleanupJob barCleanupJob = new BarCleanupJob(barRepository);
-    final BarTransposeJob barTransposeJob = new BarTransposeJob(barDataSource);
+    final BarTransposeJob barTransposeJob = new BarTransposeJob(barRepository);
 
 
     public static void main(String[] args) throws InterruptedException {

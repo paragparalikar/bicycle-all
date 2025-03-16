@@ -6,6 +6,10 @@ import com.bicycle.core.bar.BarReader;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Symbol;
 import com.bicycle.core.symbol.repository.SymbolRepository;
+import com.bicycle.util.FileUtils;
+import lombok.SneakyThrows;
+import lombok.experimental.Delegate;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.RandomAccessFile;
@@ -16,30 +20,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
-@RequiredArgsConstructor
 public class FileSystemBarRepository implements BarRepository {
     private static final int BYTES = Long.BYTES + 4 * Float.BYTES + Integer.BYTES;
     
-    @Getter private final SymbolRepository symbolRepository;
+    @Delegate private final FileSystemBhavcopyRepository fileSystemBhavcopyRepository;
+
+    public FileSystemBarRepository(SymbolRepository symbolRepository){
+        this.fileSystemBhavcopyRepository = new FileSystemBhavcopyRepository(symbolRepository);
+    }
 
     @Override
     public void close() throws Exception {}
 
-    @Override
-    @SneakyThrows
-    public void init() {
-        final Path path = Paths.get(Constant.HOME, "bars");
-        if(!Files.exists(path)) Files.createDirectories(path.getParent());
-    }
-    
     private Path getPath(Symbol symbol, Timeframe timeframe) {
-        return Paths.get(Constant.HOME, "bars", symbol.exchange().name(), timeframe.name(), symbol.code());
+        return FileUtils.createParentDirectoriesIfNotExist(Paths.get(
+                Constant.HOME, symbol.exchange().name(), timeframe.name(), symbol.code()));
     }
-    
+
     @SneakyThrows
     private Bar read(Symbol symbol, Timeframe timeframe, DataInput input) {
         return Bar.builder()
@@ -117,6 +115,12 @@ public class FileSystemBarRepository implements BarRepository {
             file.seek(0);
             bars.forEach(bar -> write(bar, file));
         }
+    }
+
+    @Override
+    @SneakyThrows
+    public void deleteAll(Symbol symbol, Timeframe timeframe){
+        Files.deleteIfExists(getPath(symbol, timeframe));
     }
 
     @Override
