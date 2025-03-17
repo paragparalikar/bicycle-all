@@ -2,36 +2,32 @@ package com.bicycle.backtest.strategy.trading.executor;
 
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
-import com.bicycle.core.bar.dataSource.BarDataSource;
+import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.indicator.IndicatorCache;
-import java.time.ZonedDateTime;
-import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
+import java.time.ZonedDateTime;
+
+@RequiredArgsConstructor
 public class SmartTradingStrategyExecutor implements TradingStrategyExecutor {
     
     private final IndicatorCache indicatorCache;
-    private final BarDataSource barDataSource;
+    private final BarRepository barRepository;
     private TradingStrategyExecutor serialTradingStrategyExecutor;
     private TradingStrategyExecutor parallelTradingStrategyExecutor;
     
     private TradingStrategyExecutor getSerialTradingStrategyExecutor() {
         return null == serialTradingStrategyExecutor ? 
-                serialTradingStrategyExecutor = new SerialTradingStrategyExecutor(barDataSource, indicatorCache)
+                serialTradingStrategyExecutor = new SerialTradingStrategyExecutor(barRepository, indicatorCache)
                 : serialTradingStrategyExecutor;
     }
     
     private TradingStrategyExecutor getParallelTradingStrategyExecutor() {
         return null == parallelTradingStrategyExecutor ? 
-                parallelTradingStrategyExecutor = new ParallelTradingStrategyExecutor(barDataSource, indicatorCache)
+                parallelTradingStrategyExecutor = new ParallelTradingStrategyExecutor(barRepository, indicatorCache)
                 : parallelTradingStrategyExecutor;
     } 
-    
-    @Builder
-    public SmartTradingStrategyExecutor(BarDataSource barDataSource, IndicatorCache indicatorCache) {
-        this.indicatorCache = indicatorCache;
-        this.barDataSource = barDataSource;
-    }
-    
+
     @Override
     public void execute(TradingStrategyDefinition definition, ZonedDateTime startDate, 
             ZonedDateTime endDate, ReportCache reportCache) {

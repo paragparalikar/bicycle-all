@@ -1,6 +1,7 @@
 package com.bicycle.core.bar.downloader;
 
 import com.bicycle.core.bar.Bar;
+import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.symbol.Symbol;
@@ -22,9 +23,11 @@ public class BarDataVerifier {
     private void verifyPersistentData(List<Bar> bars) throws InvalidDataException {
         if(bars.isEmpty()) return;
         final Bar firstBar = bars.getFirst();
-        final List<Bar> persistentBars = barRepository.findBySymbolAndTimeframe(firstBar.symbol(), firstBar.timeframe(), 1);
-        if(persistentBars.isEmpty()) return;
-        verify(persistentBars.getLast(), firstBar);
+        final Cursor<Bar> barCursor = barRepository.get(firstBar.symbol(), firstBar.timeframe(), 1);
+        if(0 == barCursor.size()) return;
+        final Bar lastBar = new Bar();
+        barCursor.advance(lastBar);
+        verify(lastBar, firstBar);
     }
 
     private List<Bar> verifyDownloadedData(List<Bar> bars) throws InvalidDataException {
@@ -37,7 +40,7 @@ public class BarDataVerifier {
             if(hasGap(previousBarClose, currentBarOpen)){
                 final Symbol symbol = currentBar.symbol();
                 final Timeframe timeframe = currentBar.timeframe();
-                if(0 == barRepository.countBySymbolAndTimeframe(symbol, timeframe)){
+                if(0 == barRepository.count(symbol, timeframe)){
                     return bars.subList(index, bars.size());
                 } else {
                     throw InvalidDataException.builder()

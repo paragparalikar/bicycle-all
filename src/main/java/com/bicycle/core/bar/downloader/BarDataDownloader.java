@@ -64,7 +64,7 @@ public class BarDataDownloader {
             return;
         }
         try {
-            final long lastDownloadDate = barRepository.getLastDownloadDate(symbol, timeframe);
+            final long lastDownloadDate = barRepository.getEndDate(symbol, timeframe);
             final ZonedDateTime from = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastDownloadDate),
                     ZoneId.systemDefault()).plusMinutes(timeframe.getMinuteMultiple());
             final ZonedDateTime to = ZonedDateTime.now();
@@ -81,12 +81,12 @@ public class BarDataDownloader {
         try{
             final List<Bar> bars = barDataProvider.get(barQuery);
             final List<Bar> verifiedBars = barDataVerifier.verify(bars);
-            barRepository.append(barQuery.symbol(), barQuery.timeframe(), verifiedBars);
+            barRepository.persist(barQuery.symbol(), barQuery.timeframe(), verifiedBars);
             System.out.printf("%-20s %8d Downloaded\n", barQuery.symbol().code(), verifiedBars.size());
         } catch (InvalidDataException ide) {
             System.out.printf("%-20s %8s Gap on %s %f %f \n", barQuery.symbol().code(), barQuery.timeframe().name(),
                     Constant.DATE_TIME_FORMATTER.format(ide.getTimestamp()), ide.getCloseValue(), ide.getOpenValue());
-            barRepository.deleteAll(barQuery.symbol(), barQuery.timeframe());
+            barRepository.delete(barQuery.symbol(), barQuery.timeframe());
             download(barQuery.symbol(), barQuery.timeframe(), ++attempt);
         }
     }

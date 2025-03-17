@@ -4,9 +4,9 @@ import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
 import com.bicycle.core.bar.Bar;
-import com.bicycle.core.bar.BarReader;
+import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
-import com.bicycle.core.bar.dataSource.BarDataSource;
+import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.symbol.Symbol;
 import java.time.ZonedDateTime;
@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 @RequiredArgsConstructor
 public class ParallelTradingStrategyExecutor implements TradingStrategyExecutor {
 
-    private final BarDataSource barDataSource;
+    private final BarRepository barRepository;
     private final IndicatorCache indicatorCache;
     
     @Override
@@ -37,10 +37,10 @@ public class ParallelTradingStrategyExecutor implements TradingStrategyExecutor 
         final List<TradingStrategyRunner> runners = createRunners(bar, definition.getTradingStrategies());
         final IntList symbolCache = new IntArrayList(definition.getSymbols().stream().map(Symbol::token).toList());
         for(Timeframe timeframe : definition.getTimeframes()) {
-            try(BarReader reader = barDataSource.get(definition.getExchange(), timeframe, startDate, endDate)){
+            try(Cursor<Bar> reader = barRepository.get(definition.getExchange(), timeframe, startDate, endDate)){
                 long lastBarDate = 0;
                 for(int index = 0; index < reader.size(); index++) {
-                    reader.readInto(bar);
+                    reader.advance(bar);
                     if(symbolCache.contains(bar.symbol().token())) {
                         indicatorCache.onBar(bar);
                         runners.parallelStream().forEach(TradingStrategyRunner::run);
@@ -71,8 +71,8 @@ class TradingStrategyRunner implements Runnable {
     
     @Override
     public void run() {
-        for(int index = 0; index < tradingStrategies.size(); index++) {
-            tradingStrategies.get(index).onBar(bar);
+        for (MockTradingStrategy tradingStrategy : tradingStrategies) {
+            tradingStrategy.onBar(bar);
         }
     }
     

@@ -1,7 +1,7 @@
 package com.bicycle.core.broker.publisher;
 
 import com.bicycle.core.bar.Bar;
-import com.bicycle.core.bar.BarReader;
+import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.order.Order;
 import com.bicycle.core.tick.Tick;
 import com.bicycle.core.tick.TickReader;
@@ -30,9 +30,9 @@ public class SerialDataPublisher extends AbstractDataPublisher {
     }
 
     @Override
-    public void publish(BarReader barReader) {
+    public void publish(Cursor barReader) {
         for(int index = 0; index < barReader.size(); index++) {
-            barReader.readInto(bar);
+            barReader.advance(bar);
             onBar(bar);
         }
     }

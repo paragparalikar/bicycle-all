@@ -2,11 +2,10 @@ package com.bicycle.core.bar.repository;
 
 import com.bicycle.Constant;
 import com.bicycle.core.bar.Bar;
-import com.bicycle.core.bar.BarReader;
+import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.repository.SymbolRepository;
-import com.bicycle.util.Dates;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -27,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 @RequiredArgsConstructor
-public class FileSystemBhavcopyRepository {
+public class FileSystemDateIndexedBarRepository {
     private static final int BYTES = Integer.BYTES + Long.BYTES + 4 * Float.BYTES + Integer.BYTES;
     
     private final SymbolRepository symbolRepository;
@@ -41,34 +40,29 @@ public class FileSystemBhavcopyRepository {
         return cache.computeIfAbsent(path, DateLocationIndex::new);
     }
     
-    public ZonedDateTime getEndDate(Exchange exchange, Timeframe timeframe) {
+    public long getEndDate(Exchange exchange, Timeframe timeframe) {
         final Path path = getPath(exchange, timeframe);
-        return Dates.toZonedDateTime(getIndex(path).tail());
-    }
-
-    public ZonedDateTime getStartDate(Exchange exchange, Timeframe timeframe) {
-        final Path path = getPath(exchange, timeframe);
-        return Dates.toZonedDateTime(getIndex(path).head());
+        return getIndex(path).tail();
     }
 
     @SneakyThrows
-    public BarReader get(Exchange exchange, Timeframe timeframe) {
+    public Cursor<Bar> get(Exchange exchange, Timeframe timeframe) {
         final Path path = getPath(exchange, timeframe);
-        if(!Files.exists(path) || BYTES > Files.size(path)) return BarReader.EMPTY;
+        if(!Files.exists(path) || BYTES > Files.size(path)) return Cursor.EMPTY;
         final FileChannel fileChannel = FileChannel.open(path);
         final long fileChannelSize = fileChannel.size();
         final MappedByteBuffer buffer = fileChannel.map(MapMode.READ_ONLY, 0, fileChannelSize);
-        return new BarReader() {
+        return new Cursor<>() {
             @Override public void close() throws Exception { fileChannel.close(); }
             @Override @SneakyThrows public int size() { return (int) (fileChannelSize / BYTES); }
-            @Override public void readInto(Bar bar) { read(bar, exchange, timeframe, buffer); }
+            @Override public void advance(Bar bar) { read(bar, exchange, timeframe, buffer); }
         };
     }
 
     @SneakyThrows
-    public BarReader get(Exchange exchange, Timeframe timeframe, ZonedDateTime fromInclusive, ZonedDateTime toInclusive) {
+    public Cursor<Bar> get(Exchange exchange, Timeframe timeframe, ZonedDateTime fromInclusive, ZonedDateTime toInclusive) {
         final Path path = getPath(exchange, timeframe);
-        if(!Files.exists(path) || BYTES > Files.size(path)) return BarReader.EMPTY;
+        if(!Files.exists(path) || BYTES > Files.size(path)) return Cursor.EMPTY;
         
         final long to = toInclusive.toInstant().toEpochMilli();
         final long from = fromInclusive.toInstant().toEpochMilli();
@@ -82,10 +76,10 @@ public class FileSystemBhavcopyRepository {
         final long toLocation = Math.min(index.location(to) + index.count(to) * BYTES, fileChannelSize);
         
         final MappedByteBuffer buffer = fileChannel.map(MapMode.READ_ONLY, fromLocation, toLocation - fromLocation);
-        return new BarReader() {
+        return new Cursor<>() {
             @Override public void close() throws Exception { fileChannel.close(); }
             @Override @SneakyThrows public int size() { return count; }
-            @Override public void readInto(Bar bar) { 
+            @Override public void advance(Bar bar) {
                 read(bar, exchange, timeframe, buffer); 
             }
         };

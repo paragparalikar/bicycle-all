@@ -1,7 +1,7 @@
 package com.bicycle.core.broker.publisher;
 
 import com.bicycle.core.bar.BarListener;
-import com.bicycle.core.bar.BarReader;
+import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.order.Order;
 import com.bicycle.core.order.OrderListener;
 import com.bicycle.core.tick.TickListener;
@@ -14,7 +14,7 @@ public interface DataPublisher extends AutoCloseable {
     
     void publish(Order order);
     
-    void publish(BarReader barReader);
+    void publish(Cursor barReader);
 
     void publish(TickReader tickReader);
     
