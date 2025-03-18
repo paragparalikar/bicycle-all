@@ -1,6 +1,6 @@
 package com.bicycle.core.bar.downloader;
 
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Symbol;
 import lombok.*;

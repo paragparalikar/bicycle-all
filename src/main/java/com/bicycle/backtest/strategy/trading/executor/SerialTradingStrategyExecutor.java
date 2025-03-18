@@ -31,14 +31,14 @@ public class SerialTradingStrategyExecutor implements TradingStrategyExecutor {
         final Bar bar = new Bar();
         final IntList symbolCache = new IntArrayList(definition.getSymbols().stream().map(Symbol::token).toList());
         for(Timeframe timeframe : definition.getTimeframes()) {
-            try(Cursor<Bar> reader = barRepository.get(definition.getExchange(), timeframe, startDate, endDate)){
-                long lastBarDate = 0;
-                for(int index = 0; index < reader.size(); index++) {
-                    reader.advance(bar);
+            try(Cursor<Bar> cursor = barRepository.get(definition.getExchange(), timeframe, startDate, endDate)){
+                long previousBarDate = 0;
+                for(int index = 0; index < cursor.size(); index++) {
+                    cursor.advance(bar);
                     if(symbolCache.contains(bar.symbol().token())) {
                         indicatorCache.onBar(bar);
                         definition.getTradingStrategies().forEach(tradingStrategy -> tradingStrategy.onBar(bar));
-                        if(lastBarDate != bar.date()) reportCache.compute(lastBarDate = bar.date());
+                        if(previousBarDate != bar.date()) reportCache.compute(previousBarDate = bar.date());
                     }
                 }
             }

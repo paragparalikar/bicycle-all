@@ -1,7 +1,7 @@
 package com.bicycle.core.bar.provider.query.time;
 
 import static java.time.DayOfWeek.FRIDAY;
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;

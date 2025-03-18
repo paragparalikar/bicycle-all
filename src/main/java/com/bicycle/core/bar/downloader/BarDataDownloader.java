@@ -1,6 +1,7 @@
 package com.bicycle.core.bar.downloader;
 
-import com.bicycle.Constant;
+import com.bicycle.core.bar.repository.FileSystemBarRepository;
+import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.provider.BarDataProvider;
@@ -49,9 +50,12 @@ public class BarDataDownloader {
         final ThreadFactory threadFactory = new NamedThreadFactory("bar-downloader-", true);
         try (ExecutorService executorService = Executors.newFixedThreadPool(20, threadFactory)) {
             for(Exchange exchange : exchanges){
-                for (Symbol symbol : symbolRepository.findByExchange(exchange)) {
-                    for (Timeframe timeframe : timeframes) {
+                for (Timeframe timeframe : timeframes) {
+                    for (Symbol symbol : symbolRepository.findByExchange(exchange)) {
                         executorService.execute(() -> download(symbol, timeframe, 0));
+                    }
+                    if(barRepository instanceof FileSystemBarRepository fileSystemBarRepository){
+                        fileSystemBarRepository.transpose(exchange, timeframe);
                     }
                 }
             }

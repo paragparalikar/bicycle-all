@@ -1,6 +1,6 @@
 package com.bicycle.core.bar;
 
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

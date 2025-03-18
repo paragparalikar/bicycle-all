@@ -1,6 +1,6 @@
 package com.bicycle.core.bar.provider.query.time;
 
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Timeframe;
 import java.time.Duration;
 import java.time.ZonedDateTime;

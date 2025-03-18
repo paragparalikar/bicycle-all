@@ -1,6 +1,6 @@
 package com.bicycle.core.bar.repository;
 
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 
 @RequiredArgsConstructor
 public class FileSystemDateIndexedBarRepository {
@@ -42,6 +43,7 @@ public class FileSystemDateIndexedBarRepository {
     
     public long getEndDate(Exchange exchange, Timeframe timeframe) {
         final Path path = getPath(exchange, timeframe);
+        if(!Files.exists(path)) return 0L;
         return getIndex(path).tail();
     }
 
@@ -108,7 +110,7 @@ public class FileSystemDateIndexedBarRepository {
     }
     
     @SneakyThrows
-    public void persist(Exchange exchange, Timeframe timeframe, Map<Long, List<Bar>> data) {
+    public void persist(Exchange exchange, Timeframe timeframe, Map<Long, Queue<Bar>> data) {
         if(data.isEmpty()) return;
         final Path path = getPath(exchange, timeframe);
         if(!Files.exists(path)) {

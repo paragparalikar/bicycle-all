@@ -1,4 +1,4 @@
-package com.bicycle;
+package com.bicycle.util;
 
 import java.io.File;
 import java.time.LocalTime;

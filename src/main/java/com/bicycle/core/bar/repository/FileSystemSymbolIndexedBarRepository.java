@@ -1,6 +1,6 @@
 package com.bicycle.core.bar.repository;
 
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
@@ -14,7 +14,10 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FileSystemSymbolIndexedBarRepository {
     private static final int BYTES = Long.BYTES + 4 * Float.BYTES + Integer.BYTES;
@@ -92,6 +95,26 @@ public class FileSystemSymbolIndexedBarRepository {
             }
         };
     }
+
+    @SneakyThrows
+    Set<Bar> get(Symbol symbol, Timeframe timeframe, long fromExclusive){
+        final Path path = getPath(symbol, timeframe);
+        if(!Files.exists(path)) return Collections.emptySet();
+        try(RandomAccessFile file = new RandomAccessFile(path.toFile(), "r")){
+            final Set<Bar> bars = new HashSet<>();
+            file.seek(file.length() - BYTES);
+            long date = file.readLong();
+            while(date > fromExclusive){
+                 bars.add(new Bar(symbol, timeframe, date,
+                         file.readFloat(), file.readFloat(), file.readFloat(),file.readFloat(),
+                         file.readInt()));
+                file.seek(file.getFilePointer() - 2 * BYTES);
+                date = file.readLong();
+            }
+            return bars;
+        }
+    }
+
 
     @SneakyThrows
     public long getEndDate(Symbol symbol, Timeframe timeframe) {

@@ -4,7 +4,7 @@ import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.THURSDAY;
 import static java.time.DayOfWeek.TUESDAY;
 import static java.time.DayOfWeek.WEDNESDAY;
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;

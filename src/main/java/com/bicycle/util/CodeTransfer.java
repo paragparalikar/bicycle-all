@@ -1,4 +1,4 @@
-package com.bicycle.backtest;
+package com.bicycle.util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

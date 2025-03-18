@@ -14,8 +14,6 @@ public interface BarRepository {
 
     long getEndDate(Symbol symbol, Timeframe timeframe);
 
-    long getEndDate(Exchange exchange, Timeframe timeframe);
-
     Cursor<Bar> get(Symbol symbol, Timeframe timeframe);
 
     Cursor<Bar> get(Symbol symbol, Timeframe timeframe, int limit);
@@ -25,8 +23,6 @@ public interface BarRepository {
     Cursor<Bar> get(Exchange exchange, Timeframe timeframe, ZonedDateTime fromInclusive, ZonedDateTime toInclusive);
     
     void persist(Symbol symbol, Timeframe timeframe, List<Bar> bars);
-
-    void persist(Exchange exchange, Timeframe timeframe, Map<Long, List<Bar>> data);
 
     int count(Symbol symbol, Timeframe timeframe);
 

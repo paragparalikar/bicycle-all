@@ -1,6 +1,5 @@
 package com.bicycle.util;
 
-import com.bicycle.Constant;
 import com.bicycle.core.bar.Timeframe;
 import java.time.Duration;
 import java.time.Instant;

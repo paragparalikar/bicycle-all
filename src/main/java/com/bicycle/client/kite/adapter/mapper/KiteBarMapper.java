@@ -1,6 +1,6 @@
 package com.bicycle.client.kite.adapter.mapper;
 
-import com.bicycle.Constant;
+import com.bicycle.util.Constant;
 import com.bicycle.client.kite.api.model.KiteCandle;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
