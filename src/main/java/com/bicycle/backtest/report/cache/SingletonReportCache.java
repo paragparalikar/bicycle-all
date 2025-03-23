@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 public class SingletonReportCache implements ReportCache {
 
     @Getter private Report report;
-    private final ReportBuilder reportBuilder;
     private final float initialMargin;
     private final long startDate, endDate;
+    private final ReportBuilder reportBuilder;
 
     @Override
     public void compute(long date) {

@@ -9,6 +9,8 @@ import com.bicycle.core.rule.Rule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.util.ResetableIterator;
 import com.bicycle.util.Strings;
+import lombok.Builder;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +21,8 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
     private final OrderType entryOrderType;
     private final List<ResetableIterator> iterators;
     private RuleBuilder entryRuleBuilder, exitRuleBuilder;
-    
+
+    @Builder
     public RuleTradingStrategyBuilder(
             RuleBuilder entryRuleBuilder, RuleBuilder exitRuleBuilder, 
             OrderType entryOrderType, List<ResetableIterator> iterators) {

@@ -6,6 +6,7 @@ import com.bicycle.backtest.report.ReportBuilder;
 import com.bicycle.backtest.report.accumulator.DrawdownAccumulatorReport;
 import com.bicycle.backtest.report.accumulator.EquityAccumulatorReport;
 import com.bicycle.backtest.report.accumulator.PositionAccumulatorReport;
+import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
 import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
@@ -25,9 +26,10 @@ import com.bicycle.core.symbol.provider.SymbolDataProvider;
 import com.bicycle.core.symbol.repository.CacheSymbolRepository;
 import com.bicycle.core.symbol.repository.SymbolRepository;
 import com.bicycle.util.Constant;
-import com.bicycle.util.Dates;
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import smile.plot.swing.Line;
 import smile.plot.swing.LinePlot;
 import smile.plot.swing.PlotGrid;
@@ -40,67 +42,54 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.function.Predicate;
 
+@Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-@Accessors(fluent = true, chain = true)
 public class Backtester {
 
-    @Setter
-    @Accessors(fluent = true, chain = true)
-    public static class Show {
-        private boolean equityCurve, drawdownCurve;
-        public boolean isShow() { return equityCurve || drawdownCurve; }
-    }
+    @Builder.Default private final float initialMargin = 100000f;
+    @Builder.Default private final Exchange exchange = Exchange.NSE;
+    @Builder.Default private final Timeframe timeframe = Timeframe.D;
+    @Builder.Default private final float percentagePositionSize = 2.0f;
+    @Builder.Default private final float slippagePercentage = 0.5f;
+    @Builder.Default private final boolean limitPositionSizeToAvailableMargin = false;
+    @Builder.Default private final ReportBuilder.Customizer reportBuilderCustomizer = BaseReport::builder;
+    @Builder.Default private final ReportCache.Customizer reportCacheCustomizer = SingletonReportCache::new;
+    @Builder.Default private final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
+    @Builder.Default private final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
+    @Builder.Default private final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
 
-    @Setter
-    @Accessors(fluent = true, chain = true)
-    public static class Export {
-        private boolean positions;
-    }
-
-    @Getter private final Show show = new Show();
-    @Getter private final Export export = new Export();
-    private TradingStrategyBuilder tradingStrategyBuilder;
-    @Builder.Default private float initialMargin = 100000;
-    @Builder.Default private Exchange exchange = Exchange.NSE;
-    @Builder.Default private Timeframe timeframe = Timeframe.D;
-    @Builder.Default private float percentagePositionSize = 2.0f;
-    @Builder.Default private float slippagePercentage = 0.5f;
-    @Builder.Default private boolean limitPositionSizeToAvailableMargin = false;
-    @Builder.Default private Predicate<Symbol> symbolPredicate = symbol -> true;
-
-    private final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
-    private final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
-    private final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
-
-    @SneakyThrows
-    public void run(long startDate, long endDate){
-        final List<Symbol> symbols = symbolRepository.findByExchange(exchange).stream().filter(symbolPredicate).toList();
-        System.out.printf("Backtesting %d symbols from %s to %s\n", symbols.size(), Dates.format(startDate), Dates.format(endDate));
+    public ReportCache run(TradingStrategyBuilder tradingStrategyBuilder, long startDate, long endDate){
+        final Collection<Symbol> symbols = symbolRepository.findByExchange(exchange);
+        final ReportBuilder reportBuilder = reportBuilderCustomizer.customize(symbols.size());
+        final ReportCache reportCache = reportCacheCustomizer.customize(initialMargin, startDate, endDate, reportBuilder);
         final IndicatorCache cache = new IndicatorCache(symbols.size(), 1);
-
-        final ReportBuilder reportBuilder = createReportBuilder(symbols.size());
-        final SingletonReportCache reportCache = new SingletonReportCache(reportBuilder, initialMargin, startDate, endDate);
         final PositionSizingStrategy positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
         final List<MockTradingStrategy> tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, cache, reportCache, positionSizingStrategy);
         final TradingStrategyDefinition tradingStrategyDefinition = createTradingStrategyDefinition(symbols, tradingStrategies);
-
         final TradingStrategyExecutor tradingStrategyExecutor = new SerialTradingStrategyExecutor(barRepository, cache);
         tradingStrategyExecutor.execute(tradingStrategyDefinition, startDate, endDate, reportCache);
-        final Report report = reportCache.getReport();
-        if(export.positions) exportPositions(report);
-        if(show.isShow()) show(report);
+        return reportCache;
     }
 
-    private void show(Report report) throws InterruptedException, InvocationTargetException {
+    private TradingStrategyDefinition createTradingStrategyDefinition(Collection<Symbol> symbols, List<MockTradingStrategy> tradingStrategies){
+        final TradingStrategyDefinition definition = new TradingStrategyDefinition(exchange);
+        definition.getSymbols().addAll(symbols);
+        definition.getTimeframes().add(timeframe);
+        definition.getTradingStrategies().addAll(tradingStrategies);
+        return definition;
+    }
+
+    public void show(Report report) throws InterruptedException, InvocationTargetException {
+        System.out.println(report.unwrap(BaseReport.class));
         final PlotGrid plotGrid = new PlotGrid();
-        if(show.equityCurve) plotGrid.add(createEquityCurvePlot(report));
-        if(show.drawdownCurve) plotGrid.add(createDrawdownCurvePlot(report));
+        plotGrid.add(createEquityCurvePlot(report));
+        plotGrid.add(createDrawdownCurvePlot(report));
         plotGrid.window();
     }
 
@@ -126,35 +115,17 @@ public class Backtester {
         return panel;
     }
 
-
-
-    private void exportPositions(Report report) throws IOException {
+    public void exportPositions(String name, Report report) throws IOException {
         System.out.println("Exporting positions...");
         final PositionAccumulatorReport positionAccumulatorReport = report.unwrap(PositionAccumulatorReport.class);
         final List<MockPosition> positions = positionAccumulatorReport.getPositions();
         final List<String> lines = new ArrayList<>(positions.size() + 1);
         lines.add(MockPosition.getCsvHeaders());
         positions.stream().map(MockPosition::toCSV).forEach(lines::add);
-        final Path path = Paths.get(Constant.HOME, "reports", UUID.randomUUID().toString() + ".csv");
+        final Path path = Paths.get(Constant.HOME, "reports", name + ".csv");
         Files.createDirectories(path.getParent());
         Files.write(path, lines);
         System.out.printf("Exported %d positions to %s\n", positions.size(), path.toString());
-    }
-
-    private ReportBuilder createReportBuilder(int symbolCount){
-        ReportBuilder reportBuilder = BaseReport.builder(symbolCount);
-        if(show.equityCurve) reportBuilder = EquityAccumulatorReport.builder(reportBuilder);
-        if(show.drawdownCurve) reportBuilder = DrawdownAccumulatorReport.builder(reportBuilder);
-        if(export.positions) reportBuilder = PositionAccumulatorReport.builder(reportBuilder);
-        return reportBuilder;
-    }
-
-    private TradingStrategyDefinition createTradingStrategyDefinition(List<Symbol> symbols, List<MockTradingStrategy> tradingStrategies){
-        final TradingStrategyDefinition definition = new TradingStrategyDefinition(exchange);
-        definition.getSymbols().addAll(symbols);
-        definition.getTimeframes().add(timeframe);
-        definition.getTradingStrategies().addAll(tradingStrategies);
-        return definition;
     }
 
 }
