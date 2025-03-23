@@ -1,5 +1,6 @@
 package com.bicycle.backtest;
 
+import com.bicycle.client.kite.utils.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.Timeframe;
@@ -26,7 +27,7 @@ public class MockPosition extends Position implements BarListener {
     }
     
     public float getEtd() {
-        return Math.abs(mfe - exitPrice);
+        return Math.abs(entryPrice + mfe - exitPrice);
     }
     
     public int getEtdBarCount() {
@@ -51,4 +52,23 @@ public class MockPosition extends Position implements BarListener {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("%6d %s %6d %s %2d %6s %2d %6s %2d", id, super.toString(), barCount,
+                Constant.NUMBER_FORMAT.format(mfe), mfeBarCount,
+                Constant.NUMBER_FORMAT.format(mae), maeBarCount,
+                Constant.NUMBER_FORMAT.format(getEtd()), getEtdBarCount());
+    }
+
+    @Override
+    public String toCSV() {
+        return String.join(",", String.valueOf(id), super.toCSV(),String.valueOf(barCount),
+                Constant.NUMBER_FORMAT.format(mfe), String.valueOf(mfeBarCount),
+                Constant.NUMBER_FORMAT.format(mae), String.valueOf(maeBarCount),
+                Constant.NUMBER_FORMAT.format(getEtd()), String.valueOf(getEtdBarCount()));
+    }
+
+    public static String getCsvHeaders(){
+        return "ID," + Position.getCsvHeaders() + ",BAR_COUNT,MFE,MFE_BAR_COUNT,MAE,MAE_BAR_COUNT,ETD,ETC_BAR_COUNT";
+    }
 }

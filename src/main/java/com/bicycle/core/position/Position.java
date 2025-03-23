@@ -1,10 +1,12 @@
 package com.bicycle.core.position;
 
+import com.bicycle.client.kite.utils.Constant;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.symbol.Symbol;
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class Position {
@@ -57,16 +59,20 @@ public class Position {
     
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder(entryType.name()).append(",");
-        builder.append(symbol.code()).append(",");
-        builder.append(timeframe.name()).append(",");
-        builder.append(new Date(entryDate)).append(",");
-        builder.append(entryPrice).append(",");
-        builder.append(entryQuantity).append(",");
-        builder.append(new Date(exitDate)).append(",");
-        builder.append(exitPrice).append(",");
-        builder.append(exitQuantity);
-        return builder.toString(); 
+        return String.format("%-4s %12s %-3s %s %6s %5d %s %6s %5d %5s", entryType.name(), symbol.code(), timeframe.name(),
+                Constant.DATE_FORMAT.format(new Date(entryDate)), Constant.NUMBER_FORMAT.format(entryPrice), entryQuantity,
+                Constant.DATE_FORMAT.format(new Date(exitDate)), Constant.NUMBER_FORMAT.format(exitPrice), exitQuantity,
+                Constant.NUMBER_FORMAT.format(getClosePercentProfitLoss()));
     }
-    
+
+    public static String getCsvHeaders(){
+        return "TYPE,SYMBOL,TIMEFRAME,ENTRY_DATE,ENTRY_PRICE,ENTRY_QUANTITY,EXIT_DATE,EXIT_PRICE,EXIT_QUANTITY,PNL_PCT";
+    }
+
+    public String toCSV(){
+        return String.join(",", entryType.name(), symbol.code(), timeframe.name(),
+                Constant.DATE_FORMAT.format(new Date(entryDate)), Constant.NUMBER_FORMAT.format(entryPrice), String.valueOf(entryQuantity),
+                Constant.DATE_FORMAT.format(new Date(exitDate)), Constant.NUMBER_FORMAT.format(exitPrice), String.valueOf(exitQuantity),
+                String.valueOf(getClosePercentProfitLoss()));
+    }
 }
