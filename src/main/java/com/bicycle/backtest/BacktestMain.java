@@ -12,6 +12,7 @@ import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPosit
 import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
+import com.bicycle.backtest.strategy.trading.builder.SingleTradingStrategyBuilder;
 import com.bicycle.backtest.strategy.trading.executor.SerialTradingStrategyExecutor;
 import com.bicycle.backtest.strategy.trading.executor.TradingStrategyExecutor;
 import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
@@ -43,6 +44,20 @@ import java.util.function.ToDoubleFunction;
 
 public class BacktestMain {
 
+    public static void main(String[] args) {
+        final long startDate = Dates.toEpochMillis(2014, 1, 1);
+        final long endDate = Dates.toEpochMillis(2023, 12, 31);
+        final Backtester backtester = Backtester.builder()
+                .tradingStrategyBuilder(new SingleTradingStrategyBuilder())
+                .build();
+        backtester.show()
+                .equityCurve(true)
+                .drawdownCurve(true);
+        backtester.export()
+                .positions(true);
+        backtester.run(startDate, endDate);
+    }
+
     public static void main1(String[] args) {
         final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
         final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
@@ -50,7 +65,7 @@ public class BacktestMain {
         barRepository.transpose(Exchange.NSE, Timeframe.D);
     }
 
-    public static void main(String[] args) throws InterruptedException, InvocationTargetException, IOException {
+    public static void main2(String[] args) throws InterruptedException, InvocationTargetException, IOException {
         final float initialMargin = 100000;
         final Exchange exchange = Exchange.NSE;
         final Timeframe timeframe = Timeframe.D;

@@ -27,7 +27,14 @@ public final class Dates {
 		final LocalTime localTime = startTime.plus(duration.multipliedBy(timestampDuration.dividedBy(duration)));
 		return ZonedDateTime.of(timestamp.toLocalDate(), localTime, ZoneId.systemDefault());
 	}
-	
+
+	public static String format(long date){
+		final ZoneId zoneId = ZoneId.systemDefault();
+		final Instant instant = Instant.ofEpochMilli(date);
+		final LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
+		return Constant.DATE_TIME_FORMATTER.format(localDateTime);
+	}
+
 	public static long ceil(long date, Timeframe timeframe) {
         final long span = timeframe.getMinuteMultiple() * 60000;
         return date + span - (date - Constant.NSE_START_EPOCH) % span;

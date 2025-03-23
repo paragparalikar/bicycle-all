@@ -6,6 +6,7 @@ import com.bicycle.core.symbol.Symbol;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Singular;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +18,9 @@ import java.util.HashSet;
 public class TradingStrategyDefinition implements Cloneable {
 
     private final Exchange exchange;
-    private final Collection<Symbol> symbols = new HashSet<>();
-    private final Collection<Timeframe> timeframes = new HashSet<>();
-    private final Collection<MockTradingStrategy> tradingStrategies = new ArrayList<>();
+    @Singular private final Collection<Symbol> symbols = new HashSet<>();
+    @Singular private final Collection<Timeframe> timeframes = new HashSet<>();
+    @Singular private final Collection<MockTradingStrategy> tradingStrategies = new ArrayList<>();
     
     @Override
     protected TradingStrategyDefinition clone() {
