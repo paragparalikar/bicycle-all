@@ -6,12 +6,12 @@ import com.bicycle.backtest.report.Report;
 import com.bicycle.backtest.report.accumulator.PositionAccumulatorReport;
 import com.bicycle.backtest.report.cache.TradingStrategyReportCache;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
-import java.time.ZonedDateTime;
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class ParameterOptimizationJob implements OptimizationJob {
@@ -19,9 +19,9 @@ public class ParameterOptimizationJob implements OptimizationJob {
     private final OptimizationContext context;
     
     @Override
-    public void optimize(ZonedDateTime startDate, ZonedDateTime endDate) {
-        final TradingStrategyReportCache reportCache = new TradingStrategyReportCache(context.getInitialMargin(), 
-                PositionAccumulatorReport.builder(BaseReport.builder(context.getDefinition().getSymbols().size())), startDate, endDate);
+    public void optimize(long startDate, long endDate) {
+        final TradingStrategyReportCache reportCache = new TradingStrategyReportCache(context.getInitialMargin(),
+                startDate, endDate, PositionAccumulatorReport.builder(BaseReport.builder(context.getDefinition().getSymbols().size())));
         context.getTradingStrategyExecutor().execute(context.getDefinition(), startDate, endDate, reportCache);
         final List<Report> reports = new ArrayList<>(reportCache.findAll());
         

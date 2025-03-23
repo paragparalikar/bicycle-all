@@ -29,8 +29,8 @@ public class SmartTradingStrategyExecutor implements TradingStrategyExecutor {
     } 
 
     @Override
-    public void execute(TradingStrategyDefinition definition, ZonedDateTime startDate, 
-            ZonedDateTime endDate, ReportCache reportCache) {
+    public void execute(TradingStrategyDefinition definition, long startDate,
+            long endDate, ReportCache reportCache) {
         final TradingStrategyExecutor tradingStrategyExecutor = 
                 Runtime.getRuntime().availableProcessors() * 10 < definition.getTradingStrategies().size() ?
                 getParallelTradingStrategyExecutor() : getSerialTradingStrategyExecutor();

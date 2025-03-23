@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 public class TradingStrategyReportCache implements ReportCache {
     
     private final float initialMargin;
+    private final long startDate, endDate;
     private final ReportBuilder reportBuilder;
-    private final ZonedDateTime startDate, endDate;
     private final ConcurrentHashMap<String, Report> cache = new ConcurrentHashMap<>();
 
     @Override
     public void clear() {
-        cache.values().forEach(report -> report.clear());
+        cache.values().forEach(Report::clear);
     }
     
     public Collection<Report> findAll(){

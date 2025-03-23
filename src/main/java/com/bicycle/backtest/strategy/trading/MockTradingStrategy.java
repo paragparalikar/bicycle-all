@@ -11,8 +11,10 @@ import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.Rule;
 import com.bicycle.core.symbol.Symbol;
-import java.util.concurrent.atomic.AtomicInteger;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MockTradingStrategy implements BarListener {
     private static final AtomicInteger ID = new AtomicInteger(0);
@@ -25,7 +27,8 @@ public class MockTradingStrategy implements BarListener {
     private final Indicator atrIndicator;
     @Getter private final OrderType entryOrderType;
     private final PositionSizingStrategy positionSizingStrategy;
-    
+
+    @Builder
     public MockTradingStrategy(float slippagePercentage,
             Rule entryRule, Rule exitRule, OrderType entryOrderType,
             ReportCache reportCache, Indicator atrIndicator,

@@ -16,8 +16,8 @@ public class EvaluationContext {
     private TradingStrategyDefinition tradingStrategyDefinition;
     
     private final float initialMargin;
+    private final long startDate, endDate;
     private final IndicatorCache indicatorCache;
-    private final ZonedDateTime startDate, endDate;
     private final TradingStrategyExecutor tradingStrategyExecutor;
 
 }

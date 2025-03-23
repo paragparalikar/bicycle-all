@@ -8,8 +8,8 @@ public interface TradingStrategyExecutor {
 
     void execute(
             TradingStrategyDefinition definition, 
-            ZonedDateTime startDate, 
-            ZonedDateTime endDate, 
+            long startDate,
+            long endDate,
             ReportCache reportCache);
     
 }

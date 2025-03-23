@@ -23,7 +23,7 @@ public class EntryTimeOptimizationJob implements OptimizationJob {
     private final OptimizationContext context;
     
     @Override
-    public void optimize(ZonedDateTime startDate, ZonedDateTime endDate) {
+    public void optimize(long startDate, long endDate) {
         optimizeMonth();
         optimizeDayOfWeek();
         optimizeWeekOfMonth();

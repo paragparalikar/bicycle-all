@@ -4,10 +4,10 @@ import com.bicycle.backtest.MockPosition;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.core.symbol.Symbol;
 import com.bicycle.util.Strings;
-import java.time.ZonedDateTime;
-import java.util.Objects;
-import lombok.Getter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.Getter;
+
+import java.util.Objects;
 
 @Getter
 public class BaseReport implements Report {
@@ -27,10 +27,10 @@ public class BaseReport implements Report {
     public BaseReport(
             final int symbolCount,
             float initialMargin, MockTradingStrategy tradingStrategy, 
-            ZonedDateTime startDate, ZonedDateTime endDate) {
+            long startDate, long endDate) {
+        this.endDate = endDate;
+        this.startDate = startDate;
         this.tradingStrategy = tradingStrategy;
-        this.endDate = endDate.toInstant().toEpochMilli();
-        this.startDate = startDate.toInstant().toEpochMilli();
         this.years = (this.endDate - this.startDate) / 31536000000f;
         this.openTrades = new Int2ObjectOpenHashMap<>(symbolCount);
         this.maxEquity = this.initialMargin = this.availableMargin = initialMargin;

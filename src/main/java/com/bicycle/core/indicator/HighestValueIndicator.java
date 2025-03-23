@@ -29,11 +29,19 @@ public class HighestValueIndicator implements Indicator {
         final FloatSeries series = seriesCache.get(bar.symbol(), bar.timeframe());
         series.add(indicatorValue);
         if(!Float.isNaN(indicatorValue)) {
-            float highestValue = Float.MIN_VALUE;
-            for(int index = 0; index < barCount; index++) {
-                highestValue = Math.max(highestValue, series.get(index));
+            // If current value is higher than previous highest, then it must be highest in current value set.
+            final float previousHighest = 0 < series.size() ? series.get(series.size() - 1) : Float.NaN;
+            if(!Float.isNaN(previousHighest) && indicatorValue > previousHighest){
+                cache.set(bar.symbol(), bar.timeframe(), indicatorValue);
+            } else if(barCount <= series.size() && !Float.isNaN(series.get(barCount - 1))) {
+                float highestValue = Float.MIN_VALUE;
+                for(int index = 0; index < barCount; index++) {
+                    highestValue = Math.max(highestValue, series.get(index));
+                }
+                cache.set(bar.symbol(), bar.timeframe(), highestValue);
+            } else {
+                cache.set(bar.symbol(), bar.timeframe(), Float.NaN);
             }
-            cache.set(bar.symbol(), bar.timeframe(), highestValue);
         }
     }
 

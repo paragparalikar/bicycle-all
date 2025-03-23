@@ -1,10 +1,10 @@
 package com.bicycle.core.bar.repository;
 
-import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Symbol;
+import com.bicycle.util.Constant;
 import com.bicycle.util.FileUtils;
 import lombok.SneakyThrows;
 
@@ -99,7 +99,7 @@ public class FileSystemSymbolIndexedBarRepository {
     @SneakyThrows
     Set<Bar> get(Symbol symbol, Timeframe timeframe, long fromExclusive){
         final Path path = getPath(symbol, timeframe);
-        if(!Files.exists(path)) return Collections.emptySet();
+        if(!Files.exists(path) || BYTES > Files.size(path)) return Collections.emptySet();
         try(RandomAccessFile file = new RandomAccessFile(path.toFile(), "r")){
             final Set<Bar> bars = new HashSet<>();
             file.seek(file.length() - BYTES);
@@ -108,8 +108,13 @@ public class FileSystemSymbolIndexedBarRepository {
                  bars.add(new Bar(symbol, timeframe, date,
                          file.readFloat(), file.readFloat(), file.readFloat(),file.readFloat(),
                          file.readInt()));
-                file.seek(file.getFilePointer() - 2 * BYTES);
-                date = file.readLong();
+                 final long position = file.getFilePointer() - 2 * BYTES;
+                 if(0 <= position){
+                     file.seek(position);
+                     date = file.readLong();
+                 } else {
+                    break;
+                 }
             }
             return bars;
         }

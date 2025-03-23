@@ -21,7 +21,7 @@ public class WalkForwardOptimizationStep implements WalkForwardStep {
     }
     
     @Override
-    public void execute(ZonedDateTime startDate, ZonedDateTime endDate) {
+    public void execute(long startDate, long endDate) {
         optimizationContext.clear();
         optimizationJob.optimize(startDate, endDate);
         evaluationContext.setTradingStrategyDefinition(optimizationContext.getDefinition());

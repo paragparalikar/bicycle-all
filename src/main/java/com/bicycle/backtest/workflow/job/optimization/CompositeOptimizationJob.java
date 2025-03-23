@@ -1,6 +1,5 @@
 package com.bicycle.backtest.workflow.job.optimization;
 
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class CompositeOptimizationJob implements OptimizationJob {
     }
     
     @Override
-    public void optimize(ZonedDateTime startDate, ZonedDateTime endDate) {
+    public void optimize(long startDate, long endDate) {
         optimizationJobs.forEach(job -> job.optimize(startDate, endDate));
     }
 

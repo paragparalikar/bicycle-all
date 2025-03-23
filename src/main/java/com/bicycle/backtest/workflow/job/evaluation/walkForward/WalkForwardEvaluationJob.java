@@ -3,9 +3,9 @@ package com.bicycle.backtest.workflow.job.evaluation.walkForward;
 import com.bicycle.backtest.workflow.job.evaluation.EvaluationContext;
 import com.bicycle.backtest.workflow.job.evaluation.EvaluationJob;
 import com.bicycle.backtest.workflow.job.optimization.OptimizationContext;
-import java.time.Duration;
-import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
+
+import java.time.Duration;
 
 @RequiredArgsConstructor
 public class WalkForwardEvaluationJob implements EvaluationJob {
@@ -18,15 +18,15 @@ public class WalkForwardEvaluationJob implements EvaluationJob {
         
         final WalkForwardOptimizationStep optimizationStep = new WalkForwardOptimizationStep(evaluationContext, optimizationContext);
         final WalkForwardEvaluationStep evaluationStep = new WalkForwardEvaluationStep(evaluationContext);
-        ZonedDateTime trainStartDate = evaluationContext.getStartDate();
-        ZonedDateTime trainEndDate = trainStartDate.plus(trainDuration);
-        ZonedDateTime testEndDate = trainEndDate.plus(testDuration);
-        while (!testEndDate.isAfter(evaluationContext.getEndDate())) {
+        long trainStartDate = evaluationContext.getStartDate();
+        long trainEndDate = trainStartDate + trainDuration.toMillis();
+        long testEndDate = trainEndDate + testDuration.toMillis();
+        while (testEndDate <=  evaluationContext.getEndDate()) {
             optimizationStep.execute(trainStartDate, trainEndDate);
             evaluationStep.execute(trainEndDate, testEndDate);
             trainStartDate = testEndDate;
-            trainEndDate = trainStartDate.plus(trainDuration);
-            testEndDate = trainEndDate.plus(testDuration);
+            trainEndDate = trainStartDate + trainDuration.toMillis();
+            testEndDate = trainEndDate + testDuration.toMillis();
         }
     }
 

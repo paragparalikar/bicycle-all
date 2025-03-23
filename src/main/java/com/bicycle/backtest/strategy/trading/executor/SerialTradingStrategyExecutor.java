@@ -8,12 +8,11 @@ import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.symbol.Symbol;
-import java.time.ZonedDateTime;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 
 @Builder
 @RequiredArgsConstructor
@@ -24,8 +23,8 @@ public class SerialTradingStrategyExecutor implements TradingStrategyExecutor {
     
     @Override
     @SneakyThrows
-    public void execute(TradingStrategyDefinition definition, ZonedDateTime startDate, 
-            ZonedDateTime endDate, ReportCache reportCache) {
+    public void execute(TradingStrategyDefinition definition, long startDate,
+            long endDate, ReportCache reportCache) {
         reportCache.clear();
         indicatorCache.clear();
         final Bar bar = new Bar();

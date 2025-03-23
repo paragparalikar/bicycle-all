@@ -58,7 +58,7 @@ class CallbackReportBuilder implements ReportBuilder {
     private final ReportBuilder delegateBuilder;
 
     @Override
-    public Report build(float initialMargin, MockTradingStrategy tradingStrategy, ZonedDateTime startDate, ZonedDateTime endDate) {
+    public Report build(float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
         return new CallbackReport(callback, delegateBuilder.build(initialMargin, tradingStrategy, startDate, endDate));
     }
     

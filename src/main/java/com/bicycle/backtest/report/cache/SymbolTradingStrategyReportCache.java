@@ -4,19 +4,19 @@ import com.bicycle.backtest.report.Report;
 import com.bicycle.backtest.report.ReportBuilder;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.core.symbol.Symbol;
-import java.time.ZonedDateTime;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 @RequiredArgsConstructor
 public class SymbolTradingStrategyReportCache implements ReportCache {
     
     private final float initialMargin;
     private final ReportBuilder builder;
-    private final ZonedDateTime startDate, endDate;
+    private final long startDate, endDate;
     private final Object2ObjectOpenHashMap<Symbol, TradingStrategyReportCache> cache = new Object2ObjectOpenHashMap<>();
 
     @Override
@@ -33,7 +33,7 @@ public class SymbolTradingStrategyReportCache implements ReportCache {
     @Override
     public Report get(Symbol symbol, MockTradingStrategy tradingStrategy) {
         return cache.computeIfAbsent(symbol, key -> 
-                new TradingStrategyReportCache(initialMargin, builder, startDate, endDate))
+                new TradingStrategyReportCache(initialMargin, startDate, endDate, builder))
                 .get(symbol, tradingStrategy);
     }
     

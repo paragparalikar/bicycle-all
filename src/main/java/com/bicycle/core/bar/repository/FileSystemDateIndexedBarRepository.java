@@ -1,11 +1,11 @@
 package com.bicycle.core.bar.repository;
 
-import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.repository.SymbolRepository;
+import com.bicycle.util.Constant;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -19,9 +19,7 @@ import java.nio.channels.FileChannel.MapMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
@@ -62,20 +60,18 @@ public class FileSystemDateIndexedBarRepository {
     }
 
     @SneakyThrows
-    public Cursor<Bar> get(Exchange exchange, Timeframe timeframe, ZonedDateTime fromInclusive, ZonedDateTime toInclusive) {
+    public Cursor<Bar> get(Exchange exchange, Timeframe timeframe, long fromInclusive, long toInclusive) {
         final Path path = getPath(exchange, timeframe);
         if(!Files.exists(path) || BYTES > Files.size(path)) return Cursor.EMPTY;
-        
-        final long to = toInclusive.toInstant().toEpochMilli();
-        final long from = fromInclusive.toInstant().toEpochMilli();
+
         final FileChannel fileChannel = FileChannel.open(path);
         
         final DateLocationIndex index = getIndex(path);
-        final int count = index.count(from, to);
+        final int count = index.count(fromInclusive, toInclusive);
         
         final long fileChannelSize = fileChannel.size();
-        final long fromLocation = Math.min(index.location(from), fileChannelSize);
-        final long toLocation = Math.min(index.location(to) + index.count(to) * BYTES, fileChannelSize);
+        final long fromLocation = Math.min(index.location(fromInclusive), fileChannelSize);
+        final long toLocation = Math.min(index.location(toInclusive) + index.count(toInclusive) * BYTES, fileChannelSize);
         
         final MappedByteBuffer buffer = fileChannel.map(MapMode.READ_ONLY, fromLocation, toLocation - fromLocation);
         return new Cursor<>() {

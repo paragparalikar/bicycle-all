@@ -18,7 +18,7 @@ public class SymbolOptimizationJob implements OptimizationJob {
     private final OptimizationContext context;
     
     @Override
-    public void optimize(ZonedDateTime startDate, ZonedDateTime endDate) {
+    public void optimize(long startDate, long endDate) {
         final SymbolTradingStrategyReportCache reportCache = new SymbolTradingStrategyReportCache(context.getInitialMargin(), 
                 BaseReport.builder(context.getDefinition().getSymbols().size()), startDate, endDate);
         context.getTradingStrategyExecutor().execute(context.getDefinition(), startDate, endDate, reportCache);

@@ -40,7 +40,7 @@ class DrawdownAccumulatorReportBuilder implements ReportBuilder {
     private final ReportBuilder delegateBuilder;
     
     @Override
-    public Report build(float initialMargin, MockTradingStrategy tradingStrategy, ZonedDateTime startDate, ZonedDateTime endDate) {
+    public Report build(float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
         return new DrawdownAccumulatorReport(delegateBuilder.build(initialMargin, tradingStrategy, startDate, endDate));
     }
     

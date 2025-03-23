@@ -1,12 +1,8 @@
 package com.bicycle.util;
 
 import com.bicycle.core.bar.Timeframe;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+
+import java.time.*;
 
 public final class Dates {
 
@@ -40,6 +36,12 @@ public final class Dates {
 	public static long floor(long date, Timeframe timeframe) {
 	    final long span = timeframe.getMinuteMultiple() * 60000;
         return date - (date - Constant.NSE_START_EPOCH) % span;
+	}
+
+	public static long toEpochMillis(int year, int month, int dayOfMonth){
+		final LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
+		final Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+		return instant.toEpochMilli();
 	}
 	
 }

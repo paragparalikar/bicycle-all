@@ -1,14 +1,19 @@
 package com.bicycle.backtest.report.cache;
 
 import com.bicycle.backtest.report.Report;
+import com.bicycle.backtest.report.ReportBuilder;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.core.symbol.Symbol;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class SingletonReportCache implements ReportCache {
-    
-    private final Report report;
+
+    @Getter private Report report;
+    private final ReportBuilder reportBuilder;
+    private final float initialMargin;
+    private final long startDate, endDate;
 
     @Override
     public void compute(long date) {
@@ -17,16 +22,12 @@ public class SingletonReportCache implements ReportCache {
     
     @Override
     public void clear() {
-        report.clear();
-    }
-    
-    public Report get() {
-        return report;
+        if(null != report) report.clear();
     }
 
     @Override
     public Report get(Symbol symbol, MockTradingStrategy tradingStrategy) {
-        return report;
+        return null == report ? report = reportBuilder.build(initialMargin, tradingStrategy, startDate, endDate) : report;
     }
 
 }

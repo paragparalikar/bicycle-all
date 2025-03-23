@@ -2,7 +2,6 @@ package com.bicycle.backtest.report;
 
 import com.bicycle.backtest.MockPosition;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
-import java.time.ZonedDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -24,7 +23,7 @@ public class FullReport extends BaseReport {
     
     @Getter(value = AccessLevel.NONE) private int winningStreak, losingStreak;
 
-    public FullReport(int symbolCount, float initialMargin, MockTradingStrategy tradingStrategy, ZonedDateTime startDate, ZonedDateTime endDate) {
+    public FullReport(int symbolCount, float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
         super(symbolCount, initialMargin, tradingStrategy, startDate, endDate);
     }
     

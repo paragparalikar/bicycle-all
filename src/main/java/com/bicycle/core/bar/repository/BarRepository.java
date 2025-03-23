@@ -20,7 +20,7 @@ public interface BarRepository {
 
     Cursor<Bar> get(Exchange exchange, Timeframe timeframe);
 
-    Cursor<Bar> get(Exchange exchange, Timeframe timeframe, ZonedDateTime fromInclusive, ZonedDateTime toInclusive);
+    Cursor<Bar> get(Exchange exchange, Timeframe timeframe, long fromInclusive, long toInclusive);
     
     void persist(Symbol symbol, Timeframe timeframe, List<Bar> bars);
 

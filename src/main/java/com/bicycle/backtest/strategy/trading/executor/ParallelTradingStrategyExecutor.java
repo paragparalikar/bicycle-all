@@ -29,8 +29,8 @@ public class ParallelTradingStrategyExecutor implements TradingStrategyExecutor 
     
     @Override
     @SneakyThrows
-    public void execute(TradingStrategyDefinition definition, ZonedDateTime startDate, 
-            ZonedDateTime endDate, ReportCache reportCache) {
+    public void execute(TradingStrategyDefinition definition, long startDate,
+            long endDate, ReportCache reportCache) {
         reportCache.clear();
         indicatorCache.clear();
         final Bar bar = new Bar();

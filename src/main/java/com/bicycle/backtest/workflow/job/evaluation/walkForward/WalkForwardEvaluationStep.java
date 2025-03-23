@@ -13,14 +13,14 @@ public class WalkForwardEvaluationStep implements WalkForwardStep {
     private final EvaluationContext evaluationContext;
 
     @Override
-    public void execute(ZonedDateTime startDate, ZonedDateTime endDate) {
+    public void execute(long startDate, long endDate) {
         final TradingStrategyDefinition tradingStrategyDefinition = evaluationContext.getTradingStrategyDefinition();
-        final ReportCache reportCache = new SingletonReportCache(evaluationContext.getReport());
+        //final ReportCache reportCache = new SingletonReportCache(evaluationContext.getReport());
         evaluationContext.getTradingStrategyExecutor().execute(
                 tradingStrategyDefinition,
                 evaluationContext.getStartDate(), 
                 evaluationContext.getEndDate(), 
-                reportCache);
+                null);
     }
 
 }
