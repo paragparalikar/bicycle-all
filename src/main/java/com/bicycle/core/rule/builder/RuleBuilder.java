@@ -1,12 +1,13 @@
 package com.bicycle.core.rule.builder;
 
+import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.Rule;
 
 public interface RuleBuilder {
 
-    Rule build();
+    Rule build(IndicatorCache indicatorCache);
     
-    Rule buildDefault();
+    Rule buildDefault(IndicatorCache indicatorCache);
     
     default RuleBuilder and(RuleBuilder other) {
         return new AndRuleBuilder(this, other);

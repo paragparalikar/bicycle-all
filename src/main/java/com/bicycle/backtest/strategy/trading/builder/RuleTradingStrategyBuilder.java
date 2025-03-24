@@ -54,8 +54,8 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
         final List<MockTradingStrategy> tradingStrategies = new ArrayList<>();
         iterators.forEach(ResetableIterator::reset);
         do {
-            final Rule entryRule = entryRuleBuilder.build();
-            final Rule exitRule = exitRuleBuilder.build();
+            final Rule entryRule = entryRuleBuilder.build(indicatorCache);
+            final Rule exitRule = exitRuleBuilder.build(indicatorCache);
             tradingStrategies.add(new MockTradingStrategy(slippagePercentage, entryRule, exitRule, 
                     entryOrderType, reportCache, indicatorCache.atr(14), positionSizingStrategy));
         }while(advance(0));
@@ -65,7 +65,7 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
     
     @Override
     public MockTradingStrategy buildDefault(float slippagePercentage, IndicatorCache indicatorCache, ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {
-        return new MockTradingStrategy(slippagePercentage, entryRuleBuilder.buildDefault(), exitRuleBuilder.buildDefault(), 
+        return new MockTradingStrategy(slippagePercentage, entryRuleBuilder.buildDefault(indicatorCache), exitRuleBuilder.buildDefault(indicatorCache),
                 entryOrderType, reportCache, indicatorCache.atr(14), positionSizingStrategy);
     }
     

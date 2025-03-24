@@ -1,5 +1,6 @@
 package com.bicycle.core.rule.builder;
 
+import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.Rule;
 import com.bicycle.core.rule.StopGainRule;
 import com.bicycle.util.FloatIterator;
@@ -11,12 +12,12 @@ public class StopGainRuleBuilder implements RuleBuilder {
     private final FloatIterator floatIterator;
 
     @Override
-    public Rule build() {
+    public Rule build(IndicatorCache indicatorCache) {
         return new StopGainRule(floatIterator.value());
     }
 
     @Override
-    public Rule buildDefault() {
+    public Rule buildDefault(IndicatorCache indicatorCache) {
         return new StopGainRule(floatIterator.defaultValue());
     }
 

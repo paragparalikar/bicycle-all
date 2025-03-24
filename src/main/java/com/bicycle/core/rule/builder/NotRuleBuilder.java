@@ -1,5 +1,6 @@
 package com.bicycle.core.rule.builder;
 
+import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.NotRule;
 import com.bicycle.core.rule.Rule;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +11,13 @@ public class NotRuleBuilder implements RuleBuilder {
     private final RuleBuilder delegate;
 
     @Override
-    public Rule build() {
-        return new NotRule(delegate.build());
+    public Rule build(IndicatorCache indicatorCache) {
+        return new NotRule(delegate.build(indicatorCache));
     }
 
     @Override
-    public Rule buildDefault() {
-        return new NotRule(delegate.buildDefault());
+    public Rule buildDefault(IndicatorCache indicatorCache) {
+        return new NotRule(delegate.buildDefault(indicatorCache));
     }
     
     @Override

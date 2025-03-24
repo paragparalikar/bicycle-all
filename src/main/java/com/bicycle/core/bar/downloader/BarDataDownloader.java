@@ -1,17 +1,16 @@
 package com.bicycle.core.bar.downloader;
 
-import com.bicycle.core.bar.repository.FileSystemBarRepository;
-import com.bicycle.util.Constant;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.provider.BarDataProvider;
 import com.bicycle.core.bar.provider.query.BarQuery;
 import com.bicycle.core.bar.provider.query.BarQueryTransformer;
 import com.bicycle.core.bar.repository.BarRepository;
+import com.bicycle.core.bar.repository.FileSystemBarRepository;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.Symbol;
 import com.bicycle.core.symbol.repository.SymbolRepository;
-import com.bicycle.util.NamedThreadFactory;
+import com.bicycle.util.Constant;
 import lombok.Builder;
 import lombok.SneakyThrows;
 
@@ -20,9 +19,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 public class BarDataDownloader {
     private static final int MAX_RETRY_COUNT = 3;
@@ -47,16 +43,12 @@ public class BarDataDownloader {
 
     @SneakyThrows
     public void download(Collection<Exchange> exchanges, Collection<Timeframe> timeframes) {
-        final ThreadFactory threadFactory = new NamedThreadFactory("bar-downloader-", true);
-        try (ExecutorService executorService = Executors.newFixedThreadPool(20, threadFactory)) {
-            for(Exchange exchange : exchanges){
-                for (Timeframe timeframe : timeframes) {
-                    for (Symbol symbol : symbolRepository.findByExchange(exchange)) {
-                        executorService.execute(() -> download(symbol, timeframe, 0));
-                    }
-                    if(barRepository instanceof FileSystemBarRepository fileSystemBarRepository){
-                        fileSystemBarRepository.transpose(exchange, timeframe);
-                    }
+        for(Exchange exchange : exchanges){
+            for (Timeframe timeframe : timeframes) {
+                symbolRepository.findByExchange(exchange).parallelStream()
+                        .forEach(symbol -> download(symbol, timeframe, 0));
+                if(barRepository instanceof FileSystemBarRepository fileSystemBarRepository){
+                    fileSystemBarRepository.transpose(exchange, timeframe);
                 }
             }
         }

@@ -13,12 +13,12 @@ public class WaitForBarCountRuleBuilder implements RuleBuilder {
     private final IndicatorCache indicatorCache;
     
     @Override
-    public Rule build() {
+    public Rule build(IndicatorCache indicatorCache) {
         return new WaitForBarCountRule(integerIterator.value(), indicatorCache);
     }
 
     @Override
-    public Rule buildDefault() {
+    public Rule buildDefault(IndicatorCache indicatorCache) {
         return new WaitForBarCountRule(integerIterator.defaultValue(), indicatorCache);
     }
     

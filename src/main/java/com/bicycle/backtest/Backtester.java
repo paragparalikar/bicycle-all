@@ -60,9 +60,9 @@ public class Backtester {
     @Builder.Default private final boolean limitPositionSizeToAvailableMargin = false;
     @Builder.Default private final ReportBuilder.Customizer reportBuilderCustomizer = BaseReport::builder;
     @Builder.Default private final ReportCache.Customizer reportCacheCustomizer = SingletonReportCache::new;
-    @Builder.Default private final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
-    @Builder.Default private final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
-    @Builder.Default private final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
+    private final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
+    private final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
+    private final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
 
     public ReportCache run(TradingStrategyBuilder tradingStrategyBuilder, long startDate, long endDate){
         final Collection<Symbol> symbols = symbolRepository.findByExchange(exchange);
