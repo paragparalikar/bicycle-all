@@ -4,14 +4,15 @@ import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.Rule;
 import com.bicycle.core.rule.WaitForBarCountRule;
 import com.bicycle.util.IntegerIterator;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
+@Builder
 @RequiredArgsConstructor
 public class WaitForBarCountRuleBuilder implements RuleBuilder {
 
-    private final IntegerIterator integerIterator;
-    private final IndicatorCache indicatorCache;
-    
+    @Builder.Default private final IntegerIterator integerIterator = new IntegerIterator("barCount", 15, 15, 15, 1);
+
     @Override
     public Rule build(IndicatorCache indicatorCache) {
         return new WaitForBarCountRule(integerIterator.value(), indicatorCache);
