@@ -10,16 +10,15 @@ public class VarianceIndicatorBuilder implements IndicatorBuilder {
     
     private final IndicatorBuilder sourceIndicatorBuilder;
     private final IntegerIterator integerIterator;
-    private final IndicatorCache indicatorCache;
 
     @Override
-    public Indicator build() {
-        return indicatorCache.variance(sourceIndicatorBuilder.build(), integerIterator.value());
+    public Indicator build(IndicatorCache indicatorCache) {
+        return indicatorCache.variance(sourceIndicatorBuilder.build(indicatorCache), integerIterator.value());
     }
 
     @Override
-    public Indicator buildDefault() {
-        return indicatorCache.variance(sourceIndicatorBuilder.buildDefault(), integerIterator.defaultValue());
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
+        return indicatorCache.variance(sourceIndicatorBuilder.buildDefault(indicatorCache), integerIterator.defaultValue());
     }
     
     @Override

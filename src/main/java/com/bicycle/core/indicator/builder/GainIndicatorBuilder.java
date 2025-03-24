@@ -8,16 +8,15 @@ import lombok.RequiredArgsConstructor;
 public class GainIndicatorBuilder implements IndicatorBuilder {
 
     private final IndicatorBuilder sourceIndicatorBuilder;
-    private final IndicatorCache indicatorCache;
-    
+
     @Override
-    public Indicator build() {
-        return indicatorCache.gain(sourceIndicatorBuilder.build());
+    public Indicator build(IndicatorCache indicatorCache) {
+        return indicatorCache.gain(sourceIndicatorBuilder.build(indicatorCache));
     }
 
     @Override
-    public Indicator buildDefault() {
-        return indicatorCache.gain(sourceIndicatorBuilder.buildDefault());
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
+        return indicatorCache.gain(sourceIndicatorBuilder.buildDefault(indicatorCache));
     }
     
     @Override

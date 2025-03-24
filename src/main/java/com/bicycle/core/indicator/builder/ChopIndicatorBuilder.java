@@ -9,15 +9,14 @@ import lombok.RequiredArgsConstructor;
 public class ChopIndicatorBuilder implements IndicatorBuilder {
     
     private final IntegerIterator integerIterator;
-    private final IndicatorCache indicatorCache;
 
     @Override
-    public Indicator build() {
+    public Indicator build(IndicatorCache indicatorCache) {
         return indicatorCache.chop(integerIterator.value());
     }
 
     @Override
-    public Indicator buildDefault() {
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
         return indicatorCache.chop(integerIterator.defaultValue());
     }
     

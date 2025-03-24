@@ -2,6 +2,7 @@ package com.bicycle.core.indicator.builder;
 
 import com.bicycle.core.indicator.CombinedIndicator;
 import com.bicycle.core.indicator.Indicator;
+import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.indicator.IndicatorOperator;
 import lombok.RequiredArgsConstructor;
 
@@ -12,13 +13,13 @@ public class CombinedIndicatorBuilder implements IndicatorBuilder {
     private final IndicatorOperator operator;
     
     @Override
-    public Indicator build() {
-        return new CombinedIndicator(left.build(), right.build(), operator);
+    public Indicator build(IndicatorCache indicatorCache) {
+        return new CombinedIndicator(left.build(indicatorCache), right.build(indicatorCache), operator);
     }
 
     @Override
-    public Indicator buildDefault() {
-        return new CombinedIndicator(left.buildDefault(), right.buildDefault(), operator);
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
+        return new CombinedIndicator(left.buildDefault(indicatorCache), right.buildDefault(indicatorCache), operator);
     }
 
     @Override

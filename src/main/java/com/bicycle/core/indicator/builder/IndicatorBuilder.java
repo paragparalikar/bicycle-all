@@ -1,13 +1,14 @@
 package com.bicycle.core.indicator.builder;
 
 import com.bicycle.core.indicator.Indicator;
+import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.indicator.IndicatorOperator;
 
 public interface IndicatorBuilder {
 
-    Indicator build();
+    Indicator build(IndicatorCache indicatorCache);
     
-    Indicator buildDefault();
+    Indicator buildDefault(IndicatorCache indicatorCache);
     
     default IndicatorBuilder plus(IndicatorBuilder other) {
         return new CombinedIndicatorBuilder(this, other, IndicatorOperator.PLUS);

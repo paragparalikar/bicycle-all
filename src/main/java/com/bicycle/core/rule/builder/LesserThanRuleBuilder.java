@@ -13,12 +13,12 @@ public class LesserThanRuleBuilder implements RuleBuilder {
     
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return new LesserThanRule(left.build(), right.build());
+        return new LesserThanRule(left.build(indicatorCache), right.build(indicatorCache));
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
-        return new LesserThanRule(left.buildDefault(), right.buildDefault());
+        return new LesserThanRule(left.buildDefault(indicatorCache), right.buildDefault(indicatorCache));
     }
     
     @Override

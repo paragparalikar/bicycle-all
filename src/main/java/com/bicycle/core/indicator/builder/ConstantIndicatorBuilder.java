@@ -9,15 +9,14 @@ import lombok.RequiredArgsConstructor;
 public class ConstantIndicatorBuilder implements IndicatorBuilder {
     
     private final FloatIterator floatIterator;
-    private final IndicatorCache indicatorCache;
 
     @Override
-    public Indicator build() {
+    public Indicator build(IndicatorCache indicatorCache) {
         return indicatorCache.constant(floatIterator.value());
     }
 
     @Override
-    public Indicator buildDefault() {
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
         return indicatorCache.constant(floatIterator.defaultValue());
     }
     

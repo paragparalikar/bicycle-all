@@ -10,16 +10,15 @@ public class RisingStrengthIndicatorBuilder implements IndicatorBuilder {
     
     private final IndicatorBuilder sourceIndicatorBuilder;
     private final IntegerIterator integerIterator;
-    private final IndicatorCache indicatorCache;
 
     @Override
-    public Indicator build() {
-        return indicatorCache.risingStrength(sourceIndicatorBuilder.build(), integerIterator.value());
+    public Indicator build(IndicatorCache indicatorCache) {
+        return indicatorCache.risingStrength(sourceIndicatorBuilder.build(indicatorCache), integerIterator.value());
     }
 
     @Override
-    public Indicator buildDefault() {
-        return indicatorCache.risingStrength(sourceIndicatorBuilder.buildDefault(), integerIterator.defaultValue());
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
+        return indicatorCache.risingStrength(sourceIndicatorBuilder.buildDefault(indicatorCache), integerIterator.defaultValue());
     }
     
     @Override

@@ -13,12 +13,12 @@ public class EqualsRuleBuilder implements RuleBuilder {
     
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return new EqualsRule(left.build(), right.build());
+        return new EqualsRule(left.build(indicatorCache), right.build(indicatorCache));
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
-        return new EqualsRule(left.buildDefault(), right.buildDefault());
+        return new EqualsRule(left.buildDefault(indicatorCache), right.buildDefault(indicatorCache));
     }
     
     @Override

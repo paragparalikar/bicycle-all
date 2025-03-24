@@ -10,16 +10,15 @@ public class MMAIndicatorBuilder implements IndicatorBuilder {
     
     private final IndicatorBuilder sourceIndicatorBuilder;
     private final IntegerIterator integerIterator;
-    private final IndicatorCache indicatorCache;
 
     @Override
-    public Indicator build() {
-        return indicatorCache.mma(sourceIndicatorBuilder.build(), integerIterator.value());
+    public Indicator build(IndicatorCache indicatorCache) {
+        return indicatorCache.mma(sourceIndicatorBuilder.build(indicatorCache), integerIterator.value());
     }
 
     @Override
-    public Indicator buildDefault() {
-        return indicatorCache.mma(sourceIndicatorBuilder.buildDefault(), integerIterator.defaultValue());
+    public Indicator buildDefault(IndicatorCache indicatorCache) {
+        return indicatorCache.mma(sourceIndicatorBuilder.buildDefault(indicatorCache), integerIterator.defaultValue());
     }
     
     @Override
