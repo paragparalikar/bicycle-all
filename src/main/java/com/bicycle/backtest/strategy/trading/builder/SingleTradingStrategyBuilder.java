@@ -7,11 +7,12 @@ import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.LiquidityRule;
 import com.bicycle.core.rule.Rule;
+
 import java.util.Collections;
 import java.util.List;
 
 public class SingleTradingStrategyBuilder implements TradingStrategyBuilder {
-    
+
     @Override
     public List<MockTradingStrategy> build(float slippagePercentage, 
             IndicatorCache cache, ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {

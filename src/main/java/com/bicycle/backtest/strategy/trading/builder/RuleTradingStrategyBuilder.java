@@ -10,11 +10,13 @@ import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.util.ResetableIterator;
 import com.bicycle.util.Strings;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
     
     private String text;
@@ -31,22 +33,6 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
         this.exitRuleBuilder = exitRuleBuilder;
         this.iterators = iterators;
     }
-    
-    private boolean advance(int index) {
-        final ResetableIterator iterator = iterators.get(index);
-        if(iterator.hasNext()) {
-            iterator.advance();
-            return true;
-        } else if(index < iterators.size() - 1) {
-            if(advance(index + 1)) {
-                iterator.reset();
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
 
     @Override
     public List<MockTradingStrategy> build(float slippagePercentage, IndicatorCache indicatorCache, 
@@ -58,7 +44,7 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
             final Rule exitRule = exitRuleBuilder.build(indicatorCache);
             tradingStrategies.add(new MockTradingStrategy(slippagePercentage, entryRule, exitRule, 
                     entryOrderType, reportCache, indicatorCache.atr(14), positionSizingStrategy));
-        }while(advance(0));
+        }while(ResetableIterator.advance(0, iterators));
         
         return tradingStrategies;
     }

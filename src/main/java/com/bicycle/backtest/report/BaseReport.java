@@ -23,6 +23,7 @@ public class BaseReport implements Report {
     private final MockTradingStrategy tradingStrategy;
     private final Int2ObjectOpenHashMap<MockPosition> openTrades;
     private volatile float availableMargin, equity, maxEquity, minEquity, avgDrawdown, maxDrawdown, exposure;
+    private double totalMfe;
     
     public BaseReport(
             final int symbolCount,
@@ -80,6 +81,7 @@ public class BaseReport implements Report {
     public synchronized void close(MockPosition trade) {
         availableMargin += trade.getCloseEquity();
         openTrades.remove(trade.getSymbol().token());
+        totalMfe += trade.getMfe();
     }
     
     @Override
@@ -114,6 +116,7 @@ public class BaseReport implements Report {
         builder.append("RAR           : ").append(Strings.format(getCAGR() / exposure)).append("\n");
         builder.append("AvgDD         : ").append(Strings.format(avgDrawdown)).append("\n");
         builder.append("MaxDD         : ").append(Strings.format(maxDrawdown)).append("\n");
+        builder.append("Total MFE     : ").append(Strings.format(totalMfe)).append("\n");
         builder.append("BarCount : ").append(Strings.format(barCount)).append("\n");
         builder.append("PositionCount : ").append(Strings.format(totalTradeCount)).append("\n");
         return builder.toString();

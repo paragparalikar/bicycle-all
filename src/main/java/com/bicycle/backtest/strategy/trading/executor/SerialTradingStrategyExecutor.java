@@ -34,7 +34,7 @@ public class SerialTradingStrategyExecutor implements TradingStrategyExecutor {
                 long previousBarDate = 0;
                 for(int index = 0; index < cursor.size(); index++) {
                     cursor.advance(bar);
-                    if(symbolCache.contains(bar.symbol().token())) {
+                    if(null != bar.symbol() && symbolCache.contains(bar.symbol().token())) {
                         indicatorCache.onBar(bar);
                         definition.getTradingStrategies().forEach(tradingStrategy -> tradingStrategy.onBar(bar));
                         if(previousBarDate != bar.date()) reportCache.compute(previousBarDate = bar.date());

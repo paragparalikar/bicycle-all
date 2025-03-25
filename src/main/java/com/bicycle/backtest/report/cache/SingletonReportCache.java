@@ -7,6 +7,8 @@ import com.bicycle.core.symbol.Symbol;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class SingletonReportCache implements ReportCache {
 

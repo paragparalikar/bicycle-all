@@ -36,7 +36,6 @@ public class TradingStrategyReportCache implements ReportCache {
     @Override
     public void compute(long date) {
         for(Report report : cache.values()) report.compute(date);
-        System.out.println(new Date(date));
     }
     
 }

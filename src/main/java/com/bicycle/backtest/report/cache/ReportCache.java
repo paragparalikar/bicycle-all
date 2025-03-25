@@ -14,7 +14,7 @@ public interface ReportCache {
     void clear();
     
     void compute(long date);
-    
+
     Report get(Symbol symbol, MockTradingStrategy tradingStrategy);
 
 }
