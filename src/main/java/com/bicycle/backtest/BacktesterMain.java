@@ -4,15 +4,9 @@ import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.Report;
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.report.cache.SingletonReportCache;
-import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
-import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.backtest.strategy.trading.builder.RuleTradingStrategyBuilder;
 import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
-import com.bicycle.core.indicator.IndicatorCache;
-import com.bicycle.core.order.Order;
 import com.bicycle.core.order.OrderType;
-import com.bicycle.core.rule.Rule;
-import com.bicycle.core.rule.WaitForBarCountRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.WaitForBarCountRuleBuilder;
 import com.bicycle.core.rule.builder.sugar.LiquidityRuleBuilder;
@@ -23,7 +17,6 @@ import com.bicycle.util.IntegerIterator;
 import com.bicycle.util.ResetableIterator;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class BacktesterMain {
@@ -59,33 +52,5 @@ public class BacktesterMain {
         final Report report = singletonReportCache.getReport();
         final BaseReport baseReport = report.unwrap(BaseReport.class);
         System.out.println(baseReport);
-    }
-
-
-    private static TradingStrategyBuilder createTradingStrategyBuilder(){
-        return new TradingStrategyBuilder() {
-            @Override
-            public List<MockTradingStrategy> build(float slippagePercentage, IndicatorCache indicatorCache, ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {
-                return List.of(buildDefault(slippagePercentage, indicatorCache, reportCache, positionSizingStrategy));
-            }
-
-            @Override
-            public MockTradingStrategy buildDefault(float slippagePercentage, IndicatorCache cache, ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {
-                final OrderType entryOrderType = OrderType.BUY;
-                final Rule liquidityRule = cache.close().multipliedBy(cache.volume()).greaterThan(10000000)
-                        .and(cache.close().greaterThan(10.0f));
-                final Rule entryRule = liquidityRule.and(cache.close().greaterThanOrEquals(cache.highest(cache.high(), 5)));
-                final Rule exitRule = new WaitForBarCountRule(15, cache);
-                return MockTradingStrategy.builder()
-                        .slippagePercentage(slippagePercentage)
-                        .entryRule(entryRule)
-                        .exitRule(exitRule)
-                        .entryOrderType(entryOrderType)
-                        .reportCache(reportCache)
-                        .atrIndicator(cache.atr(10))
-                        .positionSizingStrategy(positionSizingStrategy)
-                        .build();
-            }
-        };
     }
 }

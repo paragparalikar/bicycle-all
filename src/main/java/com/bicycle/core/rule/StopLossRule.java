@@ -21,12 +21,7 @@ public class StopLossRule implements Rule {
         }
         return false;
     }
-    
-    @Override
-    public float distance(Rule rule) {
-        return Math.abs(atrMultiple - StopLossRule.class.cast(rule).atrMultiple);
-    }
-    
+
     @Override
     public String toString() {
         return "stopLoss(" + atrMultiple + ")";

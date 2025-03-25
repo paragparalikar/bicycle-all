@@ -18,11 +18,6 @@ public class MonthOfYearRule implements Rule {
 
     private final IndicatorCache indicatorCache;
     private final Collection<Month> months;
-    
-    @Override
-    public float distance(Rule rule) {
-        return 0; // Not required
-    }
 
     @Override
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {

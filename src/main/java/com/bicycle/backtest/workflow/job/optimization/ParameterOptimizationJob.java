@@ -46,13 +46,7 @@ public class ParameterOptimizationJob implements OptimizationJob {
     
     private double score(Report report, List<Report> reports, List<Double> performanceScores) {
         double sum = 0;
-        for(int index = 0; index < reports.size(); index++) {
-            final Report other = reports.get(index);
-            if(report == other) continue;
-            final double performanceScore = performanceScores.get(index);
-            final double distance = report.getTradingStrategy().distance(other.getTradingStrategy());
-            sum += performanceScore / Math.exp(distance);
-        }
+
         return sum;
     }
 

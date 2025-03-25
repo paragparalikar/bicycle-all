@@ -45,11 +45,6 @@ public class MeanDeviationIndicator implements Indicator {
         }
         cache.set(bar.symbol(), bar.timeframe(), value);
     }
-    
-    @Override
-    public float distance(Indicator other) {
-        return Math.abs(barCount - MeanDeviationIndicator.class.cast(other).barCount);
-    }
 
     @Override
     public void clear() {

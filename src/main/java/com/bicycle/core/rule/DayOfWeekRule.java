@@ -18,11 +18,6 @@ public class DayOfWeekRule implements Rule {
 
     private final IndicatorCache indicatorCache;
     private final Collection<DayOfWeek> days;
-    
-    @Override
-    public float distance(Rule rule) {
-        return 0; // Not required
-    }
 
     @Override
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {

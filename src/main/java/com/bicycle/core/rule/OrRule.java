@@ -16,12 +16,6 @@ public class OrRule implements Rule {
     }
     
     @Override
-    public float distance(Rule rule) {
-        final OrRule orRule = OrRule.class.cast(rule);
-        return left.distance(orRule.left) + right.distance(orRule.right);
-    }
-    
-    @Override
     public String toString() {
         return toText(left, right);
     }

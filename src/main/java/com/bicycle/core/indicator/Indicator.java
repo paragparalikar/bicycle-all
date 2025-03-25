@@ -12,8 +12,6 @@ public interface Indicator extends BarListener {
     
     void clear();
     
-    default float distance(Indicator other) { return 0; }
-    
     float getValue(Symbol symbol, Timeframe timeframe);
     
     default Rule equals(Indicator other) {

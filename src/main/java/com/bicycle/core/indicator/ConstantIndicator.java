@@ -19,12 +19,7 @@ public class ConstantIndicator implements Indicator {
     public float getValue(Symbol symbol, Timeframe timeframe) {
         return value;
     }
-    
-    @Override
-    public float distance(Indicator other) {
-        return Math.abs(value - ConstantIndicator.class.cast(other).value);
-    }
-    
+
     @Override
     public void onBar(Bar bar) { }
     

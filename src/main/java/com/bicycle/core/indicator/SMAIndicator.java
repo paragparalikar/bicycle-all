@@ -58,12 +58,7 @@ public class SMAIndicator implements Indicator {
     public float getValue(Symbol symbol, Timeframe timeframe) {
         return cache.get(symbol, timeframe);
     }
-    
-    @Override
-    public float distance(Indicator other) {
-        return Math.abs(barCount - SMAIndicator.class.cast(other).barCount);
-    }
-    
+
     @Override
     public void clear() {
         cache.clear();

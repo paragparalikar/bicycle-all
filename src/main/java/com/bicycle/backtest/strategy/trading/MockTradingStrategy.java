@@ -89,10 +89,6 @@ public class MockTradingStrategy implements BarListener {
         return false;
     }
     
-    public float distance(MockTradingStrategy tradingStrategy) {
-        return entryRule.distance(tradingStrategy.entryRule) + exitRule.distance(tradingStrategy.exitRule);
-    }
-    
     public void addEntryRule(Rule rule) {
         entryRule = entryRule.and(rule);
     }

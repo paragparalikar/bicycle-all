@@ -43,12 +43,7 @@ public class RisingStrengthIndicator implements Indicator {
     public float getValue(Symbol symbol, Timeframe timeframe) {
         return cache.get(symbol, timeframe);
     }
-    
-    @Override
-    public float distance(Indicator other) {
-        return Math.abs(barCount - RisingStrengthIndicator.class.cast(other).barCount);
-    }
-    
+
     @Override
     public void clear() {
         cache.clear();

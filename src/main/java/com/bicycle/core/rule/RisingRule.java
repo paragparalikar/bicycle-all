@@ -39,13 +39,6 @@ public class RisingRule implements Rule {
     }
     
     @Override
-    public float distance(Rule rule) {
-        final RisingRule risingRule = RisingRule.class.cast(rule);
-        return Math.abs(barCount - risingRule.barCount) + Math.abs(minStrength - risingRule.minStrength)
-            + indicator.distance(risingRule.indicator);
-    }
-
-    @Override
     public String toString() {
         return "(" + indicator + " rising " + barCount + "," + minStrength + ")";
     }

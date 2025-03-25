@@ -6,8 +6,6 @@ import com.bicycle.core.symbol.Symbol;
 
 public interface Rule {
     
-    float distance(Rule rule);
-    
     boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade);
     
     default Rule and(Rule other) {

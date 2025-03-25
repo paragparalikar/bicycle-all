@@ -15,13 +15,7 @@ public class CombinedIndicator implements Indicator {
     public float getValue(Symbol symbol, Timeframe timeframe) {
         return operator.apply(left.getValue(symbol, timeframe), right.getValue(symbol, timeframe));
     }
-    
-    @Override
-    public float distance(Indicator other) {
-        final CombinedIndicator combinedIndicator = CombinedIndicator.class.cast(other);
-        return left.distance(combinedIndicator.left) + right.distance(combinedIndicator.right);
-    }
-    
+
     @Override
     public void onBar(Bar bar) { }
     

@@ -23,13 +23,7 @@ public class EqualsRule implements Rule {
         
         return Numbers.truncate(firstValue, 3) == Numbers.truncate(secondValue, 3);
     }
-    
-    @Override
-    public float distance(Rule rule) {
-        final EqualsRule equalsRule = EqualsRule.class.cast(rule);
-        return first.distance(equalsRule.first) + second.distance(equalsRule.second);
-    }
-    
+
     @Override
     public String toString() {
         return toText(first, second);

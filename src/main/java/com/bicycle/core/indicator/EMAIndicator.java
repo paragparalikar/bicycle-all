@@ -10,12 +10,7 @@ public class EMAIndicator extends AbstractEMAIndicator {
         this.barCount = barCount;
         this.indicator = indicator;
     }
-    
-    @Override
-    public float distance(Indicator other) {
-        return Math.abs(barCount - EMAIndicator.class.cast(other).barCount);
-    }
-    
+
     @Override
     public String toString() {
         return toText(barCount, indicator);

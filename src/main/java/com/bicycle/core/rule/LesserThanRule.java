@@ -24,12 +24,6 @@ public class LesserThanRule implements Rule {
     }
     
     @Override
-    public float distance(Rule rule) {
-        final LesserThanRule other = LesserThanRule.class.cast(rule);
-        return first.distance(other.first) + second.distance(other.second);
-    }
-    
-    @Override
     public String toString() {
         return toText(first, second);
     }

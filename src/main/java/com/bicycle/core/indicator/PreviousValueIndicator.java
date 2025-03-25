@@ -38,11 +38,6 @@ public class PreviousValueIndicator implements Indicator {
     }
     
     @Override
-    public float distance(Indicator other) {
-        return Math.abs(barCount - PreviousValueIndicator.class.cast(other).barCount);
-    }
-    
-    @Override
     public void clear() {
         cache.clear();
     }

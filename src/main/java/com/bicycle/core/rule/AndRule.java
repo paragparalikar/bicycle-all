@@ -16,12 +16,6 @@ public class AndRule implements Rule {
     }
     
     @Override
-    public float distance(Rule rule) {
-        final AndRule andRule = AndRule.class.cast(rule);
-        return left.distance(andRule.left) + right.distance(andRule.right);
-    }
-    
-    @Override
     public String toString() {
         return toText(left, right);
     }

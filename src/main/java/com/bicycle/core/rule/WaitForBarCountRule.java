@@ -27,12 +27,7 @@ public class WaitForBarCountRule implements Rule {
         }
         return false;
     }
-    
-    @Override
-    public float distance(Rule rule) {
-        return Math.abs(barCount - WaitForBarCountRule.class.cast(rule).barCount);
-    }
-    
+
     @Override
     public String toString() {
         return toText(barCount);

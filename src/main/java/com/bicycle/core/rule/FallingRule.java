@@ -37,13 +37,6 @@ public class FallingRule implements Rule {
         }
         return minStrength <= ((float)count) / ((float)barCount);
     }
-
-    @Override
-    public float distance(Rule rule) {
-        final FallingRule fallingRule = FallingRule.class.cast(rule);
-        return Math.abs(barCount - fallingRule.barCount) + Math.abs(minStrength - fallingRule.minStrength)
-            + indicator.distance(fallingRule.indicator);
-    }
     
     @Override
     public String toString() {

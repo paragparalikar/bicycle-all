@@ -26,12 +26,7 @@ public class WaitForTimeRule implements Rule {
         }
         return false;
     }
-    
-    @Override
-    public float distance(Rule rule) {
-        return Math.abs(time - WaitForTimeRule.class.cast(rule).time);
-    }
-    
+
     @Override
     public String toString() {
         return "after " + time + " millis";

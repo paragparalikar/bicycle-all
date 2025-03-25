@@ -21,12 +21,7 @@ public class StopGainRule implements Rule {
         }
         return false;
     }
-    
-    @Override
-    public float distance(Rule rule) {
-        return Math.abs(atrMultiple - StopGainRule.class.cast(rule).atrMultiple);
-    }
-    
+
     @Override
     public String toString() {
         return "stopGain(" + atrMultiple + ")";
