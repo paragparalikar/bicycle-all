@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class YahooSymbolMapper {
 
-    private final YahooExchangeMapper yahooExchangeMapper;
-    
     public String toYahooSymbol(Symbol symbol) {
-        return symbol.code() + yahooExchangeMapper.toYahooExchange(symbol.exchange());
+        return symbol.code();
     }
     
 }

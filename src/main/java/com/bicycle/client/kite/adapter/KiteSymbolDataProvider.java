@@ -10,6 +10,8 @@ import com.bicycle.core.symbol.provider.FilteredSymbolDataProvider;
 import com.bicycle.core.symbol.provider.SymbolDataProvider;
 import com.bicycle.util.Strings;
 import java.util.Collection;
+import java.util.function.Predicate;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -31,14 +33,38 @@ public class KiteSymbolDataProvider implements SymbolDataProvider {
                 .map(kiteMapper::toSymbol)
                 .toList();
     }
-    
-    public SymbolDataProvider equitiesOnly() {
-        return new FilteredSymbolDataProvider(this, symbol -> 
-            Strings.hasText(symbol.name())
-            && !symbol.code().endsWith("BEES")
-            && !"INDICES".equalsIgnoreCase(symbol.segment())
-            && !symbol.name().endsWith("ETF")
-            && !symbol.name().contains("-"));
+
+
+
+    public Predicate<Symbol> excludeEtf(){
+        return symbol -> !symbol.code().endsWith("BEES")
+                && !symbol.code().contains("ETF")
+                && !symbol.name().contains("ETF");
+    }
+
+    public Predicate<Symbol> excludeGoldBonds(){
+        return symbol -> !symbol.code().endsWith("-GB");
+    }
+
+    public Predicate<Symbol> excludeTreasuryBills(){
+        return symbol -> !symbol.code().equals("-TB");
+    }
+
+    public Predicate<Symbol> indices(){
+        return symbol -> "INDICES".equalsIgnoreCase(symbol.segment());
+    }
+
+    public Predicate<Symbol> equities(){
+        return symbol -> "EQ".equals(symbol.type());
+    }
+
+    public Predicate<Symbol> equitiesAndIndices(){
+        return symbol -> !symbol.code().contains("BEES")
+                && !symbol.name().contains("BEES")
+                && !symbol.code().contains("ETF")
+                && !symbol.name().contains("ETF")
+                && !symbol.code().contains("-")
+                && !symbol.name().contains("-");
     }
 
 }

@@ -60,7 +60,7 @@ public class Backtester {
     @Builder.Default private final boolean limitPositionSizeToAvailableMargin = false;
     @Builder.Default private final ReportBuilder.Customizer reportBuilderCustomizer = BaseReport::builder;
     @Builder.Default private final ReportCache.Customizer reportCacheCustomizer = SingletonReportCache::new;
-    private final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
+    private final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider();
     private final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
     private final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
 

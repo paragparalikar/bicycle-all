@@ -11,6 +11,6 @@ public final class YahooMapper {
     @Delegate private final YahooBarMapper yahooBarMapper = new YahooBarMapper();
     @Delegate private final YahooExchangeMapper yahooExchangeMapper = new YahooExchangeMapper();
     @Delegate private final YahooTimeframeMapper yahooTimeframeMapper = new YahooTimeframeMapper();
-    @Delegate private final YahooSymbolMapper yahooSymbolMapper = new YahooSymbolMapper(yahooExchangeMapper);
+    @Delegate private final YahooSymbolMapper yahooSymbolMapper = new YahooSymbolMapper();
     
 }

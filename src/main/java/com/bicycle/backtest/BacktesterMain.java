@@ -2,17 +2,14 @@ package com.bicycle.backtest;
 
 import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.Report;
-import com.bicycle.backtest.report.ReportBuilder;
 import com.bicycle.backtest.report.cache.ReportCache;
-import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.report.cache.TradingStrategyReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
 import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
 import com.bicycle.backtest.strategy.trading.builder.RuleTradingStrategyBuilder;
-import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
-import com.bicycle.backtest.strategy.trading.executor.SerialTradingStrategyExecutor;
+import com.bicycle.backtest.strategy.trading.executor.ParallelTradingStrategyExecutor;
 import com.bicycle.backtest.strategy.trading.executor.TradingStrategyExecutor;
 import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
 import com.bicycle.core.bar.Timeframe;
@@ -33,7 +30,6 @@ import com.bicycle.util.Dates;
 import com.bicycle.util.FloatIterator;
 import com.bicycle.util.IntegerIterator;
 import com.bicycle.util.ResetableIterator;
-import lombok.Builder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,7 +49,7 @@ public class BacktesterMain {
         final boolean limitPositionSizeToAvailableMargin = false;
         final long startDate = Dates.toEpochMillis(2014, 1, 1);
         final long endDate = Dates.toEpochMillis(2023, 12, 31);
-        final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider().equitiesOnly();
+        final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider();
         final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
         final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
         final RuleTradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder();
@@ -67,18 +63,20 @@ public class BacktesterMain {
         tradingStrategyDefinition.getSymbols().addAll(symbols);
         tradingStrategyDefinition.getTimeframes().add(timeframe);
         tradingStrategyDefinition.getTradingStrategies().addAll(tradingStrategies);
-        final TradingStrategyExecutor tradingStrategyExecutor = new SerialTradingStrategyExecutor(barRepository, cache);
+        final TradingStrategyExecutor tradingStrategyExecutor = new ParallelTradingStrategyExecutor(barRepository, cache);
         tradingStrategyExecutor.execute(tradingStrategyDefinition, startDate, endDate, reportCache);
 
+        final List<Report> reports = getSortedReports(reportCache, tradingStrategies);
         final Map<String, List<Double>> parameters = ResetableIterator.toMap(tradingStrategyBuilder.getIterators());
-        final TradingStrategyReportCache tradingStrategyReportCache = TradingStrategyReportCache.class.cast(reportCache);
-        final Map<String, Report> reports = tradingStrategyReportCache.findAll().stream().collect(Collectors.toMap(report -> report.getTradingStrategy().toString(), Function.identity()));
 
-        for(int index = 0; index < tradingStrategies.size(); index++){
-            //final Double barCount = parameters.get("barCount").get(index);
-            final Report report = reports.get(tradingStrategies.get(index).toString());
-            System.out.println(report);
-        }
+
+    }
+
+    private static List<Report> getSortedReports(ReportCache reportCache, List<MockTradingStrategy> tradingStrategies){
+        final TradingStrategyReportCache tradingStrategyReportCache = TradingStrategyReportCache.class.cast(reportCache);
+        final Map<String, Report> reportMap = tradingStrategyReportCache.findAll().stream()
+                .collect(Collectors.toMap(report -> report.getTradingStrategy().toString(), Function.identity()));
+        return tradingStrategies.stream().map(Object::toString).map(reportMap::get).toList();
     }
 
     private static RuleTradingStrategyBuilder createTradingStrategyBuilder(){

@@ -47,7 +47,7 @@ public class BarDataDownloader {
             for (Timeframe timeframe : timeframes) {
                 symbolRepository.findByExchange(exchange).parallelStream()
                         .forEach(symbol -> download(symbol, timeframe, 0));
-                if(barRepository instanceof FileSystemBarRepository fileSystemBarRepository){
+                if(Exchange.NSE.equals(exchange) && barRepository instanceof FileSystemBarRepository fileSystemBarRepository){
                     fileSystemBarRepository.transpose(exchange, timeframe);
                 }
             }

@@ -25,7 +25,7 @@ public class KiteSymbolMapper {
                 .segment(kiteSymbol.getSegment())
                 .tickSize(kiteSymbol.getTickSize())
                 .lotSize(kiteSymbol.getLotSize())
-                .name(kiteSymbol.getName())
+                .name(null == kiteSymbol.getName() ? kiteSymbol.getTradingsymbol() : kiteSymbol.getName())
                 .type(kiteSymbol.getType())
                 .build();
         cache(kiteSymbol.getInstrumentToken(), symbol);

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import lombok.SneakyThrows;
+
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -14,7 +16,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lombok.SneakyThrows;
 
 public class YahooHttpApi {
     private static final LocalTime NSE_START_TIME = LocalTime.of(9, 15);
@@ -25,12 +26,11 @@ public class YahooHttpApi {
     
     @SneakyThrows
     public List<YahooBar> getBars(String symbol, String timeframe, ZonedDateTime from, ZonedDateTime to) {
-        final StringBuilder builder = new StringBuilder(URL_BASE + URL_CHART + symbol);
-        builder.append("?period1=").append(String.valueOf(from.toEpochSecond()));
-        builder.append("&period2=").append(String.valueOf(to.toEpochSecond()));
-        builder.append("&interval=").append(timeframe);
-        builder.append("&includePrePost=false&events=&lang=en-US&region=US");
-        final HttpURLConnection con = (HttpURLConnection) new URL(builder.toString()).openConnection();
+        String builder = URL_BASE + URL_CHART + symbol + "?period1=" + String.valueOf(from.toEpochSecond()) +
+                "&period2=" + String.valueOf(to.toEpochSecond()) +
+                "&interval=" + timeframe +
+                "&includePrePost=false&events=&lang=en-US&region=US";
+        final HttpURLConnection con = (HttpURLConnection) URI.create(builder).toURL().openConnection();
         
         con.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
         con.setRequestProperty("Accept","*/*");
@@ -78,6 +78,13 @@ public class YahooHttpApi {
         }
         
         return bars;
+    }
+
+    public static void main(String[] args) {
+        final YahooHttpApi api = new YahooHttpApi();
+        final ZonedDateTime now = ZonedDateTime.now();
+        final List<YahooBar> bars = api.getBars("CL=F", "1d", now.minusYears(3), now);
+        bars.forEach(System.out::println);
     }
 
 }
