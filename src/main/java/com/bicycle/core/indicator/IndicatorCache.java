@@ -5,13 +5,14 @@ import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.BarSeries;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Symbol;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.RequiredArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-import lombok.RequiredArgsConstructor;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 @RequiredArgsConstructor
 public class IndicatorCache implements BarListener {
@@ -33,7 +34,7 @@ public class IndicatorCache implements BarListener {
     }
     
     public void clear() {
-        indicators.forEach(indicator -> indicator.clear());
+        indicators.forEach(Indicator::clear);
         barSeriesCache.values().forEach(BarSeries::clear);
     }
     
@@ -68,6 +69,31 @@ public class IndicatorCache implements BarListener {
     public Indicator high() {
         return computeIfAbsent(HighPriceIndicator.toText(), 
                 () -> cache(new HighPriceIndicator(symbolCount, timeframeCount)));
+    }
+
+    public Indicator upperWick(){
+        return computeIfAbsent(UpperWickIndicator.toText(),
+                () -> cache(new UpperWickIndicator(symbolCount, timeframeCount)));
+    }
+
+    public Indicator lowerWick(){
+        return computeIfAbsent(LowerWickIndicator.toText(),
+                () -> cache(new LowerWickIndicator(symbolCount, timeframeCount)));
+    }
+
+    public Indicator body(){
+        return computeIfAbsent(BodyIndicator.toText(),
+                () -> cache(new BodyIndicator(symbolCount, timeframeCount)));
+    }
+
+    public Indicator spread(){
+        return computeIfAbsent(SpreadIndicator.toText(),
+                () -> cache(new SpreadIndicator(symbolCount, timeframeCount)));
+    }
+
+    public Indicator ibs(){
+        return computeIfAbsent(IBSIndicator.toText(),
+                () -> cache(new IBSIndicator(symbolCount, timeframeCount)));
     }
     
     public Indicator close() {

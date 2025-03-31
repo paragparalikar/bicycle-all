@@ -53,6 +53,14 @@ public interface Indicator extends BarListener {
     default Rule lesserThanOrEquals(float value) {
         return lesserThan(value).or(equals(value));
     }
+
+    default Indicator min(Indicator indicator) {
+        return new CombinedIndicator(this, indicator, IndicatorOperator.MIN);
+    }
+
+    default Indicator max(Indicator indicator) {
+        return new CombinedIndicator(this, indicator, IndicatorOperator.MAX);
+    }
     
     default Indicator plus(Indicator indicator) {
         return new CombinedIndicator(this, indicator, IndicatorOperator.PLUS);

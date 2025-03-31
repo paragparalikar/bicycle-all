@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class IndicatorOperator implements BinaryOperator<Float> {
-    
-    public static final IndicatorOperator PLUS = new IndicatorOperator("+", (left, right) -> left + right);
+
+    public static final IndicatorOperator MIN = new IndicatorOperator("min", Float::min);
+    public static final IndicatorOperator MAX = new IndicatorOperator("max", Float::max);
+    public static final IndicatorOperator PLUS = new IndicatorOperator("+", Float::sum);
     public static final IndicatorOperator MINUS = new IndicatorOperator("-", (left, right) -> left - right);
     public static final IndicatorOperator MULTIPLIED_BY = new IndicatorOperator("*", (left, right) -> left * right);
     public static final IndicatorOperator DIVIDED_BY = new IndicatorOperator("/", (left, right) -> left / right);
