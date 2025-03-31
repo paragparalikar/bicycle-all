@@ -1,37 +1,21 @@
 package com.bicycle.backtest;
 
-import com.bicycle.backtest.executor.BacktestExecutor;
-import com.bicycle.backtest.executor.ParallelBacktestExecutor;
-import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.Report;
 import com.bicycle.backtest.report.cache.ReportCache;
+import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.report.cache.TradingStrategyReportCache;
-import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
-import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.backtest.strategy.trading.builder.RuleTradingStrategyBuilder;
-import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
-import com.bicycle.core.bar.Timeframe;
-import com.bicycle.core.bar.repository.BarRepository;
-import com.bicycle.core.bar.repository.FileSystemBarRepository;
-import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.WaitForBarCountRuleBuilder;
 import com.bicycle.core.rule.builder.sugar.LiquidityRuleBuilder;
 import com.bicycle.core.rule.builder.sugar.LongBarCountCloseBreakoutRuleBuilder;
-import com.bicycle.core.symbol.Exchange;
-import com.bicycle.core.symbol.Symbol;
-import com.bicycle.core.symbol.provider.SymbolDataProvider;
-import com.bicycle.core.symbol.repository.CacheSymbolRepository;
-import com.bicycle.core.symbol.repository.SymbolRepository;
-import com.bicycle.util.Dates;
 import com.bicycle.util.FloatIterator;
 import com.bicycle.util.IntegerIterator;
 import com.bicycle.util.ResetableIterator;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,32 +24,9 @@ import java.util.stream.Collectors;
 public class BacktesterMain {
 
     public static void main(String[] args) {
-        final float initialMargin = 100000f;
-        final Exchange exchange = Exchange.NSE;
-        final Timeframe timeframe = Timeframe.D;
-        final float percentagePositionSize = 2.0f;
-        final float slippagePercentage = 0.5f;
-        final boolean limitPositionSizeToAvailableMargin = false;
-        final long startDate = Dates.toEpochMillis(2014, 1, 1);
-        final long endDate = Dates.toEpochMillis(2023, 12, 31);
-        final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider();
-        final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
-        final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
         final RuleTradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder();
-
-        final Collection<Symbol> symbols = symbolRepository.findByExchange(exchange);
-        final TradingStrategyReportCache reportCache = new TradingStrategyReportCache(initialMargin, startDate, endDate, BaseReport.builder(symbols.size()));
-        final IndicatorCache cache = new IndicatorCache(symbols.size(), 1);
-        final PositionSizingStrategy positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
-        final List<MockTradingStrategy> tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, cache, reportCache, positionSizingStrategy);
-        final Backtest tradingStrategyDefinition = null;
-        final BacktestExecutor tradingStrategyExecutor = new ParallelBacktestExecutor(barRepository, cache);
-        tradingStrategyExecutor.execute(tradingStrategyDefinition, startDate, endDate, reportCache);
-
-        final List<Report> reports = getSortedReports(reportCache, tradingStrategies);
-        final Map<String, List<Double>> parameters = ResetableIterator.toMap(tradingStrategyBuilder.getIterators());
-
-
+        final ReportCache reportCache = Backtest.of(tradingStrategyBuilder).run();
+        System.out.println(SingletonReportCache.class.cast(reportCache).getReport());
     }
 
     private static List<Report> getSortedReports(ReportCache reportCache, List<MockTradingStrategy> tradingStrategies){

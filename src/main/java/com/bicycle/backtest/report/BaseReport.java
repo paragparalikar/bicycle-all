@@ -109,16 +109,23 @@ public class BaseReport implements Report {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder(tradingStrategy.toString()).append("\n");
-        builder.append(String.format("Equity initial : %10.2f, max : %10.2f, final : %10.2f\n", initialMargin, maxEquity, equity));
-        builder.append("CAGR          : ").append(Strings.format(getCAGR())).append("\n");
-        builder.append("Exposure      : ").append(Strings.format(exposure)).append("\n");
-        builder.append("RAR           : ").append(Strings.format(getCAGR() / exposure)).append("\n");
-        builder.append("AvgDD         : ").append(Strings.format(avgDrawdown)).append("\n");
-        builder.append("MaxDD         : ").append(Strings.format(maxDrawdown)).append("\n");
-        builder.append("Total MFE     : ").append(Strings.format(totalMfe)).append("\n");
-        builder.append("BarCount : ").append(Strings.format(barCount)).append("\n");
-        builder.append("PositionCount : ").append(Strings.format(totalTradeCount)).append("\n");
+        final StringBuilder builder = new StringBuilder("Base backtest report").append("\n");
+        builder.append("Trading Strategy    : ").append(tradingStrategy.toString()).append("\n");
+        builder.append("Initial Equity      : ").append(String.format("%8.2f", initialMargin)).append("\n");
+        builder.append("Maximum Equity      : ").append(String.format("%8.2f", maxEquity)).append("\n");
+        builder.append("Minimum Equity      : ").append(String.format("%8.2f", minEquity)).append("\n");
+        builder.append("Final Equity        : ").append(String.format("%8.2f", equity)).append("\n");
+        builder.append("Duration            : ").append(String.format("%4.2f years", years)).append("\n");
+        builder.append("CAGR                : ").append(Strings.format(getCAGR())).append("\n");
+        builder.append("Exposure            : ").append(Strings.format(exposure)).append("\n");
+        builder.append("RAR                 : ").append(Strings.format(getCAGR() / exposure)).append("\n");
+        builder.append("AvgDD               : ").append(Strings.format(avgDrawdown)).append("\n");
+        builder.append("MaxDD               : ").append(Strings.format(maxDrawdown)).append("\n");
+        builder.append("Total MFE           : ").append(Strings.format(totalMfe)).append("\n");
+        builder.append("BarCount            : ").append(Strings.format(barCount)).append("\n");
+        builder.append("Open Trades         : ").append(Strings.format(openTrades.size())).append("\n");
+        builder.append("Closed Trades       : ").append(Strings.format(totalTradeCount - openTrades.size())).append("\n");
+        builder.append("Total Trades        : ").append(Strings.format(totalTradeCount)).append("\n");
         return builder.toString();
     }
     

@@ -20,17 +20,20 @@ import com.bicycle.core.symbol.provider.SymbolDataProvider;
 import com.bicycle.core.symbol.repository.CacheSymbolRepository;
 import com.bicycle.core.symbol.repository.SymbolRepository;
 import com.bicycle.util.Dates;
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Accessors(chain = true, fluent = false)
 public class Backtest {
 
-    public static Backtest of(Set<Symbol> symbols, TradingStrategyBuilder tradingStrategyBuilder){
-        return new Backtest().setTradingStrategyBuilder(tradingStrategyBuilder).setSymbols(symbols);
+    public static Backtest of(TradingStrategyBuilder tradingStrategyBuilder){
+        return new Backtest().setTradingStrategyBuilder(tradingStrategyBuilder);
     }
 
     private Collection<Symbol> symbols;
@@ -56,6 +59,24 @@ public class Backtest {
     private int reportCacheOptions = ReportCache.SINGLETON;
     private Set<Timeframe> timeframes = Set.of(Timeframe.D);
 
+    private void printInfo(){
+        System.out.printf("""
+                Running backtest with below config
+                Exchange            : %s
+                Timeframes          : %s
+                Symbols             : %d
+                Trading Strategies  : %d
+                Start Date          : %s
+                End Date            : %s
+                Initial Margin      : %8.2f
+                Slippage(%%)         : %3.2f
+                Position Size(%%)    : %3.2f
+                Limit Margin        : %b
+                %n""", exchange.name(), timeframes.stream().map(Enum::name).collect(Collectors.joining(",")),
+                symbols.size(), tradingStrategies.size(), Dates.format(startDate), Dates.format(endDate),
+                initialMargin, slippagePercentage, percentagePositionSize, limitPositionSizeToAvailableMargin);
+    }
+
     public ReportCache run(){
         if(null == symbolDataProvider) symbolDataProvider = new KiteSymbolDataProvider();
         if(null == symbolRepository) symbolRepository = new CacheSymbolRepository(symbolDataProvider);
@@ -65,6 +86,7 @@ public class Backtest {
         if(null == positionSizingStrategy) positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
         reportCache = ReportCache.of(initialMargin, startDate, endDate, reportBuilder, reportCacheOptions);
         tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, indicatorCache, reportCache, positionSizingStrategy);
+        printInfo();
         backtestExecutor.execute(this, startDate, endDate, reportCache);
         return reportCache;
     }
