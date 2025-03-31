@@ -5,7 +5,7 @@ import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.core.symbol.Symbol;
 
 public interface Report {
-    
+
     void clear();
     
     void compute(long date);

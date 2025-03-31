@@ -1,5 +1,7 @@
 package com.bicycle.backtest;
 
+import com.bicycle.backtest.executor.BacktestExecutor;
+import com.bicycle.backtest.executor.ParallelBacktestExecutor;
 import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.Report;
 import com.bicycle.backtest.report.cache.ReportCache;
@@ -7,10 +9,7 @@ import com.bicycle.backtest.report.cache.TradingStrategyReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
 import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
-import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
 import com.bicycle.backtest.strategy.trading.builder.RuleTradingStrategyBuilder;
-import com.bicycle.backtest.strategy.trading.executor.ParallelTradingStrategyExecutor;
-import com.bicycle.backtest.strategy.trading.executor.TradingStrategyExecutor;
 import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.repository.BarRepository;
@@ -59,11 +58,8 @@ public class BacktesterMain {
         final IndicatorCache cache = new IndicatorCache(symbols.size(), 1);
         final PositionSizingStrategy positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
         final List<MockTradingStrategy> tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, cache, reportCache, positionSizingStrategy);
-        final TradingStrategyDefinition tradingStrategyDefinition = new TradingStrategyDefinition(exchange);
-        tradingStrategyDefinition.getSymbols().addAll(symbols);
-        tradingStrategyDefinition.getTimeframes().add(timeframe);
-        tradingStrategyDefinition.getTradingStrategies().addAll(tradingStrategies);
-        final TradingStrategyExecutor tradingStrategyExecutor = new ParallelTradingStrategyExecutor(barRepository, cache);
+        final Backtest tradingStrategyDefinition = null;
+        final BacktestExecutor tradingStrategyExecutor = new ParallelBacktestExecutor(barRepository, cache);
         tradingStrategyExecutor.execute(tradingStrategyDefinition, startDate, endDate, reportCache);
 
         final List<Report> reports = getSortedReports(reportCache, tradingStrategies);

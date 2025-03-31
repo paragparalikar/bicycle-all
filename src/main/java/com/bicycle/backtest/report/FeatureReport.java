@@ -1,30 +1,52 @@
 package com.bicycle.backtest.report;
 
 import com.bicycle.backtest.MockPosition;
-import com.bicycle.backtest.indicator.IndicatorGroupManager;
+import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
+import com.bicycle.core.bar.Timeframe;
+import com.bicycle.core.symbol.Symbol;
 import com.bicycle.util.pool.ObjectPool;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.experimental.Delegate;
+
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.SneakyThrows;
-import lombok.experimental.Delegate;
 
 public class FeatureReport implements Report, AutoCloseable {
 
+    public static ReportBuilder builder(ReportBuilder delegate, FeatureCaptor featureCaptor){
+        return new FeatureReportBuilder(delegate, featureCaptor);
+    }
+
+    public static class FeatureCaptor {
+
+        public int count() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public void capture(Symbol symbol, Timeframe timeframe, ByteBuffer byteBuffer) {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
+
     private final RandomAccessFile file;
     @Delegate private final Report delegate;
-    private final IndicatorGroupManager indicatorGroupManager;
+    private final FeatureCaptor featureCaptor;
     private final Map<Integer, ByteBuffer> cache = new HashMap<>();
     private final ObjectPool<ByteBuffer> pool;
 
-    public FeatureReport(Report delegate, IndicatorGroupManager indicatorGroupManager) {
+    public FeatureReport(Report delegate, FeatureCaptor featureCaptor) {
         this.delegate = delegate;
         this.file = createFile();
-        this.indicatorGroupManager = indicatorGroupManager;
-        final int byteBufferSize = (indicatorGroupManager.count() + 1) * Float.BYTES;
+        this.featureCaptor = featureCaptor;
+        final int byteBufferSize = (featureCaptor.count() + 1) * Float.BYTES;
         this.pool = new ObjectPool<>(() -> ByteBuffer.allocate(byteBufferSize));
     }
     
@@ -39,7 +61,7 @@ public class FeatureReport implements Report, AutoCloseable {
     public void open(MockPosition trade) {
         final ByteBuffer byteBuffer = pool.aquire();
         byteBuffer.clear();
-        indicatorGroupManager.capture(trade.getSymbol(), trade.getTimeframe(), byteBuffer);
+        featureCaptor.capture(trade.getSymbol(), trade.getTimeframe(), byteBuffer);
         cache.put(trade.getId(), byteBuffer);
     }
 
@@ -53,7 +75,7 @@ public class FeatureReport implements Report, AutoCloseable {
     }
     
     public int getFeatureCount() {
-        return indicatorGroupManager.count();
+        return featureCaptor.count();
     }
     
     @Override
@@ -69,5 +91,18 @@ public class FeatureReport implements Report, AutoCloseable {
         cache.clear();
         pool.clear();
     }
-    
+
+}
+
+@RequiredArgsConstructor
+class FeatureReportBuilder implements ReportBuilder {
+
+    private final ReportBuilder delegateReportBuilder;
+    private final FeatureReport.FeatureCaptor featureCaptor;
+
+    @Override
+    public Report build(float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
+        final Report delegateReport = delegateReportBuilder.build(initialMargin, tradingStrategy, startDate, endDate);
+        return new FeatureReport(delegateReport, featureCaptor);
+    }
 }

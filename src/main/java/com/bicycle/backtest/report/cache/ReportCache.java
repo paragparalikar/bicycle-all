@@ -7,6 +7,18 @@ import com.bicycle.core.symbol.Symbol;
 
 public interface ReportCache {
 
+    int SINGLETON = 0, SYMBOL = 1, TRADING_STRATEGY = 2;
+
+    static ReportCache of(float initialMargin, long startDate, long endDate, ReportBuilder reportBuilder, int options){
+        return switch (options) {
+            case SINGLETON -> new SingletonReportCache(initialMargin, startDate, endDate, reportBuilder);
+            case (SYMBOL | TRADING_STRATEGY) -> new SymbolTradingStrategyReportCache(initialMargin, reportBuilder, startDate, endDate);
+            case TRADING_STRATEGY -> new TradingStrategyReportCache(initialMargin, startDate, endDate, reportBuilder);
+            default -> throw new UnsupportedOperationException();
+        };
+    }
+
+    @Deprecated
     public interface Customizer {
         ReportCache customize(float initialMargin, long startDate, long endDate, ReportBuilder reportBuilder);
     }

@@ -1,15 +1,15 @@
-package com.bicycle.backtest.strategy.trading.executor;
+package com.bicycle.backtest.executor;
 
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
-import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
+import com.bicycle.backtest.Backtest;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Cursor;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.symbol.Symbol;
-import java.time.ZonedDateTime;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,22 +22,22 @@ import it.unimi.dsi.fastutil.ints.IntList;
 
 @Builder
 @RequiredArgsConstructor
-public class ParallelTradingStrategyExecutor implements TradingStrategyExecutor {
+public class ParallelBacktestExecutor implements BacktestExecutor {
 
     private final BarRepository barRepository;
     private final IndicatorCache indicatorCache;
     
     @Override
     @SneakyThrows
-    public void execute(TradingStrategyDefinition definition, long startDate,
-            long endDate, ReportCache reportCache) {
+    public void execute(Backtest backtest, long startDate,
+                        long endDate, ReportCache reportCache) {
         reportCache.clear();
         indicatorCache.clear();
         final Bar bar = new Bar();
-        final List<TradingStrategyRunner> runners = createRunners(bar, definition.getTradingStrategies());
-        final IntList symbolCache = new IntArrayList(definition.getSymbols().stream().map(Symbol::token).toList());
-        for(Timeframe timeframe : definition.getTimeframes()) {
-            try(Cursor<Bar> cursor = barRepository.get(definition.getExchange(), timeframe, startDate, endDate)){
+        final List<TradingStrategyRunner> runners = createRunners(bar, backtest.getTradingStrategies());
+        final IntList symbolCache = new IntArrayList(backtest.getSymbols().stream().map(Symbol::token).toList());
+        for(Timeframe timeframe : backtest.getTimeframes()) {
+            try(Cursor<Bar> cursor = barRepository.get(backtest.getExchange(), timeframe, startDate, endDate)){
                 long previousBarDate = 0;
                 for(int index = 0; index < cursor.size(); index++) {
                     cursor.advance(bar);

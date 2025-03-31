@@ -1,5 +1,7 @@
 package com.bicycle.backtest;
 
+import com.bicycle.backtest.executor.BacktestExecutor;
+import com.bicycle.backtest.executor.SerialBacktestExecutor;
 import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.Report;
 import com.bicycle.backtest.report.ReportBuilder;
@@ -11,10 +13,7 @@ import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
 import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
-import com.bicycle.backtest.strategy.trading.TradingStrategyDefinition;
 import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
-import com.bicycle.backtest.strategy.trading.executor.SerialTradingStrategyExecutor;
-import com.bicycle.backtest.strategy.trading.executor.TradingStrategyExecutor;
 import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.repository.BarRepository;
@@ -71,17 +70,14 @@ public class Backtester {
         final IndicatorCache cache = new IndicatorCache(symbols.size(), 1);
         final PositionSizingStrategy positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
         final List<MockTradingStrategy> tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, cache, reportCache, positionSizingStrategy);
-        final TradingStrategyDefinition tradingStrategyDefinition = createTradingStrategyDefinition(symbols, tradingStrategies);
-        final TradingStrategyExecutor tradingStrategyExecutor = new SerialTradingStrategyExecutor(barRepository, cache);
-        tradingStrategyExecutor.execute(tradingStrategyDefinition, startDate, endDate, reportCache);
+        final Backtest backtest = createTradingStrategyDefinition(symbols, tradingStrategies);
+        final BacktestExecutor tradingStrategyExecutor = new SerialBacktestExecutor(barRepository, cache);
+        tradingStrategyExecutor.execute(backtest, startDate, endDate, reportCache);
         return reportCache;
     }
 
-    private TradingStrategyDefinition createTradingStrategyDefinition(Collection<Symbol> symbols, List<MockTradingStrategy> tradingStrategies){
-        final TradingStrategyDefinition definition = new TradingStrategyDefinition(exchange);
-        definition.getSymbols().addAll(symbols);
-        definition.getTimeframes().add(timeframe);
-        definition.getTradingStrategies().addAll(tradingStrategies);
+    private Backtest createTradingStrategyDefinition(Collection<Symbol> symbols, List<MockTradingStrategy> tradingStrategies){
+        final Backtest definition = null;
         return definition;
     }
 
