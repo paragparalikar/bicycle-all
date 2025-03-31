@@ -2,7 +2,7 @@ package com.bicycle.backtest;
 
 import com.bicycle.backtest.executor.BacktestExecutor;
 import com.bicycle.backtest.executor.SerialBacktestExecutor;
-import com.bicycle.backtest.report.CallbackReport;
+import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.ReportBuilder;
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
@@ -36,15 +36,13 @@ public class Backtest {
         return new Backtest().setTradingStrategyBuilder(tradingStrategyBuilder);
     }
 
-    private Collection<Symbol> symbols;
     private ReportCache reportCache;
-    private ReportBuilder reportBuilder;
+    private Collection<Symbol> symbols;
     private BarRepository barRepository;
     private IndicatorCache indicatorCache;
     private SymbolRepository symbolRepository;
     private BacktestExecutor backtestExecutor;
     private SymbolDataProvider symbolDataProvider;
-    private CallbackReport.Callback callback;
     private TradingStrategyBuilder tradingStrategyBuilder;
     private PositionSizingStrategy positionSizingStrategy;
     private List<MockTradingStrategy> tradingStrategies;
@@ -55,7 +53,7 @@ public class Backtest {
     private long startDate = Dates.toEpochMillis(2010, 1, 1);
     private long endDate = Dates.toEpochMillis(2019, 12, 31);
     private Exchange exchange = Exchange.NSE;
-    private int reportBuilderOptions = ReportBuilder.BASE;
+    private ReportBuilder reportBuilder = BaseReport::new;
     private int reportCacheOptions = ReportCache.SINGLETON;
     private Set<Timeframe> timeframes = Set.of(Timeframe.D);
 
@@ -94,8 +92,6 @@ public class Backtest {
     public Backtest setSymbols(Collection<Symbol> symbols){
         this.symbols = symbols;
         indicatorCache = new IndicatorCache(symbols.size(), 1);
-        reportBuilder = ReportBuilder.of(symbols.size(), reportBuilderOptions);
-        if(null != callback) reportBuilder = CallbackReport.builder(callback, reportBuilder);
         return this;
     }
 

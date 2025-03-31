@@ -3,7 +3,6 @@ package com.bicycle.backtest.report;
 import com.bicycle.backtest.MockPosition;
 import com.bicycle.backtest.report.CallbackReport.Callback;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
-import java.time.ZonedDateTime;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
@@ -13,10 +12,10 @@ public class CallbackReport implements Report {
     
     public interface Callback {
         default void onCompute(long date, Report report) {}
-        default void onOpen(MockPosition trade, Report report) {}
-        default void onClose(MockPosition trade, Report report) {}
+        default void onOpen(MockPosition position, Report report) {}
+        default void onClose(MockPosition position, Report report) {}
     }
-    
+
     public static ReportBuilder builder(Callback callback, ReportBuilder delegateBuilder) {
         return new CallbackReportBuilder(callback, delegateBuilder);
     }

@@ -8,9 +8,8 @@ import lombok.Getter;
 @Getter
 public class FullReport extends BaseReport {
     
-    public static ReportBuilder builder(int symbolCount) {
-        return (initialMargin, tradingStrategy, startDate, endDate) -> 
-        new FullReport(symbolCount, initialMargin, tradingStrategy, startDate, endDate);
+    public static ReportBuilder builder() {
+        return FullReport::new;
     }
     
     private float profitFactor, payoffRatio, expectancy;
@@ -23,8 +22,8 @@ public class FullReport extends BaseReport {
     
     @Getter(value = AccessLevel.NONE) private int winningStreak, losingStreak;
 
-    public FullReport(int symbolCount, float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
-        super(symbolCount, initialMargin, tradingStrategy, startDate, endDate);
+    public FullReport(float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
+        super(initialMargin, tradingStrategy, startDate, endDate);
     }
     
     @Override
