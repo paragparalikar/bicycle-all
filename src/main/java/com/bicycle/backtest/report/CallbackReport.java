@@ -11,7 +11,7 @@ import lombok.experimental.Delegate;
 @RequiredArgsConstructor
 public class CallbackReport implements Report {
     
-    public static interface Callback {
+    public interface Callback {
         default void onCompute(long date, Report report) {}
         default void onOpen(MockPosition trade, Report report) {}
         default void onClose(MockPosition trade, Report report) {}

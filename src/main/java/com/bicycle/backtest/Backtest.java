@@ -2,7 +2,7 @@ package com.bicycle.backtest;
 
 import com.bicycle.backtest.executor.BacktestExecutor;
 import com.bicycle.backtest.executor.SerialBacktestExecutor;
-import com.bicycle.backtest.report.FeatureReport;
+import com.bicycle.backtest.report.CallbackReport;
 import com.bicycle.backtest.report.ReportBuilder;
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PercentageInitialMarginPositionSizingStrategy;
@@ -44,7 +44,7 @@ public class Backtest {
     private SymbolRepository symbolRepository;
     private BacktestExecutor backtestExecutor;
     private SymbolDataProvider symbolDataProvider;
-    private FeatureReport.FeatureCaptor featureCaptor;
+    private CallbackReport.Callback callback;
     private TradingStrategyBuilder tradingStrategyBuilder;
     private PositionSizingStrategy positionSizingStrategy;
     private List<MockTradingStrategy> tradingStrategies;
@@ -94,7 +94,8 @@ public class Backtest {
     public Backtest setSymbols(Collection<Symbol> symbols){
         this.symbols = symbols;
         indicatorCache = new IndicatorCache(symbols.size(), 1);
-        reportBuilder = ReportBuilder.of(symbols.size(), featureCaptor, reportBuilderOptions);
+        reportBuilder = ReportBuilder.of(symbols.size(), reportBuilderOptions);
+        if(null != callback) reportBuilder = CallbackReport.builder(callback, reportBuilder);
         return this;
     }
 
