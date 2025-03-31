@@ -33,7 +33,7 @@ public class Backtest {
         return new Backtest().setTradingStrategyBuilder(tradingStrategyBuilder).setSymbols(symbols);
     }
 
-    private Set<Symbol> symbols;
+    private Collection<Symbol> symbols;
     private ReportCache reportCache;
     private ReportBuilder reportBuilder;
     private BarRepository barRepository;
@@ -60,6 +60,7 @@ public class Backtest {
         if(null == symbolDataProvider) symbolDataProvider = new KiteSymbolDataProvider();
         if(null == symbolRepository) symbolRepository = new CacheSymbolRepository(symbolDataProvider);
         if(null == barRepository) barRepository = new FileSystemBarRepository(symbolRepository);
+        if(null == symbols) setSymbols(symbolRepository.findByExchange(exchange));
         if(null == backtestExecutor) backtestExecutor = new SerialBacktestExecutor(barRepository, indicatorCache);
         if(null == positionSizingStrategy) positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
         reportCache = ReportCache.of(initialMargin, startDate, endDate, reportBuilder, reportCacheOptions);
@@ -68,7 +69,7 @@ public class Backtest {
         return reportCache;
     }
 
-    public Backtest setSymbols(Set<Symbol> symbols){
+    public Backtest setSymbols(Collection<Symbol> symbols){
         this.symbols = symbols;
         indicatorCache = new IndicatorCache(symbols.size(), 1);
         reportBuilder = ReportBuilder.of(symbols.size(), featureCaptor, reportBuilderOptions);
