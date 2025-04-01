@@ -4,6 +4,7 @@ import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.BarSeries;
 import com.bicycle.core.bar.Timeframe;
+import com.bicycle.core.rule.Rule;
 import com.bicycle.core.symbol.Symbol;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.RequiredArgsConstructor;
@@ -204,6 +205,11 @@ public class IndicatorCache implements BarListener {
     public Indicator fallingStrength(Indicator indicator, int barCount) {
         return computeIfAbsent(FallingStrengthIndicator.toText(indicator, barCount), 
                 () -> cache(new FallingStrengthIndicator(symbolCount, timeframeCount, indicator, barCount)));
+    }
+
+    public Indicator ruleSatisfiedCount(Rule rule, int barCount){
+        return computeIfAbsent(RuleSatisfiedCountIndicator.toText(rule, barCount),
+                () -> cache(new RuleSatisfiedCountIndicator(symbolCount, timeframeCount, rule, barCount)));
     }
     
     private Indicator computeIfAbsent(String text, Supplier<Indicator> supplier) {
