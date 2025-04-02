@@ -49,10 +49,13 @@ public class RuleSatisfiedCountIndicator implements Indicator {
         series.add(value);
 
         float result = Float.NaN;
-        if(barCount < series.size()) {
+        if(barCount == series.size()){
+            result = sum;
+        } else if(barCount < series.size()) {
             sum -= series.get(barCount);
+            result = sum;
         }
-        result = sum;
+
         sumCache.set(bar.symbol(), bar.timeframe(), sum);
         cache.set(bar.symbol(), bar.timeframe(), result);
     }
