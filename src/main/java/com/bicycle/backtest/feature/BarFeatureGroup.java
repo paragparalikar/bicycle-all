@@ -59,10 +59,19 @@ public class BarFeatureGroup implements FeatureGroup {
         final Indicator bodyEMA = cache.prev(cache.ema(cache.body(), barCount), 1);
 
         indicators.add(cache.typicalPrice().minus(tpEMA).dividedBy(atrIndicator));
+        indicators.add(cache.typicalPrice().minus(highEMA).dividedBy(atrIndicator));
+        indicators.add(cache.typicalPrice().minus(lowEMA).dividedBy(atrIndicator));
         indicators.add(cache.open().minus(openEMA).dividedBy(atrIndicator));
         indicators.add(cache.high().minus(highEMA).dividedBy(atrIndicator));
+        indicators.add(cache.high().minus(tpEMA).dividedBy(atrIndicator));
+        indicators.add(cache.high().minus(lowEMA).dividedBy(atrIndicator));
         indicators.add(cache.low().minus(lowEMA).dividedBy(atrIndicator));
+        indicators.add(cache.low().minus(tpEMA).dividedBy(atrIndicator));
+        indicators.add(cache.low().minus(highEMA).dividedBy(atrIndicator));
         indicators.add(cache.close().minus(closeEMA).dividedBy(atrIndicator));
+        indicators.add(cache.close().minus(highEMA).dividedBy(atrIndicator));
+        indicators.add(cache.close().minus(lowEMA).dividedBy(atrIndicator));
+        indicators.add(cache.close().minus(tpEMA).dividedBy(atrIndicator));
         indicators.add(cache.volume().dividedBy(volumeEMA));
         indicators.add(cache.spread().dividedBy(spreadEMA));
         indicators.add(cache.upperWick().dividedBy(upperWickEMA));

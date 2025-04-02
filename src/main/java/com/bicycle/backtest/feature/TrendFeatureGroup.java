@@ -14,6 +14,7 @@ public class TrendFeatureGroup  implements FeatureGroup {
 
     public TrendFeatureGroup(IndicatorCache cache, int... barCounts){
         for(int barCount : barCounts){
+            final Indicator ema = cache.ema(cache.typicalPrice(), barCount);
 
         }
     }
