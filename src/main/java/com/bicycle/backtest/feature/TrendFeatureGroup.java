@@ -12,10 +12,24 @@ public class TrendFeatureGroup  implements FeatureGroup {
 
     private final List<Indicator> indicators = new ArrayList<>();
 
-    public TrendFeatureGroup(IndicatorCache cache, int... barCounts){
-        for(int barCount : barCounts){
-            final Indicator ema = cache.ema(cache.typicalPrice(), barCount);
-
+    public TrendFeatureGroup(IndicatorCache cache, float multiplier, int... barCounts){
+        for(int shortBarCount : barCounts){
+            final int longBarCount = (int) (shortBarCount * multiplier);
+            final Indicator shortEMA = cache.prev(cache.ema(cache.typicalPrice(), shortBarCount), 1);
+            final Indicator longEMA = cache.prev(cache.ema(cache.typicalPrice(), longBarCount), 1);
+            indicators.add(cache.risingStrength(shortEMA, shortBarCount));
+            indicators.add(cache.risingStrength(longEMA, shortBarCount));
+            indicators.add(cache.typicalPrice().dividedBy(shortEMA));
+            indicators.add(cache.typicalPrice().dividedBy(longEMA));
+            indicators.add(cache.close().dividedBy(shortEMA));
+            indicators.add(cache.close().dividedBy(longEMA));
+            indicators.add(shortEMA.dividedBy(longEMA));
+            indicators.add(cache.rsi(cache.close(), shortBarCount));
+            indicators.add(cache.risingStrength(cache.rsi(cache.close(), shortBarCount), shortBarCount));
+            indicators.add(cache.prev(cache.rsi(cache.close(), shortBarCount), 1));
+            indicators.add(cache.cci(shortBarCount).dividedBy(shortEMA));
+            indicators.add(cache.risingStrength(cache.cci(shortBarCount), shortBarCount));
+            indicators.add(cache.prev(cache.cci(shortBarCount), 1).dividedBy(shortEMA));
         }
     }
 

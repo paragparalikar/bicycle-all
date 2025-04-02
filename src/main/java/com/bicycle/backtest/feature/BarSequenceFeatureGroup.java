@@ -17,7 +17,6 @@ public class BarSequenceFeatureGroup implements FeatureGroup {
             indicators.add(cache.risingStrength(cache.high(), barCount));
             indicators.add(cache.risingStrength(cache.low(), barCount));
             indicators.add(cache.risingStrength(cache.close(), barCount));
-            indicators.add(cache.risingStrength(cache.volume(), barCount));
             indicators.add(cache.risingStrength(cache.typicalPrice(), barCount));
             indicators.add(cache.risingStrength(cache.trueRange(), barCount));
             indicators.add(cache.ruleSatisfiedStrength(cache.open().lesserThanOrEquals(cache.close()), barCount)); // Green bar
