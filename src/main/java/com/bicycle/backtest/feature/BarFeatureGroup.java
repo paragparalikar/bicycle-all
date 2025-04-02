@@ -12,9 +12,7 @@ public class BarFeatureGroup implements FeatureGroup {
 
     private final List<Indicator> indicators = new ArrayList<>();
 
-    public BarFeatureGroup(IndicatorCache cache){
-        // Here we are assuming N = 5 for 1 week worth of trading data
-        final int barCount = 5;
+    public BarFeatureGroup(IndicatorCache cache, int barCount){
         final Indicator atrIndicator = cache.prev(cache.atr(barCount), 1);
 
         // Features for current bar

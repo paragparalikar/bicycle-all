@@ -207,9 +207,9 @@ public class IndicatorCache implements BarListener {
                 () -> cache(new FallingStrengthIndicator(symbolCount, timeframeCount, indicator, barCount)));
     }
 
-    public Indicator ruleSatisfiedCount(Rule rule, int barCount){
-        return computeIfAbsent(RuleSatisfiedCountIndicator.toText(rule, barCount),
-                () -> cache(new RuleSatisfiedCountIndicator(symbolCount, timeframeCount, rule, barCount)));
+    public Indicator ruleSatisfiedStrength(Rule rule, int barCount){
+        return computeIfAbsent(RuleSatisfiedStrengthIndicator.toText(rule, barCount),
+                () -> cache(new RuleSatisfiedStrengthIndicator(symbolCount, timeframeCount, rule, barCount)));
     }
     
     private Indicator computeIfAbsent(String text, Supplier<Indicator> supplier) {

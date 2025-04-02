@@ -10,7 +10,7 @@ import com.bicycle.core.rule.Rule;
 import com.bicycle.core.symbol.Symbol;
 import com.bicycle.util.FloatSeries;
 
-public class RuleSatisfiedCountIndicator implements Indicator {
+public class RuleSatisfiedStrengthIndicator implements Indicator {
 
     private final Rule rule;
     private final int barCount;
@@ -18,7 +18,7 @@ public class RuleSatisfiedCountIndicator implements Indicator {
     private final ValueCache sumCache;
     private final SeriesCache seriesCache;
 
-    public RuleSatisfiedCountIndicator(int symbolCount, int timeframeCount, Rule rule, int barCount) {
+    public RuleSatisfiedStrengthIndicator(int symbolCount, int timeframeCount, Rule rule, int barCount) {
         this.rule = rule;
         this.barCount = barCount;
         this.cache = new SmartValueCache(symbolCount, timeframeCount);
@@ -57,7 +57,7 @@ public class RuleSatisfiedCountIndicator implements Indicator {
         }
 
         sumCache.set(bar.symbol(), bar.timeframe(), sum);
-        cache.set(bar.symbol(), bar.timeframe(), result);
+        cache.set(bar.symbol(), bar.timeframe(), result / barCount);
     }
 
     @Override
@@ -66,6 +66,6 @@ public class RuleSatisfiedCountIndicator implements Indicator {
     }
 
     public static String toText(Rule rule, int barCount) {
-        return "ruleSatisfiedCount(" + rule.toString() + "," + barCount + ")";
+        return "ruleSatisfiedStrength(" + rule.toString() + "," + barCount + ")";
     }
 }

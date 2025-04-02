@@ -12,15 +12,17 @@ public class BarSequenceFeatureGroup implements FeatureGroup {
 
     private final List<Indicator> indicators = new ArrayList<>();
 
-    public BarSequenceFeatureGroup(IndicatorCache cache){
-        final int barCount = 5;
-        indicators.add(cache.risingStrength(cache.high(), barCount));
-        indicators.add(cache.risingStrength(cache.low(), barCount));
-        indicators.add(cache.risingStrength(cache.close(), barCount));
-        indicators.add(cache.risingStrength(cache.volume(), barCount));
-        indicators.add(cache.risingStrength(cache.typicalPrice(), barCount));
-        indicators.add(cache.risingStrength(cache.trueRange(), barCount));
-
+    public BarSequenceFeatureGroup(IndicatorCache cache, int... barCounts){
+        for(int barCount : barCounts){
+            indicators.add(cache.risingStrength(cache.high(), barCount));
+            indicators.add(cache.risingStrength(cache.low(), barCount));
+            indicators.add(cache.risingStrength(cache.close(), barCount));
+            indicators.add(cache.risingStrength(cache.volume(), barCount));
+            indicators.add(cache.risingStrength(cache.typicalPrice(), barCount));
+            indicators.add(cache.risingStrength(cache.trueRange(), barCount));
+            indicators.add(cache.ruleSatisfiedStrength(cache.open().lesserThanOrEquals(cache.close()), barCount)); // Green bar
+            indicators.add(cache.ruleSatisfiedStrength(cache.typicalPrice().lesserThanOrEquals(cache.close()), barCount)); // Bullish bar at close
+        }
     }
 
     @Override
