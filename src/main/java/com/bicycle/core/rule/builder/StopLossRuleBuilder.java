@@ -4,26 +4,28 @@ import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.Rule;
 import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.util.FloatIterator;
+import com.bicycle.util.IntegerIterator;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class StopLossRuleBuilder implements RuleBuilder {
-    
-    private final FloatIterator floatIterator;
+
+    private final FloatIterator atrMultipleIterator;
+    private final IntegerIterator barCountIterator;
 
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return new StopLossRule(floatIterator.value());
+        return new StopLossRule(atrMultipleIterator.value(), indicatorCache.atr(barCountIterator.value()));
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
-        return new StopLossRule(floatIterator.defaultValue());
+        return new StopLossRule(atrMultipleIterator.defaultValue(), indicatorCache.atr(barCountIterator.defaultValue()));
     }
 
     @Override
     public String toString() {
-        return "stopLoss(" + floatIterator.toValueString() + ")";
+        return "stopLoss(" + atrMultipleIterator.toValueString() + ")";
     }
     
 }

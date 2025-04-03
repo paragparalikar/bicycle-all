@@ -4,24 +4,27 @@ import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.Rule;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.Function;
+
 @RequiredArgsConstructor
 public class SingletonRuleBuilder implements RuleBuilder {
     
-    private final Rule rule;
+    private Rule rule;
+    private final Function<IndicatorCache, Rule> builder;
 
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return rule;
+        return buildDefault(indicatorCache);
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
-        return rule;
+        return null == rule ? rule = builder.apply(indicatorCache) : rule;
     }
     
     @Override
     public String toString() {
-        return rule.toString();
+        return String.valueOf(rule);
     }
 
 }

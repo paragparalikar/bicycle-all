@@ -16,7 +16,7 @@ public class Position {
     protected final OrderType entryType;
     protected long entryDate;
     protected int entryQuantity;
-    protected float entryPrice, entryAtr, ltp;
+    protected float entryPrice, ltp;
     protected long exitDate;
     protected float exitPrice;
     protected int exitQuantity;

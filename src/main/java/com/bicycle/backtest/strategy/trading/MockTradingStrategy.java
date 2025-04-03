@@ -56,7 +56,6 @@ public class MockTradingStrategy implements BarListener {
             }
         }
         if(null == openTrade && null != (openTrade = tryEnter(bar))) {
-            openTrade.setEntryAtr(atrIndicator.getValue(bar.symbol(), bar.timeframe()));
             reportCache.get(bar.symbol(), this).open(openTrade);
         }
     }
