@@ -43,7 +43,7 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
             final Rule entryRule = entryRuleBuilder.build(indicatorCache);
             final Rule exitRule = exitRuleBuilder.build(indicatorCache);
             tradingStrategies.add(new MockTradingStrategy(slippagePercentage, entryRule, exitRule, 
-                    entryOrderType, reportCache, indicatorCache.atr(14), positionSizingStrategy));
+                    entryOrderType, reportCache, positionSizingStrategy));
         }while(ResetableIterator.advance(0, iterators));
         
         return tradingStrategies;
@@ -52,7 +52,7 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
     @Override
     public MockTradingStrategy buildDefault(float slippagePercentage, IndicatorCache indicatorCache, ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {
         return new MockTradingStrategy(slippagePercentage, entryRuleBuilder.buildDefault(indicatorCache), exitRuleBuilder.buildDefault(indicatorCache),
-                entryOrderType, reportCache, indicatorCache.atr(14), positionSizingStrategy);
+                entryOrderType, reportCache, positionSizingStrategy);
     }
     
     public RuleTradingStrategyBuilder addEntryRuleBuilder(RuleBuilder ruleBuilder) {

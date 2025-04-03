@@ -1,0 +1,8 @@
+1. All Indicators must implement onTick method, FloatSeries to implement set method.
+This required so that the indicator values are available during the bar, not just at close of the bar.
+Caller should call onTick method for every tick, while onBar method must be called only when the bar is changed.
+PreviousValueIndicator and other indicators which store the past values, will set the delegate indicator value in series.
+(This will need FloatSeries to implement set() method that allows overwriting current value, instead of inserting in new slot)
+When onBar method is called the indicator will add the delegate indicator value to the series.
+
+2. At startup, mae and mfe values for all positions must be updated for trailing stop to work

@@ -27,7 +27,7 @@ public class SingleTradingStrategyBuilder implements TradingStrategyBuilder {
                 .and(cache.rsi(cache.close(), 2).lesserThan(10));
         final Rule exitRule = cache.close().greaterThan(cache.sma(cache.close(), 5));
         return new MockTradingStrategy(slippagePercentage,
-                entryRule, exitRule, OrderType.BUY, reportCache, cache.atr(14), positionSizingStrategy);
+                entryRule, exitRule, OrderType.BUY, reportCache, positionSizingStrategy);
     }
 
 }

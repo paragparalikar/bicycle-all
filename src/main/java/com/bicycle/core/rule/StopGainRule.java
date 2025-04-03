@@ -16,9 +16,14 @@ public class StopGainRule implements Rule {
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {
         if(null == trade) return false;
         final float atrValue = atrIndicator.getValue(symbol, timeframe);
-        final float maxAllowedFavorableExcursion = atrValue * atrMultiple;
-        final float atrFavorableExcursion = trade.getEntryType().multiplier() * (trade.getLtp() - trade.getEntryPrice()) / atrValue;
-        return atrFavorableExcursion >= maxAllowedFavorableExcursion;
+        final float allowedMfe = atrValue * atrMultiple;
+        if(trade.getMfe() >= allowedMfe){
+            // Below line is there because we are calling tryEntry and tryExit only on close.
+            // If the rule is satisfied before the close of the bar, we would act in real trading, instead of waiting for the close.
+            trade.setExitPrice(trade.getEntryPrice() + trade.getEntryType().multiplier() * allowedMfe);
+            return true;
+        }
+        return false;
     }
 
     @Override

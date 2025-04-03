@@ -10,17 +10,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StopLossRuleBuilder implements RuleBuilder {
 
+    private final boolean trail;
     private final FloatIterator atrMultipleIterator;
     private final IntegerIterator barCountIterator;
 
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return new StopLossRule(atrMultipleIterator.value(), indicatorCache.atr(barCountIterator.value()));
+        return new StopLossRule(trail, atrMultipleIterator.value(), indicatorCache.atr(barCountIterator.value()));
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
-        return new StopLossRule(atrMultipleIterator.defaultValue(), indicatorCache.atr(barCountIterator.defaultValue()));
+        return new StopLossRule(trail, atrMultipleIterator.defaultValue(), indicatorCache.atr(barCountIterator.defaultValue()));
     }
 
     @Override

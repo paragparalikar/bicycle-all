@@ -1,6 +1,7 @@
 package com.bicycle.core.position;
 
 import com.bicycle.client.kite.utils.Constant;
+import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.symbol.Symbol;
@@ -11,15 +12,17 @@ import java.util.Date;
 @Data
 public class Position {
 
-    protected final Symbol symbol;
-    protected final Timeframe timeframe;
-    protected final OrderType entryType;
-    protected long entryDate;
-    protected int entryQuantity;
-    protected float entryPrice, ltp;
-    protected long exitDate;
-    protected float exitPrice;
-    protected int exitQuantity;
+    private final Symbol symbol;
+    private final Timeframe timeframe;
+    private final OrderType entryType;
+    private long entryDate;
+    private int entryQuantity;
+    private float entryPrice;
+    private long exitDate;
+    private float exitPrice;
+    private int exitQuantity;
+    private float mfe, mae, ltp; // TODO Update MAE and MFE at startup for all positions trailing stops to work
+    private int barCount, mfeBarCount, maeBarCount;
     
     public void enter(long entryDate, int entryQuantity, float entryPrice) {
         this.entryDate = entryDate;
@@ -31,6 +34,32 @@ public class Position {
         this.exitDate = exitDate;
         this.exitQuantity = exitQuantity;
         this.exitPrice = exitPrice;
+    }
+
+    public void onBar(Bar bar) {
+        barCount++;
+        ltp = bar.close();
+    }
+
+    public void onPrice(float price) {
+        ltp = price;
+        final float excursion = entryType.multiplier() * (price - entryPrice);
+        if(excursion > mfe) {
+            mfe = excursion;
+            mfeBarCount = barCount;
+        }
+        if(excursion < mae) {
+            mae = excursion;
+            maeBarCount = barCount;
+        }
+    }
+
+    public float getEtd() {
+        return Math.abs(entryPrice + mfe - exitPrice);
+    }
+
+    public int getEtdBarCount() {
+        return barCount - mfeBarCount;
     }
     
     public float getClosePercentProfitLoss() {
