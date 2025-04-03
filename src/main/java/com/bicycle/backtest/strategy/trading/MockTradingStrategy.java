@@ -80,7 +80,7 @@ public class MockTradingStrategy implements BarListener {
     
     public boolean tryExit(Bar bar, MockPosition trade) {
         if(exitRule.isSatisfied(trade.getSymbol(), trade.getTimeframe(), trade)) {
-            if(0 == trade.getExitPrice()) trade.setExitPrice(bar.close());
+            if(0 == trade.getExitPrice()) trade.setExitPrice(trade.getLtp());
             final float exitPrice = trade.getExitPrice() * (100 + entryOrderType.complement().multiplier() * slippagePercentage) / 100;
             trade.exit(bar.date(), trade.getEntryQuantity(), exitPrice);
             return true;

@@ -16,13 +16,9 @@ public class StopGainRule implements Rule {
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {
         if(null == trade) return false;
         final float atrValue = atrIndicator.getValue(symbol, timeframe);
-        final float maxAllowedExcursion = atrValue * atrMultiple;
+        final float maxAllowedFavorableExcursion = atrValue * atrMultiple;
         final float atrFavorableExcursion = trade.getEntryType().multiplier() * (trade.getLtp() - trade.getEntryPrice()) / atrValue;
-        if(atrFavorableExcursion >= maxAllowedExcursion) {
-            trade.setExitPrice(trade.getLtp());
-            return true;
-        }
-        return false;
+        return atrFavorableExcursion >= maxAllowedFavorableExcursion;
     }
 
     @Override

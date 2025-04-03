@@ -18,11 +18,7 @@ public class StopLossRule implements Rule {
         final float atrValue = atrIndicator.getValue(symbol, timeframe);
         final float maxAllowedAdverseExcursion = atrValue * atrMultiple;
         final float atrAdverseExcursion = trade.getEntryType().multiplier() * (trade.getEntryPrice() - trade.getLtp()) / atrValue;
-        if(atrAdverseExcursion >= maxAllowedAdverseExcursion) {
-            trade.setExitPrice(trade.getLtp());
-            return true;
-        }
-        return false;
+        return atrAdverseExcursion >= maxAllowedAdverseExcursion;
     }
 
     @Override
