@@ -46,7 +46,8 @@ public class MockTradingStrategy implements BarListener, TickListener {
     public void onBar(Bar bar) {
         Report report = reportCache.get(bar.symbol(), this);
         MockPosition openPosition = report.getOpenPosition(bar.symbol());
-        onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
+        // Add forceLtp to tryEnter and tryExit methods so that we do not take any trades between previous bar's close and current bar's open
+        //onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
         if(bar.close() > bar.open()){
             onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
             onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
