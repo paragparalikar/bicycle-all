@@ -1,0 +1,50 @@
+package com.bicycle.backtest.feature.writer;
+
+import com.bicycle.util.Constant;
+import lombok.SneakyThrows;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CsvFileFeatureWriter implements FeatureWriter {
+
+    private boolean areHeadersWritten;
+    private final BufferedWriter writer;
+    private final OutputStream outputStream;
+
+    public CsvFileFeatureWriter(final String name) throws IOException {
+        final Path path = Paths.get(Constant.HOME, "reports", name);
+        if(null != path.getParent()) Files.createDirectories(path.getParent());
+        this.outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        this.writer = new BufferedWriter(new OutputStreamWriter(this.outputStream));
+    }
+
+
+    @Override
+    @SneakyThrows
+    public void writeHeaders(List<String> headers) {
+        if(areHeadersWritten) throw new IllegalStateException("Headers have been already written");
+        writer.write(String.join(",", headers));
+        areHeadersWritten = true;
+    }
+
+    @Override
+    @SneakyThrows
+    public void writeValues(List<Float> values) {
+        writer.write(values.stream().map(String::valueOf).collect(Collectors.joining(",")));
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.outputStream.close();
+        this.writer.close();
+    }
+}

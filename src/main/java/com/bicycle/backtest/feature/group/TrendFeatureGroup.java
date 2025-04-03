@@ -1,4 +1,4 @@
-package com.bicycle.backtest.feature;
+package com.bicycle.backtest.feature.group;
 
 import com.bicycle.backtest.MockPosition;
 import com.bicycle.core.indicator.Indicator;

@@ -1,6 +1,7 @@
 package com.bicycle.backtest.feature;
 
 import com.bicycle.backtest.MockPosition;
+import com.bicycle.backtest.feature.group.*;
 import com.bicycle.backtest.report.CallbackReport;
 import com.bicycle.backtest.report.Report;
 import com.bicycle.core.indicator.IndicatorCache;
