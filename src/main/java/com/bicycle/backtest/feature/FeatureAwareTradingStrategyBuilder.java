@@ -9,6 +9,7 @@ import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.builder.RuleBuilder;
+import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +20,19 @@ public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilde
     private MockTradingStrategy tradingStrategy;
     private final RuleBuilder entryRuleBuilder, exitRuleBuilder;
 
-    public FeatureAwareTradingStrategyBuilder(OrderType entryOrderType, FeatureCaptor entryFeatureCaptor,
-                                              FeatureCaptor exitFeatureCaptor, FeatureWriter featureWriter,
-                                              RuleBuilder entryRuleBuilder, RuleBuilder exitRuleBuilder){
-        final List<String> headers = new ArrayList<>();
-        entryFeatureCaptor.captureHeaders(headers);
-        exitFeatureCaptor.captureHeaders(headers);
-        featureWriter.writeHeaders(headers);
-
-        final List<Float> values = new ArrayList<>();
+    @Builder
+    public FeatureAwareTradingStrategyBuilder(OrderType entryOrderType,
+                                              RuleBuilder entryRuleBuilder,
+                                              RuleBuilder exitRuleBuilder,
+                                              FeatureCaptor.Builder entryFeatureCaptorBuilder,
+                                              FeatureCaptor.Builder exitFeatureCaptorBuilder,
+                                              FeatureWriter featureWriter){
         this.entryOrderType = entryOrderType;
-        this.entryRuleBuilder = new FeatureCaptorRuleBuilder(values, entryRuleBuilder, entryFeatureCaptor);
-        this.exitRuleBuilder = new FeatureWriterRuleBuilder(values,
-                new FeatureCaptorRuleBuilder(values, exitRuleBuilder, exitFeatureCaptor), featureWriter);
+        final List<Float> values = new ArrayList<>();
+        final List<String> headers = new ArrayList<>();
+        this.entryRuleBuilder = new FeatureCaptorRuleBuilder(values, headers, entryRuleBuilder, entryFeatureCaptorBuilder);
+        this.exitRuleBuilder = new FeatureWriterRuleBuilder(values, headers,
+                new FeatureCaptorRuleBuilder(values, headers, exitRuleBuilder, exitFeatureCaptorBuilder), featureWriter);
     }
 
     @Override

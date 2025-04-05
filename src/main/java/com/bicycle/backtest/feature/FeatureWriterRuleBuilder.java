@@ -13,16 +13,21 @@ import java.util.List;
 public class FeatureWriterRuleBuilder implements RuleBuilder {
 
     private final List<Float> values;
+    private final List<String> headers;
     private final RuleBuilder delegate;
     private final FeatureWriter featureWriter;
 
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return new FeatureWriterRule(delegate.build(indicatorCache), values, featureWriter);
+        final Rule rule = delegate.build(indicatorCache);
+        featureWriter.writeHeaders(headers);
+        return new FeatureWriterRule(rule, values, featureWriter);
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
-        return new FeatureWriterRule(delegate.buildDefault(indicatorCache), values, featureWriter);
+        final Rule rule = delegate.buildDefault(indicatorCache);
+        featureWriter.writeHeaders(headers);
+        return new FeatureWriterRule(rule, values, featureWriter);
     }
 }

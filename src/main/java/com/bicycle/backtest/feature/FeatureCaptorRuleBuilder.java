@@ -12,16 +12,21 @@ import java.util.List;
 public class FeatureCaptorRuleBuilder implements RuleBuilder {
 
     private final List<Float> values;
+    private final List<String> headers;
     private final RuleBuilder delegate;
-    private final FeatureCaptor featureCaptor;
+    private final FeatureCaptor.Builder featureCaptorBuilder;
 
     @Override
     public Rule build(IndicatorCache indicatorCache) {
-        return buildDefault(indicatorCache);
+        final FeatureCaptor featureCaptor = featureCaptorBuilder.build(indicatorCache);
+        featureCaptor.captureHeaders(headers);
+        return new FeatureCaptorRule(delegate.build(indicatorCache), values, featureCaptor);
     }
 
     @Override
     public Rule buildDefault(IndicatorCache indicatorCache) {
+        final FeatureCaptor featureCaptor = featureCaptorBuilder.build(indicatorCache);
+        featureCaptor.captureHeaders(headers);
         return new FeatureCaptorRule(delegate.buildDefault(indicatorCache), values, featureCaptor);
     }
 
