@@ -32,10 +32,6 @@ import java.util.stream.Collectors;
 @Accessors(chain = true, fluent = false)
 public class Backtest {
 
-    public static Backtest of(TradingStrategyBuilder tradingStrategyBuilder){
-        return new Backtest().setTradingStrategyBuilder(tradingStrategyBuilder);
-    }
-
     private ReportCache reportCache;
     private Collection<Symbol> symbols;
     private BarRepository barRepository;
@@ -79,20 +75,15 @@ public class Backtest {
         if(null == symbolDataProvider) symbolDataProvider = new KiteSymbolDataProvider();
         if(null == symbolRepository) symbolRepository = new CacheSymbolRepository(symbolDataProvider);
         if(null == barRepository) barRepository = new FileSystemBarRepository(symbolRepository);
-        if(null == symbols) setSymbols(symbolRepository.findByExchange(exchange));
+        if(null == symbols) this.symbols = symbolRepository.findByExchange(exchange);
+        if(null == indicatorCache) indicatorCache = new IndicatorCache(symbols.size(), timeframes.size());
         if(null == backtestExecutor) backtestExecutor = new SerialBacktestExecutor(barRepository, indicatorCache);
         if(null == positionSizingStrategy) positionSizingStrategy = new PercentageInitialMarginPositionSizingStrategy(percentagePositionSize, limitPositionSizeToAvailableMargin);
-        reportCache = ReportCache.of(initialMargin, startDate, endDate, reportBuilder, reportCacheOptions);
-        tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, indicatorCache, reportCache, positionSizingStrategy);
+        if(null == reportCache) reportCache = ReportCache.of(initialMargin, startDate, endDate, reportBuilder, reportCacheOptions);
+        if(null == tradingStrategies) tradingStrategies = tradingStrategyBuilder.build(slippagePercentage, indicatorCache, reportCache, positionSizingStrategy);
         printInfo();
         backtestExecutor.execute(this, startDate, endDate, reportCache);
         return reportCache;
-    }
-
-    public Backtest setSymbols(Collection<Symbol> symbols){
-        this.symbols = symbols;
-        indicatorCache = new IndicatorCache(symbols.size(), 1);
-        return this;
     }
 
 }

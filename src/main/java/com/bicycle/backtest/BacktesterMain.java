@@ -5,6 +5,7 @@ import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.strategy.trading.builder.RuleTradingStrategyBuilder;
 import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
 import com.bicycle.core.indicator.Indicator;
+import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
@@ -16,7 +17,8 @@ public class BacktesterMain {
 
     public static void main(String[] args) {
         final TradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder();
-        final ReportCache reportCache = Backtest.of(tradingStrategyBuilder).run();
+        final Backtest backtest = new Backtest().setTradingStrategyBuilder(tradingStrategyBuilder);
+        final ReportCache reportCache = backtest.run();
         System.out.println(SingletonReportCache.class.cast(reportCache).getReport());
     }
 
