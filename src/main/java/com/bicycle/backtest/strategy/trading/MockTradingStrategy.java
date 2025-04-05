@@ -46,36 +46,35 @@ public class MockTradingStrategy implements BarListener, TickListener {
     public void onBar(Bar bar) {
         Report report = reportCache.get(bar.symbol(), this);
         MockPosition openPosition = report.getOpenPosition(bar.symbol());
-        // Add forceLtp to tryEnter and tryExit methods so that we do not take any trades between previous bar's close and current bar's open
-        //onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
+        onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, true);
         if(bar.close() > bar.open()){
-            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
-            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
+            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
+            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
         } else {
-            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
-            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
+            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
+            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
         }
-        onTick(bar.close(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report);
+        onTick(bar.close(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
     }
 
     @Override
     public void onTick(Tick tick) {
         Report report = reportCache.get(tick.symbol(), this);
         MockPosition openPosition = report.getOpenPosition(tick.symbol());
-        onTick(tick.ltp(), tick.date(), tick.volume(), tick.symbol(), null, openPosition, report);
+        onTick(tick.ltp(), tick.date(), tick.volume(), tick.symbol(), null, openPosition, report, true);
     }
 
-    public void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe){
+    public void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, boolean forceLtp){
         Report report = reportCache.get(symbol, this);
         MockPosition openPosition = report.getOpenPosition(symbol);
-        onTick(price, date, volume, symbol, timeframe, openPosition, report);
+        onTick(price, date, volume, symbol, timeframe, openPosition, report, forceLtp);
     }
 
     private void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe,
-                       MockPosition openPosition, Report report) {
+                       MockPosition openPosition, Report report, boolean forceLtp) {
         if(null != openPosition ){
             openPosition.onPrice(price);
-            if(tryExit(date, openPosition)) {
+            if(tryExit(date, openPosition, forceLtp)) {
                 report.close(openPosition);
                 openPosition = null;
             }
@@ -99,9 +98,9 @@ public class MockTradingStrategy implements BarListener, TickListener {
         return null;
     }
     
-    public boolean tryExit(long date, MockPosition position) {
+    public boolean tryExit(long date, MockPosition position, boolean forceLtp) {
         if(exitRule.isSatisfied(position.getSymbol(), position.getTimeframe(), position)) {
-            if(0 == position.getExitPrice()) position.setExitPrice(position.getLtp());
+            if(forceLtp || 0 == position.getExitPrice()) position.setExitPrice(position.getLtp());
             final float exitPrice = position.getExitPrice() * (100 + entryOrderType.complement().multiplier() * slippagePercentage) / 100;
             position.exit(date, position.getEntryQuantity(), exitPrice);
             return true;

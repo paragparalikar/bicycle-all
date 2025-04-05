@@ -103,22 +103,22 @@ public class BaseReport implements Report {
     @Override
     public String toString() {
         return "Base backtest report" +
-                "%nTrading Strategy    : " + tradingStrategy.toString() +
-                "%nInitial Equity      : " + String.format("%8.2f", initialMargin) +
-                "%nMaximum Equity      : " + String.format("%8.2f", maxEquity) +
-                "%nMinimum Equity      : " + String.format("%8.2f", minEquity) +
-                "%nFinal Equity        : " + String.format("%8.2f", equity) +
-                "%nDuration            : " + String.format("%4.2f years", years) +
-                "%nCAGR                : " + Strings.format(getCAGR()) +
-                "%nExposure            : " + Strings.format(exposure) +
-                "%nRAR                 : " + Strings.format(getCAGR() / exposure) +
-                "%nAvgDD               : " + Strings.format(avgDrawdown) +
-                "%nMaxDD               : " + Strings.format(maxDrawdown) +
-                "%nTotal MFE           : " + Strings.format(totalMfe) +
-                "%nBarCount            : " + Strings.format(barCount) +
-                "%nOpen Trades         : " + Strings.format(openTrades.size()) +
-                "%nClosed Trades       : " + Strings.format(totalTradeCount - openTrades.size()) +
-                "%nTotal Trades        : " + Strings.format(totalTradeCount) + "%n";
+                "\nTrading Strategy    : " + tradingStrategy.toString() +
+                "\nInitial Equity      : " + String.format("%8.2f", initialMargin) +
+                "\nMaximum Equity      : " + String.format("%8.2f", maxEquity) +
+                "\nMinimum Equity      : " + String.format("%8.2f", minEquity) +
+                "\nFinal Equity        : " + String.format("%8.2f", equity) +
+                "\nDuration            : " + String.format("%4.2f years", years) +
+                "\nCAGR                : " + Strings.format(getCAGR()) +
+                "\nExposure            : " + Strings.format(exposure) +
+                "\nRAR                 : " + Strings.format(getCAGR() / exposure) +
+                "\nAvgDD               : " + Strings.format(avgDrawdown) +
+                "\nMaxDD               : " + Strings.format(maxDrawdown) +
+                "\nTotal MFE           : " + Strings.format(totalMfe) +
+                "\nBarCount            : " + Strings.format(barCount) +
+                "\nOpen Trades         : " + Strings.format(openTrades.size()) +
+                "\nClosed Trades       : " + Strings.format(totalTradeCount - openTrades.size()) +
+                "\nTotal Trades        : " + Strings.format(totalTradeCount) + "\n";
     }
     
 }

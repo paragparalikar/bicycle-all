@@ -8,6 +8,7 @@ import java.util.Map;
 public interface ResetableIterator {
 
     static boolean advance(int index, List<ResetableIterator> iterators) {
+        if(index >= iterators.size()) return false;
         final ResetableIterator iterator = iterators.get(index);
         if(iterator.hasNext()) {
             iterator.advance();
