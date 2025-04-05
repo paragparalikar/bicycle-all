@@ -1,11 +1,11 @@
-package com.bicycle.backtest.feature.group;
+package com.bicycle.backtest.feature.captor;
 
-import com.bicycle.backtest.MockPosition;
+import com.bicycle.core.position.Position;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class PositionFeatureGroup implements FeatureGroup {
+public class PositionFeatureCaptor implements FeatureCaptor {
 
     @Override
     public void captureHeaders(List<String> headers) {
@@ -13,7 +13,7 @@ public class PositionFeatureGroup implements FeatureGroup {
     }
 
     @Override
-    public void captureValues(MockPosition position, List<Float> values) {
+    public void captureValues(Position position, List<Float> values) {
         values.add(position.getClosePercentProfitLoss());
         //final LocalDateTime entryTime = Dates.toLocalDateTime(position.getEntryDate());
         //values.add((float) entryTime.getDayOfWeek().ordinal());

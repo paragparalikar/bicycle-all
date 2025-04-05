@@ -1,17 +1,17 @@
-package com.bicycle.backtest.feature.group;
+package com.bicycle.backtest.feature.captor;
 
-import com.bicycle.backtest.MockPosition;
 import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.indicator.IndicatorCache;
+import com.bicycle.core.position.Position;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VolatilityFeatureGroup   implements FeatureGroup {
+public class VolatilityFeatureCaptor implements FeatureCaptor {
 
     private final List<Indicator> indicators = new ArrayList<>();
 
-    public VolatilityFeatureGroup(IndicatorCache cache, float multiplier, int... barCounts) {
+    public VolatilityFeatureCaptor(IndicatorCache cache, float multiplier, int... barCounts) {
         for (int shortBarCount : barCounts) {
             final int longBarCount = (int) (shortBarCount * multiplier);
             indicators.add(cache.atr(shortBarCount).dividedBy(cache.close()));
@@ -34,7 +34,7 @@ public class VolatilityFeatureGroup   implements FeatureGroup {
     }
 
     @Override
-    public void captureValues(MockPosition position, List<Float> values) {
+    public void captureValues(Position position, List<Float> values) {
         for(Indicator indicator : indicators) values.add(indicator.getValue(position.getSymbol(), position.getTimeframe()));
     }
 }

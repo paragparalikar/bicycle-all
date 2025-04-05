@@ -14,13 +14,15 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CsvFileFeatureWriter implements FeatureWriter {
+public class DelimitedFileFeatureWriter implements FeatureWriter {
 
+    private final String delimiter;
     private boolean areHeadersWritten;
     private final BufferedWriter writer;
     private final OutputStream outputStream;
 
-    public CsvFileFeatureWriter(final String name) throws IOException {
+    public DelimitedFileFeatureWriter(final String name, final String delimiter) throws IOException {
+        this.delimiter = delimiter;
         final Path path = Paths.get(Constant.HOME, "reports", name);
         if(null != path.getParent()) Files.createDirectories(path.getParent());
         this.outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -32,14 +34,14 @@ public class CsvFileFeatureWriter implements FeatureWriter {
     @SneakyThrows
     public void writeHeaders(List<String> headers) {
         if(areHeadersWritten) throw new IllegalStateException("Headers have been already written");
-        writer.write(String.join(",", headers));
+        writer.write(String.join(delimiter, headers));
         areHeadersWritten = true;
     }
 
     @Override
     @SneakyThrows
     public void writeValues(List<Float> values) {
-        writer.write(values.stream().map(String::valueOf).collect(Collectors.joining(",")));
+        writer.write(values.stream().map(String::valueOf).collect(Collectors.joining(delimiter)));
     }
 
     @Override

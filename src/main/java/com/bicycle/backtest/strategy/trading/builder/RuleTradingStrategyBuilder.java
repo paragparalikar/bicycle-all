@@ -45,7 +45,6 @@ public class RuleTradingStrategyBuilder implements TradingStrategyBuilder {
             tradingStrategies.add(new MockTradingStrategy(slippagePercentage, entryRule, exitRule, 
                     entryOrderType, reportCache, positionSizingStrategy));
         }while(ResetableIterator.advance(0, iterators));
-        
         return tradingStrategies;
     }
     

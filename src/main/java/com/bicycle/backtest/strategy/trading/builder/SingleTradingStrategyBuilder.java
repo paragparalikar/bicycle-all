@@ -5,13 +5,18 @@ import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.order.OrderType;
-import com.bicycle.core.rule.LiquidityRule;
-import com.bicycle.core.rule.Rule;
+import com.bicycle.core.rule.builder.RuleBuilder;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class SingleTradingStrategyBuilder implements TradingStrategyBuilder {
+
+    private final OrderType entryOrderType;
+    private MockTradingStrategy tradingStrategy;
+    private final RuleBuilder entryRuleBuilder, exitRuleBuilder;
 
     @Override
     public List<MockTradingStrategy> build(float slippagePercentage, 
@@ -22,12 +27,15 @@ public class SingleTradingStrategyBuilder implements TradingStrategyBuilder {
     @Override
     public MockTradingStrategy buildDefault(float slippagePercentage, IndicatorCache cache, 
             ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {
-        final Rule entryRule = new LiquidityRule(cache)
-                .and(cache.close().greaterThan(cache.sma(cache.close(), 100)))
-                .and(cache.rsi(cache.close(), 2).lesserThan(10));
-        final Rule exitRule = cache.close().greaterThan(cache.sma(cache.close(), 5));
-        return new MockTradingStrategy(slippagePercentage,
-                entryRule, exitRule, OrderType.BUY, reportCache, positionSizingStrategy);
+        return null == tradingStrategy ? tradingStrategy = new MockTradingStrategy(slippagePercentage,
+                        entryRuleBuilder.buildDefault(cache),
+                        exitRuleBuilder.buildDefault(cache),
+                        entryOrderType, reportCache, positionSizingStrategy)
+                : tradingStrategy;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(tradingStrategy);
+    }
 }

@@ -1,17 +1,17 @@
-package com.bicycle.backtest.feature.group;
+package com.bicycle.backtest.feature.captor;
 
-import com.bicycle.backtest.MockPosition;
 import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.indicator.IndicatorCache;
+import com.bicycle.core.position.Position;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BarSequenceFeatureGroup implements FeatureGroup {
+public class BarSequenceFeatureCaptor implements FeatureCaptor {
 
     private final List<Indicator> indicators = new ArrayList<>();
 
-    public BarSequenceFeatureGroup(IndicatorCache cache, int... barCounts){
+    public BarSequenceFeatureCaptor(IndicatorCache cache, int... barCounts){
         for(int barCount : barCounts){
             indicators.add(cache.risingStrength(cache.high(), barCount));
             indicators.add(cache.risingStrength(cache.low(), barCount));
@@ -29,7 +29,7 @@ public class BarSequenceFeatureGroup implements FeatureGroup {
     }
 
     @Override
-    public void captureValues(MockPosition position, List<Float> values) {
+    public void captureValues(Position position, List<Float> values) {
         for(Indicator indicator : indicators) values.add(indicator.getValue(position.getSymbol(), position.getTimeframe()));
     }
 }
