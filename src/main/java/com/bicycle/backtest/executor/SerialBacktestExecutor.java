@@ -8,6 +8,7 @@ import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.bar.repository.BarRepository;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.symbol.Symbol;
+import com.bicycle.util.Dates;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Builder;
@@ -37,7 +38,10 @@ public class SerialBacktestExecutor implements BacktestExecutor {
                     if(null != bar.symbol() && symbolCache.contains(bar.symbol().token())) {
                         indicatorCache.onBar(bar);
                         backtest.getTradingStrategies().forEach(tradingStrategy -> tradingStrategy.onBar(bar));
-                        if(previousBarDate != bar.date()) reportCache.compute(previousBarDate = bar.date());
+                        if(previousBarDate != bar.date()) {
+                            reportCache.compute(previousBarDate = bar.date());
+                            System.out.printf("Processed date - %s\n", Dates.format(previousBarDate));
+                        }
                     }
                 }
             }

@@ -29,13 +29,15 @@ public class ChopIndicator implements Indicator {
     public void onBar(Bar bar) {
         final FloatSeries series = seriesCache.get(bar.symbol(), bar.timeframe());
         series.add(trIndicator.getValue(bar.symbol(), bar.timeframe()));
-        float value = 0;
-        for(int index = 0; index < barCount; index++) {
-            value += series.get(index);
+        float value = Float.NaN;
+        if(barCount <= series.size()){
+            for(int index = 0; index < barCount; index++) {
+                value += series.get(index);
+            }
+            value /= (highestHighIndicator.getValue(bar.symbol(), bar.timeframe()) -
+                    lowestLowIndicator.getValue(bar.symbol(), bar.timeframe()));
+            value = (float) (Math.log10(value) / Math.log10(barCount));
         }
-        value /= (highestHighIndicator.getValue(bar.symbol(), bar.timeframe()) - 
-                lowestLowIndicator.getValue(bar.symbol(), bar.timeframe()));
-        value = (float) (Math.log10(value) / Math.log10(barCount));
         cache.set(bar.symbol(), bar.timeframe(), value);
     }
 

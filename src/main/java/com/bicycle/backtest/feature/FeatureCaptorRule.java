@@ -19,7 +19,7 @@ public class FeatureCaptorRule implements Rule {
     @Override
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {
         if(delegate.isSatisfied(symbol, timeframe, trade)){
-            featureCaptor.captureValues(trade, values);
+            featureCaptor.captureValues(symbol, timeframe, trade, values);
             return true;
         }
         return false;

@@ -1,6 +1,8 @@
 package com.bicycle.backtest.feature.captor;
 
+import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.position.Position;
+import com.bicycle.core.symbol.Symbol;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +15,7 @@ public class PositionFeatureCaptor implements FeatureCaptor {
     }
 
     @Override
-    public void captureValues(Position position, List<Float> values) {
+    public void captureValues(Symbol symbol, Timeframe timeframe, Position position, List<Float> values) {
         values.add(position.getClosePercentProfitLoss());
         //final LocalDateTime entryTime = Dates.toLocalDateTime(position.getEntryDate());
         //values.add((float) entryTime.getDayOfWeek().ordinal());

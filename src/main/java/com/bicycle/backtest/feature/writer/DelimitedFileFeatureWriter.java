@@ -47,6 +47,5 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
     @Override
     public void close() throws Exception {
         this.outputStream.close();
-        this.writer.close();
     }
 }

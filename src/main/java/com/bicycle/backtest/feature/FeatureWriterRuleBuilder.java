@@ -1,6 +1,5 @@
 package com.bicycle.backtest.feature;
 
-import com.bicycle.backtest.feature.captor.FeatureCaptor;
 import com.bicycle.backtest.feature.writer.FeatureWriter;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.rule.Rule;

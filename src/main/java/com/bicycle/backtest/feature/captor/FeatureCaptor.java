@@ -1,7 +1,9 @@
 package com.bicycle.backtest.feature.captor;
 
+import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.position.Position;
+import com.bicycle.core.symbol.Symbol;
 
 import java.util.List;
 
@@ -13,6 +15,6 @@ public interface FeatureCaptor {
 
     void captureHeaders(List<String> headers);
 
-    void captureValues(Position position, List<Float> values);
+    void captureValues(Symbol symbol, Timeframe timeframe, Position position, List<Float> values);
 
 }

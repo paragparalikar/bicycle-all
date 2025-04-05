@@ -20,6 +20,7 @@ public class FeatureWriterRule implements Rule {
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {
         if(delegate.isSatisfied(symbol, timeframe, trade)){
             featureWriter.writeValues(values);
+            values.clear();
             return true;
         }
         return false;

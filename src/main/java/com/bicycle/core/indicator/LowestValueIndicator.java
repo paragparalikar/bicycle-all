@@ -30,8 +30,12 @@ public class LowestValueIndicator implements Indicator {
         series.add(indicatorValue);
         if(!Float.isNaN(indicatorValue)) {
             float lowestValue = Float.MAX_VALUE;
-            for(int index = 0; index < barCount; index++) {
-                lowestValue = Math.min(lowestValue, series.get(index));
+            if(barCount > series.size()) {
+                lowestValue = Float.NaN;
+            } else if(barCount <= series.size()) {
+                for(int index = 0; index < barCount; index++) {
+                    lowestValue = Math.min(lowestValue, series.get(index));
+                }
             }
             cache.set(bar.symbol(), bar.timeframe(), lowestValue);
         }
