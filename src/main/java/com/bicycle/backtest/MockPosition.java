@@ -13,7 +13,6 @@ import lombok.Setter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter @Setter
-@EqualsAndHashCode(of = "id", callSuper = false)
 public class MockPosition extends Position implements BarListener {
     private static final AtomicInteger ID = new AtomicInteger(0);
 
@@ -23,7 +22,13 @@ public class MockPosition extends Position implements BarListener {
         super(symbol, timeframe, entryType);
         this.id = ID.getAndIncrement();
     }
-    
+
+
+    @Override
+    public int hashCode(){
+        return  id;
+    }
+
     @Override
     public String toString() {
         return String.format("%6d %s %6d %s %2d %6s %2d %6s %2d", id, super.toString(), getBarCount(),

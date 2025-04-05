@@ -7,20 +7,25 @@ import com.bicycle.core.rule.Rule;
 import com.bicycle.core.symbol.Symbol;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class FeatureWriterRule implements Rule {
 
     private final Rule delegate;
-    private final List<Float> values;
+    private final Map<String, List<Float>> values;
     private final FeatureWriter featureWriter;
 
     @Override
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {
         if(delegate.isSatisfied(symbol, timeframe, trade)){
-            featureWriter.writeValues(values);
-            values.clear();
+            final List<Float> values = this.values.get(symbol.token() + timeframe.name());
+            if(null != values){
+                featureWriter.writeValues(values);
+                values.clear();
+            }
             return true;
         }
         return false;

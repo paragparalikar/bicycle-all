@@ -34,14 +34,18 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
     @SneakyThrows
     public void writeHeaders(List<String> headers) {
         if(areHeadersWritten) throw new IllegalStateException("Headers have been already written");
-        writer.write(String.join(delimiter, headers));
+        final String line = String.join(delimiter, headers);
+        writer.write(line);
+        writer.newLine();
         areHeadersWritten = true;
     }
 
     @Override
     @SneakyThrows
     public void writeValues(List<Float> values) {
-        writer.write(values.stream().map(String::valueOf).collect(Collectors.joining(delimiter)));
+        final String line = values.stream().map(String::valueOf).collect(Collectors.joining(delimiter));
+        writer.write(line);
+        writer.newLine();
     }
 
     @Override

@@ -45,33 +45,30 @@ public class MockTradingStrategy implements BarListener, TickListener {
     @Override
     public void onBar(Bar bar) {
         Report report = reportCache.get(bar.symbol(), this);
-        MockPosition openPosition = report.getOpenPosition(bar.symbol());
-        onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, true);
+        onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, true);
         if(bar.close() > bar.open()){
-            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
-            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
+            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
+            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
         } else {
-            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
-            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
+            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
+            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
         }
-        onTick(bar.close(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), openPosition, report, false);
+        onTick(bar.close(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
     }
 
     @Override
     public void onTick(Tick tick) {
         Report report = reportCache.get(tick.symbol(), this);
-        MockPosition openPosition = report.getOpenPosition(tick.symbol());
-        onTick(tick.ltp(), tick.date(), tick.volume(), tick.symbol(), null, openPosition, report, true);
+        onTick(tick.ltp(), tick.date(), tick.volume(), tick.symbol(), null, report, true);
     }
 
     public void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, boolean forceLtp){
         Report report = reportCache.get(symbol, this);
-        MockPosition openPosition = report.getOpenPosition(symbol);
-        onTick(price, date, volume, symbol, timeframe, openPosition, report, forceLtp);
+        onTick(price, date, volume, symbol, timeframe, report, forceLtp);
     }
 
-    private void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe,
-                       MockPosition openPosition, Report report, boolean forceLtp) {
+    private void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, Report report, boolean forceLtp) {
+        MockPosition openPosition = report.getOpenPosition(symbol);
         if(null != openPosition ){
             openPosition.onPrice(price);
             if(tryExit(date, openPosition, forceLtp)) {

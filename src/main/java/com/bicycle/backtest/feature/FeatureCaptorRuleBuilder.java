@@ -7,11 +7,12 @@ import com.bicycle.core.rule.builder.RuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class FeatureCaptorRuleBuilder implements RuleBuilder {
 
-    private final List<Float> values;
+    private final Map<String, List<Float>> values;
     private final List<String> headers;
     private final RuleBuilder delegate;
     private final FeatureCaptor.Builder featureCaptorBuilder;

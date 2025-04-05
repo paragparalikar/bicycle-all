@@ -12,7 +12,9 @@ import com.bicycle.core.rule.builder.RuleBuilder;
 import lombok.Builder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilder {
 
@@ -28,7 +30,7 @@ public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilde
                                               FeatureCaptor.Builder exitFeatureCaptorBuilder,
                                               FeatureWriter featureWriter){
         this.entryOrderType = entryOrderType;
-        final List<Float> values = new ArrayList<>();
+        final Map<String, List<Float>> values = new HashMap<>();
         final List<String> headers = new ArrayList<>();
         this.entryRuleBuilder = new FeatureCaptorRuleBuilder(values, headers, entryRuleBuilder, entryFeatureCaptorBuilder);
         this.exitRuleBuilder = new FeatureWriterRuleBuilder(values, headers,

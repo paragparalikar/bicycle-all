@@ -21,7 +21,7 @@ public class BacktesterMain {
             final TradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder(featureWriter);
             final Backtest backtest = new Backtest()
                     .setStartDate(Dates.toEpochMillis(2010, 1, 1))
-                    .setEndDate(Dates.toEpochMillis(2010, 2, 1))
+                    .setEndDate(Dates.toEpochMillis(2010, 6, 1))
                     .setTradingStrategyBuilder(tradingStrategyBuilder);
             final ReportCache reportCache = backtest.run();
             System.out.println(SingletonReportCache.class.cast(reportCache).getReport());
@@ -55,11 +55,12 @@ public class BacktesterMain {
         final float multiplier = 4;
         final int[] barCounts = new int[]{5, 10, 15, 20, 25, 30, 40, 50};
         return cache -> new CompositeFeatureCaptor(
-                new BarFeatureCaptor(cache, barCount),
-                new BarSequenceFeatureCaptor(cache, barCounts),
-                new TrendFeatureCaptor(cache, multiplier, barCounts),
-                new VolatilityFeatureCaptor(cache, multiplier, barCounts),
-                new VolumeFeatureCaptor(cache, multiplier, barCounts));
+                new BarFeatureCaptor(cache, barCount)
+                //new BarSequenceFeatureCaptor(cache, barCounts),
+                //new TrendFeatureCaptor(cache, multiplier, barCounts),
+                //new VolatilityFeatureCaptor(cache, multiplier, barCounts),
+                //new VolumeFeatureCaptor(cache, multiplier, barCounts)
+                );
     }
 
 }
