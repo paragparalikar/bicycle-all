@@ -1,44 +1,44 @@
 package com.bicycle.backtest.report;
 
 import com.bicycle.backtest.MockPosition;
-import com.bicycle.backtest.report.CallbackReport.Callback;
+import com.bicycle.backtest.report.ObservableReport.Observer;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 
 @RequiredArgsConstructor
-public class CallbackReport implements Report {
+public class ObservableReport implements Report {
     
-    public interface Callback {
+    public interface Observer {
         default void onCompute(long date, Report report) {}
         default void onOpen(MockPosition position, Report report) {}
         default void onClose(MockPosition position, Report report) {}
     }
 
-    public static ReportBuilder builder(Callback callback, ReportBuilder delegateBuilder) {
-        return new CallbackReportBuilder(callback, delegateBuilder);
+    public static ReportBuilder builder(Observer observer, ReportBuilder delegateBuilder) {
+        return new CallbackReportBuilder(observer, delegateBuilder);
     }
     
-    @NonNull private final Callback callback;
+    @NonNull private final ObservableReport.Observer observer;
     @NonNull @Delegate private final Report delegate;
 
     @Override
     public void compute(long date) {
         delegate.compute(date);
-        callback.onCompute(date, delegate);
+        observer.onCompute(date, delegate);
     }
     
     @Override
     public void open(MockPosition trade) {
         delegate.open(trade);
-        callback.onOpen(trade, delegate);
+        observer.onOpen(trade, delegate);
     }
     
     @Override
     public void close(MockPosition trade) {
         delegate.close(trade);
-        callback.onClose(trade, delegate);
+        observer.onClose(trade, delegate);
     }
     
     @Override
@@ -53,12 +53,12 @@ public class CallbackReport implements Report {
 @RequiredArgsConstructor
 class CallbackReportBuilder implements ReportBuilder {
     
-    private final Callback callback;
+    private final Observer observer;
     private final ReportBuilder delegateBuilder;
 
     @Override
     public Report build(float initialMargin, MockTradingStrategy tradingStrategy, long startDate, long endDate) {
-        return new CallbackReport(callback, delegateBuilder.build(initialMargin, tradingStrategy, startDate, endDate));
+        return new ObservableReport(observer, delegateBuilder.build(initialMargin, tradingStrategy, startDate, endDate));
     }
     
 }

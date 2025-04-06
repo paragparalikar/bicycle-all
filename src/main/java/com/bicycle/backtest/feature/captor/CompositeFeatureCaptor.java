@@ -1,8 +1,6 @@
 package com.bicycle.backtest.feature.captor;
 
-import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.position.Position;
-import com.bicycle.core.symbol.Symbol;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public class CompositeFeatureCaptor implements FeatureCaptor {
     }
 
     @Override
-    public void captureValues(Symbol symbol, Timeframe timeframe, Position position, List<Float> values) {
-        for(FeatureCaptor featureCaptor : featureCaptors) featureCaptor.captureValues(symbol, timeframe, position, values);
+    public void captureValues(Position position, List<Float> values) {
+        for(FeatureCaptor featureCaptor : featureCaptors) featureCaptor.captureValues(position, values);
     }
 }

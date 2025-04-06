@@ -2,6 +2,7 @@ package com.bicycle.backtest.feature;
 
 import com.bicycle.backtest.feature.captor.FeatureCaptor;
 import com.bicycle.backtest.feature.writer.FeatureWriter;
+import com.bicycle.backtest.report.cache.InterceptableReportCache;
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
@@ -11,16 +12,15 @@ import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilder {
 
+
     private final OrderType entryOrderType;
-    private MockTradingStrategy tradingStrategy;
+    private final FeatureWriter featureWriter;
     private final RuleBuilder entryRuleBuilder, exitRuleBuilder;
+    private final FeatureCaptor.Builder entryFeatureCaptorBuilder, exitFeatureCaptorBuilder;
 
     @Builder
     public FeatureAwareTradingStrategyBuilder(OrderType entryOrderType,
@@ -29,12 +29,12 @@ public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilde
                                               FeatureCaptor.Builder entryFeatureCaptorBuilder,
                                               FeatureCaptor.Builder exitFeatureCaptorBuilder,
                                               FeatureWriter featureWriter){
+        this.featureWriter = featureWriter;
         this.entryOrderType = entryOrderType;
-        final Map<String, List<Float>> values = new HashMap<>();
-        final List<String> headers = new ArrayList<>();
-        this.entryRuleBuilder = new FeatureCaptorRuleBuilder(values, headers, entryRuleBuilder, entryFeatureCaptorBuilder);
-        this.exitRuleBuilder = new FeatureWriterRuleBuilder(values, headers,
-                new FeatureCaptorRuleBuilder(values, headers, exitRuleBuilder, exitFeatureCaptorBuilder), featureWriter);
+        this.entryRuleBuilder = entryRuleBuilder;
+        this.exitRuleBuilder = exitRuleBuilder;
+        this.entryFeatureCaptorBuilder = entryFeatureCaptorBuilder;
+        this.exitFeatureCaptorBuilder = exitFeatureCaptorBuilder;
     }
 
     @Override
@@ -44,10 +44,16 @@ public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilde
 
     @Override
     public MockTradingStrategy buildDefault(float slippagePercentage, IndicatorCache indicatorCache, ReportCache reportCache, PositionSizingStrategy positionSizingStrategy) {
-        return null == tradingStrategy ? tradingStrategy = new MockTradingStrategy(slippagePercentage,
+        final FeatureReportObserver featureReportObserver = new FeatureReportObserver(
+                entryFeatureCaptorBuilder.build(indicatorCache),
+                exitFeatureCaptorBuilder.build(indicatorCache),
+                featureWriter);
+        final InterceptableReportCache.Interceptor featureReportCacheInterceptor =
+                new FeatureReportCacheInterceptor(featureReportObserver);
+        reportCache = new InterceptableReportCache(reportCache, featureReportCacheInterceptor);
+        return new MockTradingStrategy(slippagePercentage,
                 entryRuleBuilder.buildDefault(indicatorCache),
                 exitRuleBuilder.buildDefault(indicatorCache),
-                entryOrderType, reportCache, positionSizingStrategy)
-                : tradingStrategy;
+                entryOrderType, reportCache, positionSizingStrategy);
     }
 }

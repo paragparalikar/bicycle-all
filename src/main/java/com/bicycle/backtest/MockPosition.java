@@ -6,7 +6,6 @@ import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.position.Position;
 import com.bicycle.core.symbol.Symbol;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 

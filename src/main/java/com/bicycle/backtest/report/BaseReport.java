@@ -102,7 +102,7 @@ public class BaseReport implements Report {
 
     @Override
     public String toString() {
-        return "Base backtest report" +
+        return "\nBase backtest report" +
                 "\nTrading Strategy    : " + tradingStrategy.toString() +
                 "\nInitial Equity      : " + String.format("%8.2f", initialMargin) +
                 "\nMaximum Equity      : " + String.format("%8.2f", maxEquity) +

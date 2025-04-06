@@ -1,7 +1,7 @@
 package com.bicycle.backtest.report.callback;
 
 import com.bicycle.backtest.MockPosition;
-import com.bicycle.backtest.report.CallbackReport;
+import com.bicycle.backtest.report.ObservableReport;
 import com.bicycle.backtest.report.Report;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PositionAccumulatorCallback implements CallbackReport.Callback {
+public class PositionAccumulatorObserver implements ObservableReport.Observer {
     private final Map<Integer, MockPosition> openPositions = new ConcurrentHashMap<>();
     private final List<MockPosition> closedPositions = new ArrayList<>();
 

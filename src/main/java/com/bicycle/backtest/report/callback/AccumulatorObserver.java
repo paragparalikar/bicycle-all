@@ -1,6 +1,6 @@
 package com.bicycle.backtest.report.callback;
 
-import com.bicycle.backtest.report.CallbackReport;
+import com.bicycle.backtest.report.ObservableReport;
 import com.bicycle.backtest.report.Report;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class AccumulatorCallback<T> implements CallbackReport.Callback {
+public class AccumulatorObserver<T> implements ObservableReport.Observer {
 
     private final Function<Report, T> valueExtractor;
     @Getter private final Map<Long, T> values = new ConcurrentHashMap<>();
