@@ -43,10 +43,21 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
     @Override
     @SneakyThrows
     public void writeValues(List<Float> values) {
-        final String line = values.stream().map(String::valueOf).collect(Collectors.joining(delimiter));
+        final String line = values.stream()
+                .map(String::valueOf)
+                .map(this::blankIfInfinityOrNaN)
+                .collect(Collectors.joining(delimiter));
         writer.write(line);
         writer.newLine();
     }
+
+    private String blankIfInfinityOrNaN(String text){
+        return switch (text){
+            case "NaN", "Infinity", "-Infinity" -> "";
+            default -> text;
+        };
+    }
+
 
     @Override
     public void close() throws Exception {
