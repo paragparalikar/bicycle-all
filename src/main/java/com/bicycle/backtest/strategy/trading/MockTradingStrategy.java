@@ -10,14 +10,12 @@ import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.Rule;
 import com.bicycle.core.symbol.Symbol;
-import com.bicycle.core.tick.Tick;
-import com.bicycle.core.tick.TickListener;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MockTradingStrategy implements BarListener, TickListener {
+public class MockTradingStrategy implements BarListener {
     private static final AtomicInteger ID = new AtomicInteger(0);
 
     private String text;
@@ -45,38 +43,27 @@ public class MockTradingStrategy implements BarListener, TickListener {
     @Override
     public void onBar(Bar bar) {
         Report report = reportCache.get(bar.symbol(), this);
-        onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, true);
+        onTick(bar.open(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, true, false);
         if(bar.close() > bar.open()){
-            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
-            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
+            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false, false);
+            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false, false);
         } else {
-            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
-            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
+            onTick(bar.high(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false, false);
+            onTick(bar.low(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false, false);
         }
-        onTick(bar.close(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false);
+        onTick(bar.close(), bar.date(), bar.volume(), bar.symbol(), bar.timeframe(), report, false, true);
     }
 
-    @Override
-    public void onTick(Tick tick) {
-        Report report = reportCache.get(tick.symbol(), this);
-        onTick(tick.ltp(), tick.date(), tick.volume(), tick.symbol(), null, report, true);
-    }
-
-    public void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, boolean forceLtp){
-        Report report = reportCache.get(symbol, this);
-        onTick(price, date, volume, symbol, timeframe, report, forceLtp);
-    }
-
-    private void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, Report report, boolean forceLtp) {
+    private void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, Report report, boolean isOpenPrice, boolean isClosePrice) {
         MockPosition openPosition = report.getOpenPosition(symbol);
         if(null != openPosition ){
             openPosition.onPrice(price);
-            if(tryExit(date, openPosition, forceLtp)) {
+            if(tryExit(date, openPosition, isOpenPrice)) {
                 report.close(openPosition);
                 openPosition = null;
             }
         }
-        if(null == openPosition && null != (openPosition = tryEnter(price, date, symbol, timeframe))) {
+        if(isClosePrice && null == openPosition && null != (openPosition = tryEnter(price, date, symbol, timeframe))) {
             report.open(openPosition);
         }
     }
@@ -95,9 +82,9 @@ public class MockTradingStrategy implements BarListener, TickListener {
         return null;
     }
     
-    public boolean tryExit(long date, MockPosition position, boolean forceLtp) {
+    public boolean tryExit(long date, MockPosition position, boolean isOpenPrice) {
         if(exitRule.isSatisfied(position.getSymbol(), position.getTimeframe(), position)) {
-            if(forceLtp || 0 == position.getExitPrice()) position.setExitPrice(position.getLtp());
+            if(isOpenPrice || 0 == position.getExitPrice()) position.setExitPrice(position.getLtp());
             final float exitPrice = position.getExitPrice() * (100 + entryOrderType.complement().multiplier() * slippagePercentage) / 100;
             position.exit(date, position.getEntryQuantity(), exitPrice);
             return true;
