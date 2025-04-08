@@ -30,6 +30,7 @@ public class SerialBacktestExecutor implements BacktestExecutor {
         indicatorCache.clear();
         final Bar bar = new Bar();
         final IntList symbolCache = new IntArrayList(backtest.getSymbols().stream().map(Symbol::token).toList());
+        System.out.println();
         for(Timeframe timeframe : backtest.getTimeframes()) {
             try(Cursor<Bar> cursor = barRepository.get(backtest.getExchange(), timeframe, startDate, endDate)){
                 long previousBarDate = 0;
@@ -40,7 +41,8 @@ public class SerialBacktestExecutor implements BacktestExecutor {
                         backtest.getTradingStrategies().forEach(tradingStrategy -> tradingStrategy.onBar(bar));
                         if(previousBarDate != bar.date()) {
                             reportCache.compute(previousBarDate = bar.date());
-                            System.out.printf("Processed date - %s\n", Dates.format(previousBarDate));
+                            //System.out.print("\033[1A\033[2K");
+                            System.out.printf("\033[1A\033[2KProcessed - %s\n", Dates.format(previousBarDate));
                         }
                     }
                 }

@@ -2,11 +2,11 @@ Steps for creating a trading strategy:
 
 1. Define bare minimum entry and exit signal.
 2. Collect features in separate feature files for each type of feature group.
-3. For bar and bar series feature groups, use a decision tree to mine trading rules that will become part of entry signal.
-4. Select top 25 features with the highest absolute Sprearman correlation with pnl from each feature group.
+3. Rank features using Information Gain
+4. Select top 5 features with the highest absolute Sprearman correlation with pnl from each feature group.
 5. Build an ensemble trading strategy with features select for each feature group.
-6. Optimize the strategy for threshold values used by ensemble.
-7. Verify the strategy's performance and robustness against performance of combination of random forest classifier as filter with base signal.
+6. Optimize the strategy for threshold values(for feature groups) and weights(for individual feature) in ensemble using genetic algorithm.
+7. Verify the strategy's performance and robustness.
 
 
 
@@ -23,3 +23,14 @@ PreviousValueIndicator and other indicators which store the past values, will se
 When onBar method is called the indicator will add the delegate indicator value to the series.
 
 2. At startup, mae and mfe values for all positions must be updated for trailing stop to work
+
+
+
+
+direct - rising-strength(rsi(close,20),20)                  means uptrend
+inverse - (variance(close,30) / variance(close,120))        means low volatility
+inverse - (ema(volume,30) / ema(volume,120))                means oversold region
+direct - ibs                                                means headed upward
+
+
+

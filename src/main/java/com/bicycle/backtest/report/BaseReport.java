@@ -102,23 +102,24 @@ public class BaseReport implements Report {
 
     @Override
     public String toString() {
-        return "\nBase backtest report" +
+        return "\nBacktest report" +
                 "\nTrading Strategy    : " + tradingStrategy.toString() +
-                "\nInitial Equity      : " + String.format("%8.2f", initialMargin) +
-                "\nMaximum Equity      : " + String.format("%8.2f", maxEquity) +
-                "\nMinimum Equity      : " + String.format("%8.2f", minEquity) +
-                "\nFinal Equity        : " + String.format("%8.2f", equity) +
-                "\nDuration            : " + String.format("%4.2f years", years) +
-                "\nCAGR                : " + Strings.format(getCAGR()) +
-                "\nExposure            : " + Strings.format(exposure) +
-                "\nRAR                 : " + Strings.format(getCAGR() / exposure) +
-                "\nAvgDD               : " + Strings.format(avgDrawdown) +
-                "\nMaxDD               : " + Strings.format(maxDrawdown) +
-                "\nTotal MFE           : " + Strings.format(totalMfe) +
-                "\nBarCount            : " + Strings.format(barCount) +
-                "\nOpen Trades         : " + Strings.format(openTrades.size()) +
-                "\nClosed Trades       : " + Strings.format(totalTradeCount - openTrades.size()) +
-                "\nTotal Trades        : " + Strings.format(totalTradeCount) + "\n";
+                Strings.format("Duration(yrs)", years) +
+                Strings.format("Initial Equity", initialMargin) +
+                Strings.format("Maximum Equity", maxEquity) +
+                Strings.format("Minimum Equity", minEquity) +
+                Strings.format("Final Equity", equity) +
+                Strings.format("Maximum Drawdown", maxDrawdown) +
+                Strings.format("Average Drawdown", avgDrawdown) +
+                Strings.format("CAGR", getCAGR()) +
+                Strings.format("RAR", getCAGR() / exposure) +
+                Strings.format("RARBADD", getCAGR() / exposure * avgDrawdown) +
+                Strings.format("Exposure", exposure) +
+                Strings.format("Bar Count", barCount) +
+                Strings.format("Open Trades", openTrades.size()) +
+                Strings.format("Closed Trades", totalTradeCount - openTrades.size()) +
+                Strings.format("Total Trades", totalTradeCount);
     }
-    
+
+
 }

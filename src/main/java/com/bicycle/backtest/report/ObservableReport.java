@@ -47,7 +47,11 @@ public class ObservableReport implements Report {
         if(type.isAssignableFrom(getClass())) return (T) this;
         return delegate.unwrap(type);
     }
-    
+
+    @Override
+    public String toString() {
+        return delegate.toString();
+    }
 }
 
 @RequiredArgsConstructor

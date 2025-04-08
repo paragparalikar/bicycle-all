@@ -2,6 +2,7 @@ package com.bicycle.backtest.report;
 
 import com.bicycle.backtest.MockPosition;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
+import com.bicycle.util.Strings;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -80,4 +81,12 @@ public class FullReport extends BaseReport {
         expectancy = (avgProfit * winningTradeCount + avgLoss * losingTradeCount) / getTotalTradeCount();
     }
 
+    @Override
+    public String toString() {
+        return super.toString() +
+                Strings.format("Expectancy", expectancy) +
+                Strings.format("Profit Factor", profitFactor) +
+                Strings.format("Win Ratio", ((float) winningTradeCount) / ((float)getTotalTradeCount())) +
+                Strings.format("Payoff Ratio", payoffRatio);
+    }
 }

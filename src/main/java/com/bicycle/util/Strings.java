@@ -27,6 +27,14 @@ public class Strings {
     public static String format(float value) {
         return NUMBERFORMAT.format(value); 
     }
+
+	public static String format(String name, float value){
+		return String.format("\n%-20s: %8.2f", name, value);
+	}
+
+	public static String format(String name, int value){
+		return String.format("\n%-20s: %8d", name, value);
+	}
 	
 	public static boolean hasText(String text) {
 		return null != text && 0 < text.trim().length();
