@@ -9,6 +9,7 @@ import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
 import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.order.OrderType;
+import com.bicycle.core.rule.LiquidityRule;
 import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;
@@ -21,7 +22,7 @@ public class BacktesterMain {
             final TradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder(featureWriter);
             final Backtest backtest = new Backtest()
                     .setStartDate(Dates.toEpochMillis(2011, 1, 1))
-                    .setEndDate(Dates.toEpochMillis(2011, 12, 31))
+                    .setEndDate(Dates.toEpochMillis(2013, 12, 31))
                     .setTradingStrategyBuilder(tradingStrategyBuilder);
             final ReportCache reportCache = backtest.run();
             System.out.println(SingletonReportCache.class.cast(reportCache).getReport());
@@ -32,7 +33,8 @@ public class BacktesterMain {
         final FeatureCaptor.Builder entryFeatureCaptorBuilder = createEntryFeatureCaptorBuilder();
         final FeatureCaptor.Builder exitFeatureCaptorBuidler = cache -> new PositionFeatureCaptor();
         final RuleBuilder entryRuleBuilder = new SingletonRuleBuilder(cache -> {
-            return cache.close().greaterThanOrEquals(cache.prev(cache.high(), 1))
+            return new LiquidityRule(cache)
+                    .and(cache.close().greaterThanOrEquals(cache.prev(cache.high(), 1)))
                     .and(cache.prev(cache.close(), 1).lesserThan(cache.prev(cache.high(), 2)));
         });
         final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> {

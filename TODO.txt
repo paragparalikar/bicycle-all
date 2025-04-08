@@ -1,3 +1,20 @@
+Steps for creating a trading strategy:
+
+1. Define bare minimum entry and exit signal.
+2. Collect features in separate feature files for each type of feature group.
+3. For bar and bar series feature groups, use a decision tree to mine trading rules that will become part of entry signal.
+4. Select top 25 features with the highest absolute Sprearman correlation with pnl from each feature group.
+5. Build an ensemble trading strategy with features select for each feature group.
+6. Optimize the strategy for threshold values used by ensemble.
+7. Verify the strategy's performance and robustness against performance of combination of random forest classifier as filter with base signal.
+
+
+
+
+
+
+
+
 1. All Indicators must implement onTick method, FloatSeries to implement set method.
 This required so that the indicator values are available during the bar, not just at close of the bar.
 Caller should call onTick method for every tick, while onBar method must be called only when the bar is changed.

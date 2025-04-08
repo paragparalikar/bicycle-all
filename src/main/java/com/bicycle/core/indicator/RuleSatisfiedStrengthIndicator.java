@@ -57,7 +57,7 @@ public class RuleSatisfiedStrengthIndicator implements Indicator {
         }
 
         sumCache.set(bar.symbol(), bar.timeframe(), sum);
-        cache.set(bar.symbol(), bar.timeframe(), result / barCount);
+        cache.set(bar.symbol(), bar.timeframe(), result);
     }
 
     @Override
