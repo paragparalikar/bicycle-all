@@ -7,6 +7,9 @@ import com.bicycle.core.symbol.Symbol;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.bicycle.core.symbol.repository.FileSystemSymbolInfoRepository;
+import com.bicycle.core.symbol.repository.SymbolInfoRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +22,7 @@ public class ShoonyaSymbolMapper {
     private final Map<ShoonyaExchange, Map<String, Symbol>> symbolCache = new HashMap<>();
     private final Map<Exchange, Map<String, ShoonyaSymbol>> shoonyaSymbolCache = new HashMap<>();
     private final Map<ShoonyaExchange, Map<Integer, Symbol>> exchangeCodeSymbolCache = new HashMap<>();
+    private final SymbolInfoRepository symbolInfoRepository = new FileSystemSymbolInfoRepository();
     
     public Symbol toSymbol(ShoonyaSymbol shoonyaSymbol) {
         if(null == shoonyaSymbol) return null;
@@ -29,6 +33,7 @@ public class ShoonyaSymbolMapper {
                 .token(shoonyaSymbol.getToken())
                 .lotSize(shoonyaSymbol.getLotSize())
                 .tickSize(shoonyaSymbol.getTickSize())
+                .info(symbolInfoRepository.findByToken(shoonyaSymbol.getToken()))
                 .exchange(shoonyaExchangeMapper.toExchange(shoonyaSymbol.getExchange()))
                 .build();
         cache(symbol.exchange(), symbol.name(), shoonyaSymbol);
