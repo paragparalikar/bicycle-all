@@ -6,9 +6,7 @@ import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.Symbol;
 
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface BarRepository {
 

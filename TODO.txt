@@ -1,14 +1,27 @@
 Steps for creating a trading strategy:
 
-1. Define bare minimum entry and exit signal.
-2. Collect features in separate feature files for each type of feature group.
-3. Rank features using Information Gain
-4. Select top 5 features with the highest absolute Sprearman correlation with pnl from each feature group.
-5. Build an ensemble trading strategy with features select for each feature group.
-6. Optimize the strategy for threshold values(for feature groups) and weights(for individual feature) in ensemble using genetic algorithm.
-7. Verify the strategy's performance and robustness.
+1. Define a bare minimum entry signal and exit after fixed number of bars.
+2. Optimize entry signal for maximum average MFE.
+3. Collect features in separate feature files for each type of feature group.
+4. Perform transpose + hierarchical clustering.
+5. Rank features using Information Gain / Lasso regression.
+6. Select features with the highest spearman correlation with MFE from each cluster.
+7. Build an ensemble trading strategy with features select for each feature group.
+8. Optimize the strategy for threshold values in ensemble to maximize average MFE.
+9. Optimize the strategy exit rules to maximize RAR/ADD.
+10. Verify the strategy's performance and robustness.
 
 
+
+
+
+
+Rank symbols based on:
+1. Average standard deviation / close
+2. Average spread / close
+3. Average efficiency
+4. Average volume
+5. Average turnover
 
 
 

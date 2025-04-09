@@ -113,7 +113,7 @@ public class BaseReport implements Report {
                 Strings.format("Average Drawdown", avgDrawdown) +
                 Strings.format("CAGR", getCAGR()) +
                 Strings.format("RAR", getCAGR() / exposure) +
-                Strings.format("RARBADD", getCAGR() / exposure * avgDrawdown) +
+                Strings.format("RARBADD", getCAGR() * 1000 / exposure * avgDrawdown) +
                 Strings.format("Exposure", exposure) +
                 Strings.format("Bar Count", barCount) +
                 Strings.format("Open Trades", openTrades.size()) +

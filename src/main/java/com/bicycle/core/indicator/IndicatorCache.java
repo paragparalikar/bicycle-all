@@ -176,6 +176,11 @@ public class IndicatorCache implements BarListener {
         return computeIfAbsent(StandardDeviationIndicator.toText(indicator, barCount), 
                 () -> cache(new StandardDeviationIndicator(symbolCount, timeframeCount, indicator, barCount, this)));
     }
+
+    public Indicator efficiency(int barCount){
+        return computeIfAbsent(EfficiencyIndicator.toText(barCount),
+                () -> cache(new EfficiencyIndicator(symbolCount, timeframeCount, barCount)));
+    }
     
     public Indicator meanDev(Indicator indicator, int barCount) {
         return computeIfAbsent(MeanDeviationIndicator.toText(barCount, indicator), 

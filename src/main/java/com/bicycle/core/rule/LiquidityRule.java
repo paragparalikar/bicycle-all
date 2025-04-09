@@ -16,6 +16,10 @@ public class LiquidityRule implements Rule {
     @Builder
     public LiquidityRule(IndicatorCache cache, float minClose, int minVolume, int minTurnover, int barCount) {
 
+        // Bar has spread rule
+        final Rule spreadRule = cache.spread().greaterThan(0);
+        final Rule spreadForBarCountRule = cache.ruleSatisfiedStrength(spreadRule, barCount).greaterThanOrEquals(barCount - 1);
+
         // Close is always greater than minClose for last barCount bars
         final Rule minCloseRule = cache.close().greaterThan(minClose);
         final Rule minCloseForBarCountRule = cache.ruleSatisfiedStrength(minCloseRule, barCount).greaterThanOrEquals(barCount - 1);
@@ -29,7 +33,10 @@ public class LiquidityRule implements Rule {
         final Rule minTurnoverRule = turnoverIndicator.greaterThan(minTurnover);
         final Rule minTurnoverForBarCountRule = cache.ruleSatisfiedStrength(minTurnoverRule, barCount).greaterThanOrEquals(barCount - 1);
 
-        this.delegate = minCloseForBarCountRule.and(minVolumeForBarCountRule).and(minTurnoverForBarCountRule);
+        this.delegate = spreadRule
+                .and(minCloseForBarCountRule)
+                .and(minVolumeForBarCountRule)
+                .and(minTurnoverForBarCountRule);
     }
 
 }

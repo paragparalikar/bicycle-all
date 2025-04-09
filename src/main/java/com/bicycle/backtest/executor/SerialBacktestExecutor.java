@@ -39,11 +39,11 @@ public class SerialBacktestExecutor implements BacktestExecutor {
                     if(null != bar.symbol() && symbolCache.contains(bar.symbol().token())) {
                         indicatorCache.onBar(bar);
                         backtest.getTradingStrategies().forEach(tradingStrategy -> tradingStrategy.onBar(bar));
-                        if(previousBarDate != bar.date()) {
-                            reportCache.compute(previousBarDate = bar.date());
-                            //System.out.print("\033[1A\033[2K");
-                            System.out.printf("\033[1A\033[2KProcessed - %s\n", Dates.format(previousBarDate));
-                        }
+                    }
+                    if(previousBarDate != bar.date()) {
+                        reportCache.compute(previousBarDate = bar.date());
+                        //System.out.print("\033[1A\033[2K");
+                        System.out.printf("\033[1A\033[2KProcessed - %s\n", Dates.format(previousBarDate));
                     }
                 }
             }

@@ -50,5 +50,9 @@ public final class Dates {
 		final Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
 		return instant.toEpochMilli();
 	}
+
+	public static long toEpochMillis(LocalDateTime localDateTime){
+		return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
 	
 }

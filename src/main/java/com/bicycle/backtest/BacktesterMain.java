@@ -16,6 +16,7 @@ import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.LiquidityRule;
 import com.bicycle.core.rule.StopLossRule;
+import com.bicycle.core.rule.WaitForBarCountRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;
 import com.bicycle.util.Dates;
@@ -31,8 +32,8 @@ public class BacktesterMain {
                     .setStartDate(Dates.toEpochMillis(2010, 1, 1))
                     .setEndDate(Dates.toEpochMillis(2024, 12, 31))
                     .setReportBuilder(AccumulatorReport.builder(FullReport.builder()))
-                    .setPercentagePositionSize(5)
-                    .setLimitPositionSizeToAvailableMargin(true)
+                    .setPercentagePositionSize(2)
+                    .setLimitPositionSizeToAvailableMargin(false)
                     .setTradingStrategyBuilder(tradingStrategyBuilder);
             final ReportCache reportCache = backtest.run();
             System.out.println(SingletonReportCache.class.cast(reportCache).getReport());
@@ -45,12 +46,15 @@ public class BacktesterMain {
         final RuleBuilder entryRuleBuilder = new SingletonRuleBuilder(cache -> {
             return new LiquidityRule(cache)
                     .and(cache.close().greaterThanOrEquals(cache.prev(cache.high(), 1)))
-                    .and(cache.prev(cache.close(), 1).lesserThan(cache.prev(cache.high(), 2)));
+                    //.and(cache.prev(cache.close(), 1).lesserThan(cache.prev(cache.high(), 2)))
+                    .and(cache.ibs().lesserThan(0.98f))
+                    ;
         });
         final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> {
             final Indicator atrIndicator = cache.atr(21);
             return new StopLossRule(false, 2, atrIndicator)
-                    .or(new StopLossRule(true, 2, atrIndicator));
+                    .or(new StopLossRule(true, 2, atrIndicator))
+                    .or(new WaitForBarCountRule(22, cache));
         });
         /*return FeatureAwareTradingStrategyBuilder.builder()
                 .entryOrderType(OrderType.BUY)

@@ -1,6 +1,5 @@
 package com.bicycle.core.symbol;
 
-import java.util.function.Predicate;
 import lombok.Builder;
 import lombok.With;
 
@@ -13,16 +12,9 @@ public record Symbol(
         String type, 
         String segment,
         float tickSize, 
-        int lotSize) {
-    
-    public static Predicate<Symbol> equities(){
-        // endsWith - ETF
-        // startsWith - EBBETF, GSEC
-        // name startsWith - HDFCAMC, KOTAKMAMC
-        // contains - -
-        return symbol -> true;
-    }
-    
+        int lotSize,
+        SymbolInfo info) {
+
     @Override
     public int hashCode() {
         return token;
