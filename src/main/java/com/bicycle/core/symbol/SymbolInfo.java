@@ -1,42 +1,41 @@
 package com.bicycle.core.symbol;
 
+import com.bicycle.util.Strings;
 import lombok.Builder;
 
 @Builder
 public record SymbolInfo(
         int token,
-        int efficiencyRank, Level efficiencyLevel,
-        int volatilityRank, Level volatiliyLevel,
-        int spreadRank, Level spreadLevel,
-        int volumeRank, Level volumeLevel,
-        int turnoverRank, Level turnoverLevel
+        SymbolAspect efficiency,
+        SymbolAspect volatility,
+        SymbolAspect spread,
+        SymbolAspect volume,
+        SymbolAspect turnover
 ) {
 
     public static SymbolInfo parse(String csv){
-        final String[] tokens = csv.split(",");
+        if(!Strings.hasText(csv)) return null;
+        final String[] tokens = csv.split(";");
+        if(6 > tokens.length) return null;
         return SymbolInfo.builder()
                 .token(Integer.parseInt(tokens[0]))
-                .efficiencyRank(Integer.parseInt(tokens[1]))
-                .efficiencyLevel(Level.valueOf(tokens[2]))
-                .volatilityRank(Integer.parseInt(tokens[3]))
-                .volatiliyLevel(Level.valueOf(tokens[4]))
-                .spreadRank(Integer.parseInt(tokens[5]))
-                .spreadLevel(Level.valueOf(tokens[6]))
-                .volumeRank(Integer.parseInt(tokens[7]))
-                .volumeLevel(Level.valueOf(tokens[8]))
-                .turnoverRank(Integer.parseInt(tokens[9]))
-                .turnoverLevel(Level.valueOf(tokens[10]))
+                .efficiency(SymbolAspect.parse(tokens[1]))
+                .volatility(SymbolAspect.parse(tokens[2]))
+                .spread(SymbolAspect.parse(tokens[3]))
+                .volume(SymbolAspect.parse(tokens[4]))
+                .turnover(SymbolAspect.parse(tokens[5]))
                 .build();
     }
 
     public String toCSV(){
-        return String.join(",",
+        if(null == efficiency || null == volatility || null == spread || null == volume || null == turnover) return null;
+        return String.join(";",
                 String.valueOf(token),
-                String.valueOf(efficiencyRank), efficiencyLevel.name(),
-                String.valueOf(volatilityRank), volatiliyLevel.name(),
-                String.valueOf(spreadRank), spreadLevel.name(),
-                String.valueOf(volumeRank), volumeLevel.name(),
-                String.valueOf(turnoverRank), turnoverLevel.name());
+                efficiency.toCSV(),
+                volatility.toCSV(),
+                spread.toCSV(),
+                volume.toCSV(),
+                turnover.toCSV());
     }
 
 }

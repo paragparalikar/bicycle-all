@@ -41,10 +41,8 @@ public class EfficiencyIndicator implements Indicator {
         openSeries.add(bar.open());
 
         float value = Float.NaN;
-        if(barCount > openSeries.size()) {
+        if(barCount >= openSeries.size()) {
             value = Float.NaN;
-        } else if(barCount == openSeries.size()) {
-            value = (bar.close() - openSeries.get(barCount)) / sum;
         } else {
             sum -= spreadSeries.get(barCount);
             value = (bar.close() - openSeries.get(barCount)) / sum;

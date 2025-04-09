@@ -10,13 +10,16 @@ import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.symbol.provider.SymbolDataProvider;
 import com.bicycle.core.symbol.repository.CacheSymbolRepository;
+import com.bicycle.core.symbol.repository.FileSystemSymbolInfoRepository;
+import com.bicycle.core.symbol.repository.SymbolInfoRepository;
 import com.bicycle.core.symbol.repository.SymbolRepository;
 import com.bicycle.util.Dates;
-import it.unimi.dsi.fastutil.ints.Int2ByteMap;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SymbolInfoMain {
 
@@ -26,11 +29,19 @@ public class SymbolInfoMain {
         final Timeframe timeframe = Timeframe.D;
         final long from = Dates.toEpochMillis(LocalDateTime.now().minusYears(1));
         final long to = Dates.toEpochMillis(LocalDateTime.now());
+        System.out.printf("Initiating symbol info data extraction with below settings:" +
+                "\nExchange            : " + exchange.name() +
+                "\nTimeframe           : " + timeframe.name() +
+                "\nBarCount            : " + String.valueOf(barCount) +
+                "\nFrom                : " + Dates.format(from) +
+                "\nTo                  : " + Dates.format(to));
 
         final SymbolDataProvider symbolDataProvider = new KiteSymbolDataProvider();
         final SymbolRepository symbolRepository = new CacheSymbolRepository(symbolDataProvider);
         final BarRepository barRepository = new FileSystemBarRepository(symbolRepository);
+        final SymbolInfoRepository symbolInfoRepository = new FileSystemSymbolInfoRepository();
         final Collection<Symbol> symbols = symbolRepository.findByExchange(exchange);
+        System.out.printf("\nSymbolCount         : " + symbols.size());
         final IndicatorCache indicatorCache = new IndicatorCache(symbols.size(), 1);
 
         final Indicator efficiencyIndicator = indicatorCache.efficiency(barCount);
@@ -46,52 +57,53 @@ public class SymbolInfoMain {
         final Map<Symbol, Double> turnoverValues = new HashMap<>();
         final Map<Symbol, Double> spreadValues = new HashMap<>();
 
-        int counter = 0;
-        final Bar bar = new Bar();
-        final Set<Integer> symbolCache = symbols.stream().map(Symbol::token).collect(Collectors.toSet());
         try(Cursor<Bar> cursor = barRepository.get(exchange, timeframe, from, to)){
-            long previousBarDate = 0;
+            final Bar bar = new Bar();
             for(int index = 0; index < cursor.size(); index++) {
                 cursor.advance(bar);
                 final Symbol symbol = bar.symbol();
-                if(null != symbol && symbolCache.contains(symbol.token())) {
+                if(null != symbol) {
                     indicatorCache.onBar(bar);
                     putValue(symbol, timeframe, efficiencyValues, efficiencyIndicator);
                     putValue(symbol, timeframe, standardDeviationValues, standardDeviationIndicator);
                     putValue(symbol, timeframe, volumeValues, volumeIndicator);
                     putValue(symbol, timeframe, turnoverValues, turnoverIndicator);
                     putValue(symbol, timeframe, spreadValues, spreadIndicator);
-                    if(previousBarDate != bar.date()) {
-                        if(0 != previousBarDate) {
-
-                            counter++;
-                        }
-                        previousBarDate = bar.date();
-                    }
                 }
             }
         }
-        final Map<Symbol, Map.Entry<Integer, Level>> efficiencies = rank(efficiencyValues);
-        final Map<Symbol, Map.Entry<Integer, Level>> stdDevs = rank(standardDeviationValues);
-        final Map<Symbol, Map.Entry<Integer, Level>> volumes = rank(volumeValues);
-        final Map<Symbol, Map.Entry<Integer, Level>> turnovers = rank(turnoverValues);
-        final Map<Symbol, Map.Entry<Integer, Level>> spreads = rank(spreadValues);
+        final Map<Symbol, SymbolAspect> efficiencies = rank(efficiencyValues);
+        final Map<Symbol, SymbolAspect> stdDevs = rank(standardDeviationValues);
+        final Map<Symbol, SymbolAspect> volumes = rank(volumeValues);
+        final Map<Symbol, SymbolAspect> turnovers = rank(turnoverValues);
+        final Map<Symbol, SymbolAspect> spreads = rank(spreadValues);
 
-        final List<SymbolInfo> symbolInfos = new ArrayList<>(symbols.size());
-
+        final List<SymbolInfo> symbolInfos = symbols.stream()
+                .map(symbol -> SymbolInfo.builder()
+                        .token(symbol.token())
+                        .efficiency(efficiencies.get(symbol))
+                        .volatility(stdDevs.get(symbol))
+                        .volume(volumes.get(symbol))
+                        .turnover(turnovers.get(symbol))
+                        .spread(spreads.get(symbol))
+                        .build())
+                .toList();
+        System.out.printf("\nPersisting %d symbolInofs...", symbolInfos.size());
+        symbolInfoRepository.saveAll(symbolInfos);
+        System.out.println("\tCompleted");
 
     }
 
-    private static Map<Symbol, Map.Entry<Integer, Level>> rank(Map<Symbol, Double> map){
+    private static Map<Symbol, SymbolAspect> rank(Map<Symbol, Double> map){
         final List<Symbol> symbols = map.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .toList();
-        final Map<Symbol, Map.Entry<Integer, Level>> results = new HashMap<>();
-        for(int index = 1; index <= symbols.size(); index++){
+        final Map<Symbol, SymbolAspect> results = new HashMap<>();
+        for(int index = 0; index < symbols.size(); index++){
             final Level level = index <= symbols.size() / 3 ? Level.LOW :
                     (index >= symbols.size() * 2 / 3 ? Level.HIGH : Level.MEDIUM);
-            results.put(symbols.get(index), new AbstractMap.SimpleEntry<>(index, level));
+            results.put(symbols.get(index), new SymbolAspect(index, level));
         }
         return results;
     }
@@ -99,7 +111,7 @@ public class SymbolInfoMain {
     private static void putValue(Symbol symbol, Timeframe timeframe, Map<Symbol, Double> map, Indicator indicator){
         final double lastValue = map.getOrDefault(symbol, 0d);
         final double currentValue = indicator.getValue(symbol, timeframe);
-        map.put(symbol, lastValue + currentValue);
+        map.put(symbol, lastValue + (Double.isNaN(currentValue) ? 0 : currentValue));
     }
 
 }

@@ -2,10 +2,10 @@ package com.bicycle.core.symbol.repository;
 
 import com.bicycle.core.symbol.SymbolInfo;
 
-public class SymbolInfoRepository {
+import java.util.Collection;
 
-    public SymbolInfo findByToken(int token){
-        return null;
-    }
+public interface SymbolInfoRepository {
+    void saveAll(Collection<SymbolInfo> infos);
 
+    SymbolInfo findByToken(int token);
 }
