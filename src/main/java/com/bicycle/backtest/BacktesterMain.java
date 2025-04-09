@@ -72,6 +72,7 @@ public class BacktesterMain {
         final float multiplier = 4;
         final int[] barCounts = new int[]{5, 10, 15, 20, 25, 30, 40, 50};
         return cache -> new CompositeFeatureCaptor(
+                //new SymbolFeatureCaptor(),
                 //new BarFeatureCaptor(cache, barCount),
                 //new BarSequenceFeatureCaptor(cache, barCounts),
                 //new TrendFeatureCaptor(cache, multiplier, barCounts)
