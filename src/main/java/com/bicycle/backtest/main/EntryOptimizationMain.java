@@ -48,8 +48,6 @@ public class EntryOptimizationMain {
                 features.add(report.unwrap(BaseReport.class).getAverageMfe());
                 featureWriter.writeValues(features);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
