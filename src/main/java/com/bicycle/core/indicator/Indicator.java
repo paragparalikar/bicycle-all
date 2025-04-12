@@ -2,6 +2,8 @@ package com.bicycle.core.indicator;
 
 import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.Timeframe;
+import com.bicycle.core.indicator.builder.IndicatorBuilder;
+import com.bicycle.core.indicator.builder.SingletonIndicatorBuilder;
 import com.bicycle.core.rule.EqualsRule;
 import com.bicycle.core.rule.GreaterThanRule;
 import com.bicycle.core.rule.LesserThanRule;
@@ -13,7 +15,7 @@ public interface Indicator extends BarListener {
     void clear();
     
     float getValue(Symbol symbol, Timeframe timeframe);
-    
+
     default Rule equals(Indicator other) {
         return new EqualsRule(this, other);
     }
@@ -52,6 +54,10 @@ public interface Indicator extends BarListener {
     
     default Rule lesserThanOrEquals(float value) {
         return lesserThan(value).or(equals(value));
+    }
+
+    default Indicator prev(IndicatorCache cache, int barCount){
+        return cache.prev(this, barCount);
     }
 
     default Indicator min(Indicator indicator) {
@@ -100,5 +106,9 @@ public interface Indicator extends BarListener {
     
     default Indicator pow(float value) {
         return pow(ConstantIndicator.of(value));
+    }
+
+    default IndicatorBuilder builder(){
+        return new SingletonIndicatorBuilder(this);
     }
 }

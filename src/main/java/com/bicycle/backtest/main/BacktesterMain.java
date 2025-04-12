@@ -1,5 +1,6 @@
-package com.bicycle.backtest;
+package com.bicycle.backtest.main;
 
+import com.bicycle.backtest.Backtest;
 import com.bicycle.backtest.feature.captor.CompositeFeatureCaptor;
 import com.bicycle.backtest.feature.captor.FeatureCaptor;
 import com.bicycle.backtest.feature.captor.PositionFeatureCaptor;
