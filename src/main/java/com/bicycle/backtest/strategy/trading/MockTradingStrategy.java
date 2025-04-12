@@ -58,6 +58,7 @@ public class MockTradingStrategy implements BarListener {
         MockPosition openPosition = report.getOpenPosition(symbol);
         if(null != openPosition ){
             openPosition.onPrice(price);
+            if(isClosePrice) openPosition.setBarCount(openPosition.getBarCount() + 1);
             if(tryExit(date, openPosition, isOpenPrice)) {
                 report.close(openPosition);
                 openPosition = null;

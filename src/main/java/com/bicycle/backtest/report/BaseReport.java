@@ -18,7 +18,7 @@ public class BaseReport implements Report {
     private final MockTradingStrategy tradingStrategy;
     private final Int2ObjectOpenHashMap<MockPosition> openTrades = new Int2ObjectOpenHashMap<>();
     private volatile float availableMargin, equity, maxEquity, minEquity, avgDrawdown, maxDrawdown, exposure;
-    private double totalMfe;
+    private double averageMfe;
     
     public BaseReport(
             float initialMargin, MockTradingStrategy tradingStrategy,
@@ -33,6 +33,7 @@ public class BaseReport implements Report {
     @Override
     public void clear() {
         openTrades.clear();
+        averageMfe = 0;
         barCount = totalTradeCount = 0;
         avgDrawdown = maxDrawdown = exposure = 0;
         availableMargin = equity = maxEquity = minEquity = initialMargin;
@@ -74,7 +75,8 @@ public class BaseReport implements Report {
     public synchronized void close(MockPosition trade) {
         availableMargin += trade.getCloseEquity();
         openTrades.remove(trade.getSymbol().token());
-        totalMfe += trade.getMfe();
+        final int closedTradeCount = totalTradeCount - openTrades.size();
+        averageMfe = (averageMfe * (closedTradeCount - 1) + trade.getMfe()) / closedTradeCount;
     }
     
     @Override

@@ -52,9 +52,10 @@ public class BacktesterMain {
         });
         final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> {
             final Indicator atrIndicator = cache.atr(21);
-            return new StopLossRule(false, 2, atrIndicator)
-                    .or(new StopLossRule(true, 2, atrIndicator))
-                    .or(new WaitForBarCountRule(22, cache));
+            return new WaitForBarCountRule(22, cache)
+                    //.or(new StopLossRule(false, 2, atrIndicator))
+                    //.or(new StopLossRule(true, 2, atrIndicator))
+                    ;
         });
         /*return FeatureAwareTradingStrategyBuilder.builder()
                 .entryOrderType(OrderType.BUY)

@@ -1,18 +1,24 @@
 Steps for creating a trading strategy:
 
 1. Define a bare minimum entry signal and exit after fixed number of bars.
-2. Optimize entry signal for maximum average MFE.
-3. Collect features in separate feature files for each type of feature group.
-4. Perform transpose + hierarchical clustering.
-5. Rank features using Information Gain / Lasso regression.
-6. Select features with the highest spearman correlation with MFE from each cluster.
-7. Build an ensemble trading strategy with features select for each feature group.
-8. Optimize the strategy for threshold values in ensemble to maximize average MFE.
-9. Optimize the strategy exit rules to maximize RAR/ADD.
-10. Verify the strategy's performance and robustness.
+2. Generate a tsv file for signal parameters as features and average MFE as target.
+2. Select entry signal parameters for maximum average MFE, use Orange for visualization.
+3. Generate tsv feature file with all the features and average MFE as target.
+4. Use Orange to rank all features using Mutual Information. Select top n features that make sense.
+5. Create a feature group specifically for these selected features.
+6. For each hyperparameter set,
+    Train RandomForest classifier on training set.
+    Test RandomForest on test set.
+    Calculate Robustness Score = (Ptrain - Ptest)/Abs(Ptrain - Ptest)
+7. Create a tsv with hyperparameters as features and above metric as target variable.
+8. Use Orange to visualize and select most robust hyperparameter set maximizing this metric.
+9. Optimize different exit signals with different parameters using Optimizer. (for RARBADD)
+10. Validate this final trading strategy with MonteCarlo - Position permutation
 
 
 
+
+Create ClassiefierRule that loads the model and provides the classification.
 
 
 

@@ -1,7 +1,6 @@
 package com.bicycle.core.position;
 
 import com.bicycle.client.kite.utils.Constant;
-import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.symbol.Symbol;
@@ -34,11 +33,6 @@ public class Position {
         this.exitDate = exitDate;
         this.exitQuantity = exitQuantity;
         this.exitPrice = exitPrice;
-    }
-
-    public void onBar(Bar bar) {
-        barCount++;
-        ltp = bar.close();
     }
 
     public void onPrice(float price) {

@@ -1,7 +1,6 @@
 package com.bicycle.backtest;
 
 import com.bicycle.client.kite.utils.Constant;
-import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.position.Position;
@@ -12,7 +11,7 @@ import lombok.Setter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter @Setter
-public class MockPosition extends Position implements BarListener {
+public class MockPosition extends Position {
     private static final AtomicInteger ID = new AtomicInteger(0);
 
     private final int id;
