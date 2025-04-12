@@ -15,7 +15,6 @@ import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
 import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.LiquidityRule;
-import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.core.rule.WaitForBarCountRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;
