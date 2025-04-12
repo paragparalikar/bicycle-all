@@ -17,9 +17,8 @@ public class BaseReport implements Report {
     private final float initialMargin, years;
     private final MockTradingStrategy tradingStrategy;
     private final Int2ObjectOpenHashMap<MockPosition> openTrades = new Int2ObjectOpenHashMap<>();
-    private volatile float availableMargin, equity, maxEquity, minEquity, avgDrawdown, maxDrawdown, exposure;
-    private double averageMfe;
-    
+    private volatile float availableMargin, equity, maxEquity, minEquity, avgDrawdown, maxDrawdown, exposure, averageMfe;
+
     public BaseReport(
             float initialMargin, MockTradingStrategy tradingStrategy,
             long startDate, long endDate) {

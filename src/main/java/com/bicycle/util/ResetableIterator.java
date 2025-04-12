@@ -24,15 +24,29 @@ public interface ResetableIterator {
         return false;
     }
 
+    static List<List<Float>> toList(List<ResetableIterator> iterators){
+        final List<List<Float>> result = new ArrayList<>();
+        iterators.forEach(ResetableIterator::reset);
+        do {
+            final List<Float> values = new ArrayList<>(iterators.size() + 1);
+            for(ResetableIterator iterator : iterators){
+                if(iterator instanceof FloatIterator floatIterator) values.add(floatIterator.value());
+                else if(iterator instanceof IntegerIterator integerIterator) values.add((float) integerIterator.value());
+            }
+            result.add(values);
+        }while(ResetableIterator.advance(0, iterators));
+        return result;
+    }
+
     static Map<String, List<Double>> toMap(List<ResetableIterator> iterators){
         final Map<String, List<Double>> result = new HashMap<>();
         iterators.forEach(ResetableIterator::reset);
         do{
-            for(int index = 0; index < iterators.size(); index++){
-                final ResetableIterator iterator = iterators.get(index);
+            for (final ResetableIterator iterator : iterators) {
                 final List<Double> values = result.computeIfAbsent(iterator.name(), key -> new ArrayList<>());
-                if(iterator instanceof FloatIterator floatIterator) values.add((double) floatIterator.value());
-                else if(iterator instanceof IntegerIterator integerIterator) values.add((double) integerIterator.value());
+                if (iterator instanceof FloatIterator floatIterator) values.add((double) floatIterator.value());
+                else if (iterator instanceof IntegerIterator integerIterator)
+                    values.add((double) integerIterator.value());
             }
         }while(advance(0, iterators));
         return result;

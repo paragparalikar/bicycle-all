@@ -37,6 +37,7 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
         final String line = String.join(delimiter, headers);
         writer.write(line);
         writer.newLine();
+        writer.flush();
         areHeadersWritten = true;
     }
 
@@ -49,6 +50,7 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
                 .collect(Collectors.joining(delimiter));
         writer.write(line);
         writer.newLine();
+        writer.flush();
     }
 
     private String blankIfInfinityOrNaN(String text){
@@ -61,6 +63,7 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
 
     @Override
     public void close() throws Exception {
+        this.outputStream.flush();
         this.outputStream.close();
     }
 }
