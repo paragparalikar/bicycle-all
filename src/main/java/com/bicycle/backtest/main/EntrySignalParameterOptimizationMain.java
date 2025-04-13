@@ -24,14 +24,14 @@ import com.bicycle.util.ResetableIterator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntryOptimizationMain {
+public class EntrySignalParameterOptimizationMain {
 
     public static void main(String[] args) throws Exception {
         final List<String> headers = new ArrayList<>();
         final RuleTradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder();
         tradingStrategyBuilder.getIterators().stream().map(ResetableIterator::name).forEach(headers::add);
         headers.add("AVERAGE_MFE");
-        try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("features1.tsv", "\t")){
+        try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("entry-signal.tsv", "\t")){
             featureWriter.writeHeaders(headers);
             final long step = (long) 1000 * 60 * 60 * 24 * 30 * 12;
             final Backtest backtest = new Backtest()

@@ -17,7 +17,7 @@ import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;
 import com.bicycle.util.Dates;
 
-public class BacktesterMain {
+public class EntryFilterFeatureGenerationMain {
 
     public static void main(String[] args) throws Exception {
         try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("features.tsv", "\t")){
@@ -30,7 +30,7 @@ public class BacktesterMain {
                     .setLimitPositionSizeToAvailableMargin(false)
                     .setTradingStrategyBuilder(tradingStrategyBuilder);
             final ReportCache reportCache = backtest.run();
-            System.out.println(SingletonReportCache.class.cast(reportCache).getReport());
+            System.out.println(((SingletonReportCache) reportCache).getReport());
         }
     }
 
@@ -49,7 +49,6 @@ public class BacktesterMain {
                 .exitFeatureCaptorBuilder(exitFeatureCaptorBuidler)
                 .featureWriter(featureWriter)
                 .build();
-        //return new RuleTradingStrategyBuilder(entryRuleBuilder, exitRuleBuilder, OrderType.BUY, List.of());
     }
 
     private static FeatureCaptor.Builder createEntryFeatureCaptorBuilder() {
