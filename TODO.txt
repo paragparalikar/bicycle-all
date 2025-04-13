@@ -52,4 +52,11 @@ inverse - (ema(volume,30) / ema(volume,120))                means oversold regio
 direct - ibs                                                means headed upward
 
 
+Efficiency - LOW and MEDIUM
+Volatility - HIGH
+Spread - HIGH
+Volume - LOW
+Turnover - LOW
+
+
 

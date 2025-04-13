@@ -4,10 +4,7 @@ import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.Timeframe;
 import com.bicycle.core.indicator.builder.IndicatorBuilder;
 import com.bicycle.core.indicator.builder.SingletonIndicatorBuilder;
-import com.bicycle.core.rule.EqualsRule;
-import com.bicycle.core.rule.GreaterThanRule;
-import com.bicycle.core.rule.LesserThanRule;
-import com.bicycle.core.rule.Rule;
+import com.bicycle.core.rule.*;
 import com.bicycle.core.symbol.Symbol;
 
 public interface Indicator extends BarListener {
@@ -54,6 +51,14 @@ public interface Indicator extends BarListener {
     
     default Rule lesserThanOrEquals(float value) {
         return lesserThan(value).or(equals(value));
+    }
+
+    default Rule crossAbove(Indicator other, IndicatorCache cache){
+        return new CrossAboveRule(this, other, cache);
+    }
+
+    default Rule crossBelow(Indicator other, IndicatorCache cache){
+        return new CrossBelowRule(this, other, cache);
     }
 
     default Indicator prev(IndicatorCache cache, int barCount){
