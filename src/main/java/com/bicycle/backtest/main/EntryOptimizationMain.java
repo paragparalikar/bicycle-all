@@ -5,6 +5,7 @@ import com.bicycle.backtest.feature.writer.DelimitedFileFeatureWriter;
 import com.bicycle.backtest.feature.writer.FeatureWriter;
 import com.bicycle.backtest.report.BaseReport;
 import com.bicycle.backtest.report.Report;
+import com.bicycle.backtest.report.RobustnessReport;
 import com.bicycle.backtest.report.cache.ReportCache;
 import com.bicycle.backtest.report.cache.TradingStrategyReportCache;
 import com.bicycle.backtest.strategy.trading.MockTradingStrategy;
@@ -32,10 +33,12 @@ public class EntryOptimizationMain {
         headers.add("AVERAGE_MFE");
         try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("features1.tsv", "\t")){
             featureWriter.writeHeaders(headers);
+            final long step = (long) 1000 * 60 * 60 * 24 * 30 * 12;
             final Backtest backtest = new Backtest()
                     .setStartDate(Dates.toEpochMillis(2010, 1, 1))
-                    .setEndDate(Dates.toEpochMillis(2010, 12, 31))
+                    .setEndDate(Dates.toEpochMillis(2020, 12, 31))
                     .setPercentagePositionSize(2)
+                    .setReportBuilder(RobustnessReport.builder(BaseReport::new, step))
                     .setReportCacheOptions(ReportCache.TRADING_STRATEGY)
                     .setLimitPositionSizeToAvailableMargin(false)
                     .setTradingStrategyBuilder(tradingStrategyBuilder);
@@ -45,7 +48,7 @@ public class EntryOptimizationMain {
             for(int index = 0; index < tradingStrategies.size(); index++){
                 final List<Float> features = parameters.get(index);
                 final Report report = reportCache.get(null, tradingStrategies.get(index));
-                features.add(report.unwrap(BaseReport.class).getAverageMfe());
+                features.add(report.unwrap(RobustnessReport.class).compute());
                 featureWriter.writeValues(features);
             }
         }
@@ -53,8 +56,8 @@ public class EntryOptimizationMain {
 
 
     private static RuleTradingStrategyBuilder createTradingStrategyBuilder(){
-        final IntegerIterator longEMABarCount = new IntegerIterator("long-ema-bar-count", 20, 20, 100, 10);
-        final IntegerIterator shortEMABarCount = new IntegerIterator("short-ema-bar-count", 5, 5, 20, 5);
+        final IntegerIterator longEMABarCount = new IntegerIterator("long-ema-bar-count", 20, 20, 100, 2);
+        final IntegerIterator shortEMABarCount = new IntegerIterator("short-ema-bar-count", 5, 5, 20, 1);
         final ClosePriceIndicatorBuilder closePriceIndicatorBuilder = new ClosePriceIndicatorBuilder();
         final RuleBuilder entryRuleBuilder = new SingletonRuleBuilder(LiquidityRule::new).and(
                 new EMAIndicatorBuilder(closePriceIndicatorBuilder, shortEMABarCount).crossedAbove(

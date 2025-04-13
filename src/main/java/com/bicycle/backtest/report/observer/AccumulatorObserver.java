@@ -1,4 +1,4 @@
-package com.bicycle.backtest.report.callback;
+package com.bicycle.backtest.report.observer;
 
 import com.bicycle.backtest.report.ObservableReport;
 import com.bicycle.backtest.report.Report;

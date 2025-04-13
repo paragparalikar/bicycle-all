@@ -102,6 +102,16 @@ public class BaseReport implements Report {
     }
 
     @Override
+    public int getClosedPositionCount() {
+        return getTotalPositionCount() - getOpenPositionCount();
+    }
+
+    @Override
+    public int getTotalPositionCount() {
+        return totalTradeCount;
+    }
+
+    @Override
     public String toString() {
         return "\nBacktest report" +
                 "\nTrading Strategy    : " + tradingStrategy.toString() +

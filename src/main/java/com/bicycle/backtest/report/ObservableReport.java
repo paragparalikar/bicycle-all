@@ -17,7 +17,7 @@ public class ObservableReport implements Report {
     }
 
     public static ReportBuilder builder(Observer observer, ReportBuilder delegateBuilder) {
-        return new CallbackReportBuilder(observer, delegateBuilder);
+        return new ObservableReportBuilder(observer, delegateBuilder);
     }
     
     @NonNull private final ObservableReport.Observer observer;
@@ -55,7 +55,7 @@ public class ObservableReport implements Report {
 }
 
 @RequiredArgsConstructor
-class CallbackReportBuilder implements ReportBuilder {
+class ObservableReportBuilder implements ReportBuilder {
     
     private final Observer observer;
     private final ReportBuilder delegateBuilder;

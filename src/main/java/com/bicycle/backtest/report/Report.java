@@ -34,6 +34,14 @@ public interface Report {
     float getInitialMargin();
     
     float getAvailableMargin();
+
+    float getAverageMfe();
+
+    int getOpenPositionCount();
+
+    int getClosedPositionCount();
+
+    int getTotalPositionCount();
     
     <T extends Report> T unwrap(Class<T> type);
 

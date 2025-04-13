@@ -1,7 +1,7 @@
 package com.bicycle.backtest.report;
 
-import com.bicycle.backtest.report.callback.AccumulatorObserver;
-import com.bicycle.backtest.report.callback.CompositeObserver;
+import com.bicycle.backtest.report.observer.AccumulatorObserver;
+import com.bicycle.backtest.report.observer.CompositeObserver;
 import com.bicycle.util.Strings;
 import lombok.experimental.Delegate;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
