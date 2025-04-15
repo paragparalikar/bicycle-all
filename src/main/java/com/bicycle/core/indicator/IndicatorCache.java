@@ -216,6 +216,12 @@ public class IndicatorCache implements BarListener {
         return computeIfAbsent(RuleSatisfiedStrengthIndicator.toText(rule, barCount),
                 () -> cache(new RuleSatisfiedStrengthIndicator(symbolCount, timeframeCount, rule, barCount)));
     }
+
+    public Indicator crossNormalDeviation(Indicator indicator){
+        return computeIfAbsent(CrossNormalDeviationIndicator.toText(indicator),
+                () -> cache(new CrossNormalDeviationIndicator(symbolCount, timeframeCount, indicator)));
+    }
+
     
     private Indicator computeIfAbsent(String text, Supplier<Indicator> supplier) {
         Indicator indicator = cache.get(text);
