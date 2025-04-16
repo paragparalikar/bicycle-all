@@ -15,9 +15,6 @@ import smile.validation.Bag;
 import smile.validation.CrossValidation;
 import smile.validation.metric.FScore;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
