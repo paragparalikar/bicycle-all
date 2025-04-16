@@ -51,12 +51,11 @@ inverse - (variance(close,30) / variance(close,120))        means low volatility
 inverse - (ema(volume,30) / ema(volume,120))                means oversold region
 direct - ibs                                                means headed upward
 
+maxDepth <= 4
+mtry = 2
 
-Efficiency - LOW and MEDIUM
-Volatility - HIGH
-Spread - HIGH
-Volume - LOW
-Turnover - LOW
-
+SPREAD > 0
+VOLATILITY > 0
+VOLUME < 1
 
 

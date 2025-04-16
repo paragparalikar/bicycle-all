@@ -20,7 +20,7 @@ public class VolatilityFeatureCaptor implements FeatureCaptor {
             indicators.add(cache.stdDev(cache.close(), shortBarCount).dividedBy(cache.stdDev(cache.close(), longBarCount)));
             indicators.add(cache.meanDev(cache.close(), shortBarCount).dividedBy(cache.close()));
             indicators.add(cache.meanDev(cache.close(), shortBarCount).dividedBy(cache.meanDev(cache.close(), longBarCount)));
-            indicators.add(cache.chop(shortBarCount).dividedBy(cache.chop(longBarCount)));
+            //indicators.add(cache.chop(shortBarCount).dividedBy(cache.chop(longBarCount)));
             indicators.add(cache.variance(cache.close(), shortBarCount).dividedBy(cache.variance(cache.close(), longBarCount)));
         }
         for(int index = 0; index < barCounts.length; index++){

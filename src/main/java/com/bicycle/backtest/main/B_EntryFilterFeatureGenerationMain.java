@@ -17,10 +17,10 @@ import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;
 import com.bicycle.util.Dates;
 
-public class EntryFilterFeatureGenerationMain {
+public class B_EntryFilterFeatureGenerationMain {
 
     public static void main(String[] args) throws Exception {
-        try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("features.tsv", "\t")){
+        try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("entry-features.tsv", "\t")){
             final TradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder(featureWriter);
             final Backtest backtest = new Backtest()
                     .setStartDate(Dates.toEpochMillis(2010, 1, 1))
@@ -38,9 +38,10 @@ public class EntryFilterFeatureGenerationMain {
         final FeatureCaptor.Builder entryFeatureCaptorBuilder = createEntryFeatureCaptorBuilder();
         final FeatureCaptor.Builder exitFeatureCaptorBuidler = cache -> new PositionFeatureCaptor();
         final RuleBuilder entryRuleBuilder = new SingletonRuleBuilder(cache -> new LiquidityRule(cache)
-                    .and(cache.ema(cache.close(), 8).crossAbove(cache.ema(cache.close(), 80), cache))
+                .and(cache.close().greaterThanOrEquals(cache.ema(cache.close(), 200)))
+                .and(cache.rsi(cache.close(), 2).crossAbove(cache.constant(30), cache))
         );
-        final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> new WaitForBarCountRule(50, cache));
+        final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> new WaitForBarCountRule(22, cache));
         return FeatureAwareTradingStrategyBuilder.builder()
                 .entryOrderType(OrderType.BUY)
                 .entryRuleBuilder(entryRuleBuilder)
@@ -56,12 +57,12 @@ public class EntryFilterFeatureGenerationMain {
         final float multiplier = 4;
         final int[] barCounts = new int[]{5, 10, 15, 20, 25, 30, 40, 50};
         return cache -> new CompositeFeatureCaptor(
-                new SymbolFeatureCaptor(cache, 50)
-                //new BarFeatureCaptor(cache, barCount),
-                //new BarSequenceFeatureCaptor(cache, barCounts),
-                //new TrendFeatureCaptor(cache, multiplier, barCounts),
-                //new VolatilityFeatureCaptor(cache, multiplier, barCounts),
-                //new VolumeFeatureCaptor(cache, multiplier, barCounts)
+                new SymbolFeatureCaptor(cache, 50),
+                new BarFeatureCaptor(cache, barCount),
+                new BarSequenceFeatureCaptor(cache, barCounts),
+                new TrendFeatureCaptor(cache, multiplier, barCounts),
+                new VolatilityFeatureCaptor(cache, multiplier, barCounts),
+                new VolumeFeatureCaptor(cache, multiplier, barCounts)
                 );
     }
 

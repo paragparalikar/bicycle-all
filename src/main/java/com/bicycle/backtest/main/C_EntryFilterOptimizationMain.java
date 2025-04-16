@@ -7,8 +7,6 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import smile.classification.RandomForest;
 import smile.data.DataFrame;
 import smile.data.formula.Formula;
-import smile.data.vector.ValueVector;
-import smile.feature.transform.RobustStandardizer;
 import smile.io.Read;
 import smile.util.Index;
 import smile.validation.Bag;
@@ -19,19 +17,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class EntryFilterOptimizationMain {
+public class C_EntryFilterOptimizationMain {
 
     public static void main(String[] args) throws Exception {
-        final String targetColumn = "AVERAGE_MFE";
+        final String targetColumn = "MFE";
         final Formula formula = Formula.lhs(targetColumn);
-        final Path path = Paths.get(Constant.HOME, "reports", "features.tsv");
+        final Path path = Paths.get(Constant.HOME, "reports", "entry-features.tab");
         DataFrame dataFrame = Read.csv(path.toString(),"delimiter=\\t,header=true,comment=#,escape=\\,quote=\"").dropna();
-        dataFrame = RobustStandardizer.fit(dataFrame).apply(dataFrame);
-        final int[] y = discretizeByMedian(dataFrame.column(targetColumn).toDoubleArray());
-        dataFrame.drop(targetColumn);
-        dataFrame.add(ValueVector.of(targetColumn, y));
+        //dataFrame = RobustStandardizer.fit(dataFrame).apply(dataFrame);
+        //final int[] y = discretizeByMedian(dataFrame.column(targetColumn).stre);
+        //dataFrame.drop(targetColumn);
+        //dataFrame.add(ValueVector.of(targetColumn, y));
 
-        try(FeatureWriter featureWriter = new DelimitedFileFeatureWriter("hyper-parameters.tsv","\t")){
+        try(FeatureWriter featureWriter = new DelimitedFileFeatureWriter("entry-hyper-parameters.tsv","\t")){
             final List<String> headers = List.of("mtry","maxDepth","nodeSize","score");
             featureWriter.writeHeaders(headers);
             System.out.println(String.join(",", headers));
@@ -57,16 +55,17 @@ public class EntryFilterOptimizationMain {
             final RandomForest model = RandomForest.fit(formula, train, options);
             final DataFrame test = dataFrame.get(Index.of(bag.oob()));
             final int[] truth = formula.y(train).toIntArray();
-            final double trainF1Score = f1(truth, train, model);
-            final double testF1Score = f1(truth, test, model);
+            final double trainF1Score = f1(formula, train, model);
+            final double testF1Score = f1(formula, test, model);
             sum += (testF1Score / Math.abs(trainF1Score - testF1Score));
         }
         return sum / k;
     }
 
-    public static double f1(int[] truth, DataFrame dataFrame, RandomForest model){
+    public static double f1(Formula formula, DataFrame dataFrame, RandomForest model){
         final int n = dataFrame.size();
         final int[] prediction = new int[n];
+        final int[] truth = formula.y(dataFrame).toIntArray();
         for (int i = 0; i < n; i++) prediction[i] = model.predict(dataFrame.get(i));
         return FScore.F1.score(truth, prediction);
     }
