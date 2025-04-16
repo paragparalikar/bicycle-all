@@ -60,14 +60,14 @@ public class EntryFilterOptimizationMain {
             final RandomForest model = RandomForest.fit(formula, train, options);
             final DataFrame test = dataFrame.get(Index.of(bag.oob()));
             final int[] truth = formula.y(train).toIntArray();
-            final double trainF1Score = f1(truth, formula, train, model);
-            final double testF1Score = f1(truth, formula, test, model);
+            final double trainF1Score = f1(truth, train, model);
+            final double testF1Score = f1(truth, test, model);
             sum += (testF1Score / Math.abs(trainF1Score - testF1Score));
         }
         return sum / k;
     }
 
-    public static double f1(int[] truth, Formula formula, DataFrame dataFrame, RandomForest model){
+    public static double f1(int[] truth, DataFrame dataFrame, RandomForest model){
         final int n = dataFrame.size();
         final int[] prediction = new int[n];
         for (int i = 0; i < n; i++) prediction[i] = model.predict(dataFrame.get(i));
