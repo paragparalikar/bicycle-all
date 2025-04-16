@@ -5,7 +5,6 @@ import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.indicator.IndicatorCache;
 import com.bicycle.core.position.Position;
 import com.bicycle.core.symbol.Symbol;
-import com.bicycle.core.symbol.SymbolInfo;
 
 import java.util.Arrays;
 import java.util.List;

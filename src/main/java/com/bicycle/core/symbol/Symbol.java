@@ -12,8 +12,7 @@ public record Symbol(
         String type, 
         String segment,
         float tickSize, 
-        int lotSize,
-        SymbolInfo info) {
+        int lotSize) {
 
     @Override
     public int hashCode() {

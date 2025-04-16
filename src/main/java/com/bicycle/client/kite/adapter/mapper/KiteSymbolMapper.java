@@ -4,13 +4,11 @@ import com.bicycle.client.kite.api.model.KiteExchange;
 import com.bicycle.client.kite.api.model.KiteSymbol;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.Symbol;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.bicycle.core.symbol.repository.FileSystemSymbolInfoRepository;
-import com.bicycle.core.symbol.repository.SymbolInfoRepository;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class KiteSymbolMapper {
@@ -19,8 +17,7 @@ public class KiteSymbolMapper {
     private final Map<Integer, Symbol> intsrumentTokenSymbolCache = new HashMap<>();
     private final Map<KiteExchange, Map<String, Symbol>> symbolCache = new HashMap<>();
     private final Map<Exchange, Map<String, KiteSymbol>> kiteSymbolCache = new HashMap<>();
-    private final SymbolInfoRepository symbolInfoRepository = new FileSystemSymbolInfoRepository();
-    
+
     public Symbol toSymbol(KiteSymbol kiteSymbol) {
         final Symbol symbol = Symbol.builder()
                 .exchange(kiteExchangeMapper.toExchange(kiteSymbol.getExchange()))
@@ -31,7 +28,6 @@ public class KiteSymbolMapper {
                 .lotSize(kiteSymbol.getLotSize())
                 .name(null == kiteSymbol.getName() ? kiteSymbol.getTradingsymbol() : kiteSymbol.getName())
                 .type(kiteSymbol.getType())
-                .info(symbolInfoRepository.findByToken(kiteSymbol.getExchangeToken()))
                 .build();
         cache(kiteSymbol.getInstrumentToken(), symbol);
         cache(symbol.exchange(), symbol.code(), kiteSymbol);
