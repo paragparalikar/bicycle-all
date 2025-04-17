@@ -12,6 +12,7 @@ import smile.util.Index;
 import smile.validation.Bag;
 import smile.validation.CrossValidation;
 import smile.validation.metric.FScore;
+import smile.validation.metric.Precision;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,10 +34,10 @@ public class C_EntryFilterOptimizationMain {
             final List<String> headers = List.of("mtry","maxDepth","nodeSize","score");
             featureWriter.writeHeaders(headers);
             System.out.println(String.join(",", headers));
-            for(int mtry = 1; mtry < dataFrame.ncol()/3; mtry++){
-                for(int maxDepth = 2; maxDepth <= 20; maxDepth += 2){
+            for(int mtry = 1; mtry <= 5; mtry++){
+                for(int maxDepth = 1; maxDepth <= 5; maxDepth += 2){
                     for(int nodeSize = 5; nodeSize <= 50; nodeSize += 5){
-                        final RandomForest.Options options = new RandomForest.Options(500, mtry, maxDepth, 0, nodeSize);
+                        final RandomForest.Options options = new RandomForest.Options(100, mtry, maxDepth, 0, nodeSize);
                         final double score = compute(10, formula, dataFrame, options);
                         System.out.printf("%d,%d,%d,%f\n", mtry, maxDepth, nodeSize, score);
                         featureWriter.writeValues(List.of((float)mtry, (float)maxDepth, (float)nodeSize, (float)score));
@@ -54,20 +55,19 @@ public class C_EntryFilterOptimizationMain {
             final DataFrame train = dataFrame.get(Index.of(bag.samples()));
             final RandomForest model = RandomForest.fit(formula, train, options);
             final DataFrame test = dataFrame.get(Index.of(bag.oob()));
-            final int[] truth = formula.y(train).toIntArray();
-            final double trainF1Score = f1(formula, train, model);
-            final double testF1Score = f1(formula, test, model);
-            sum += (testF1Score / Math.abs(trainF1Score - testF1Score));
+            final double trainPrecision = precision(formula, train, model);
+            final double testPrecision = precision(formula, test, model);
+            sum += (testPrecision / Math.abs(trainPrecision - testPrecision));
         }
         return sum / k;
     }
 
-    public static double f1(Formula formula, DataFrame dataFrame, RandomForest model){
+    public static double precision(Formula formula, DataFrame dataFrame, RandomForest model){
         final int n = dataFrame.size();
         final int[] prediction = new int[n];
         final int[] truth = formula.y(dataFrame).toIntArray();
         for (int i = 0; i < n; i++) prediction[i] = model.predict(dataFrame.get(i));
-        return FScore.F1.score(truth, prediction);
+        return Precision.of(truth, prediction);
     }
 
     public static int[] discretizeByMedian(double[] target) {

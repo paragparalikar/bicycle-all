@@ -39,7 +39,7 @@ public class B_EntryFilterFeatureGenerationMain {
         final FeatureCaptor.Builder exitFeatureCaptorBuidler = cache -> new PositionFeatureCaptor();
         final RuleBuilder entryRuleBuilder = new SingletonRuleBuilder(cache -> new LiquidityRule(cache)
                 .and(cache.close().greaterThanOrEquals(cache.ema(cache.close(), 200)))
-                .and(cache.rsi(cache.close(), 2).crossAbove(cache.constant(30), cache))
+                .and(cache.rsi(cache.close(), 3).crossAbove(cache.constant(15), cache))
         );
         final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> new WaitForBarCountRule(22, cache));
         return FeatureAwareTradingStrategyBuilder.builder()
