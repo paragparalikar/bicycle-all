@@ -16,18 +16,19 @@ public class StopLossRule implements Rule {
     @Override
     public boolean isSatisfied(Symbol symbol, Timeframe timeframe, Position trade) {
         if(null == trade) return false;
-        final float allowedMae = -1 * atrIndicator.getValue(symbol, timeframe) * atrMultiple;  // MAE is always negative
+        final float atrValue = atrIndicator.getValue(symbol, timeframe);
         if(trail){
-            final float currentExcursion = trade.getEntryType().multiplier() * (trade.getLtp() - trade.getEntryPrice());
-            if(currentExcursion <=  trade.getMfe() + allowedMae){
+            final float currentExcursion = trade.getEntryType().multiplier() * (trade.getLtp() - trade.getEntryPrice()) / atrValue;
+            if(currentExcursion <=  trade.getMfe() - atrMultiple){
                 // Below line is there because we are calling tryEnter and tryExit only on close.
                 // If the rule is satisfied before the close of the bar, we would act in real trading, instead of waiting for the close.
-                trade.setExitPrice(trade.getEntryPrice() + trade.getEntryType().multiplier() * (trade.getMfe() + allowedMae));
+                trade.setExitPrice(trade.getEntryPrice() + trade.getEntryType().multiplier() * (trade.getMfe() - atrMultiple) * atrValue);
                 return true;
             }
-        } else if(trade.getMae() <= allowedMae) {
+        } else if(trade.getMae() <= -1 * atrMultiple) { // MAE is always negative
             // Below line is there because we are calling tryEnter and tryExit only on close.
             // If the rule is satisfied before the close of the bar, we would act in real trading, instead of waiting for the close.
+            final float allowedMae = -1 * atrValue * atrMultiple;  // MAE is always negative
             trade.setExitPrice(trade.getEntryPrice() - trade.getEntryType().multiplier() * allowedMae);
             return true;
         }

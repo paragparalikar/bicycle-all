@@ -12,6 +12,8 @@ import com.bicycle.backtest.report.cache.SingletonReportCache;
 import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.LiquidityRule;
+import com.bicycle.core.rule.StopGainRule;
+import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.core.rule.WaitForBarCountRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;
@@ -41,7 +43,11 @@ public class B_EntryFilterFeatureGenerationMain {
                 .and(cache.close().greaterThanOrEquals(cache.ema(cache.close(), 200)))
                 .and(cache.rsi(cache.close(), 3).crossAbove(cache.constant(15), cache))
         );
-        final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache -> new WaitForBarCountRule(22, cache));
+        final RuleBuilder exitRuleBuilder = new SingletonRuleBuilder(cache ->
+                new StopGainRule(5, cache.atr(14))
+                        .or(new StopLossRule(false, 2, cache.atr(14))) // try with trail = true
+                        .or(new WaitForBarCountRule(22, cache))
+        );
         return FeatureAwareTradingStrategyBuilder.builder()
                 .entryOrderType(OrderType.BUY)
                 .entryRuleBuilder(entryRuleBuilder)
