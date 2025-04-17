@@ -10,16 +10,18 @@ public class PositionFeatureCaptor implements FeatureCaptor {
     @Override
     public void captureHeaders(List<String> headers) {
         headers.addAll(Arrays.asList(
-                "PNL", "BAR_COUNT", "MFE", "MFE_BAR_COUNT", "MAE", "MAE_BAR_COUNT"));
+                "PNL", "BAR_COUNT", "MFE", "MFE_BAR_COUNT", "MAE", "MAE_BAR_COUNT", "ETD","EDT_BAR_COUNT"));
     }
 
     @Override
     public void captureValues(Position position, List<Float> values) {
         values.add(position.getClosePercentProfitLoss());
         values.add((float) position.getBarCount());
-        values.add(position.getMfe());
+        values.add(position.getMfe()/position.getEntryPrice());
         values.add((float) position.getMfeBarCount());
-        values.add(position.getMae());
+        values.add(position.getMae()/position.getEntryPrice());
         values.add((float) position.getMaeBarCount());
+        values.add(position.getEtd()/position.getEntryPrice());
+        values.add((float)position.getEtdBarCount());
     }
 }
