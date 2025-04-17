@@ -2,6 +2,7 @@ package com.bicycle.core.position;
 
 import com.bicycle.client.kite.utils.Constant;
 import com.bicycle.core.bar.Timeframe;
+import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.symbol.Symbol;
 import lombok.Data;
@@ -35,9 +36,9 @@ public class Position {
         this.exitPrice = exitPrice;
     }
 
-    public void onPrice(float price) {
+    public void onPrice(float price, Indicator atrIndicator) {
         ltp = price;
-        final float excursion = entryType.multiplier() * (price - entryPrice);
+        final float excursion = entryType.multiplier() * (price - entryPrice) / atrIndicator.getValue(symbol, timeframe);
         if(excursion > mfe) {
             mfe = excursion;
             mfeBarCount = barCount;

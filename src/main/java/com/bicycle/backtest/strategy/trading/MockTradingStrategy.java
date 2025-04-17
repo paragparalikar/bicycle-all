@@ -7,6 +7,7 @@ import com.bicycle.backtest.strategy.positionSizing.PositionSizingStrategy;
 import com.bicycle.core.bar.Bar;
 import com.bicycle.core.bar.BarListener;
 import com.bicycle.core.bar.Timeframe;
+import com.bicycle.core.indicator.Indicator;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.Rule;
 import com.bicycle.core.symbol.Symbol;
@@ -20,6 +21,7 @@ public class MockTradingStrategy implements BarListener {
 
     private String text;
     @Getter private final int id;
+    private final Indicator atrIndicator;
     private final float slippagePercentage;
     private final ReportCache reportCache;
     private Rule entryRule, exitRule;
@@ -29,10 +31,11 @@ public class MockTradingStrategy implements BarListener {
     @Builder
     public MockTradingStrategy(float slippagePercentage,
             Rule entryRule, Rule exitRule, OrderType entryOrderType,
-            ReportCache reportCache,
+            ReportCache reportCache, Indicator atrIndicator,
             PositionSizingStrategy positionSizingStrategy) {
         this.entryRule = entryRule;
         this.exitRule = exitRule;
+        this.atrIndicator = atrIndicator;
         this.entryOrderType = entryOrderType;
         this.reportCache = reportCache;
         this.id = ID.getAndIncrement();
@@ -57,7 +60,7 @@ public class MockTradingStrategy implements BarListener {
     private void onTick(float price, long date, int volume, Symbol symbol, Timeframe timeframe, Report report, boolean isOpenPrice, boolean isClosePrice) {
         MockPosition openPosition = report.getOpenPosition(symbol);
         if(null != openPosition ){
-            openPosition.onPrice(price);
+            openPosition.onPrice(price, atrIndicator);
             if(isClosePrice) openPosition.setBarCount(openPosition.getBarCount() + 1);
             if(tryExit(date, openPosition, isOpenPrice)) {
                 report.close(openPosition);

@@ -54,6 +54,6 @@ public class FeatureAwareTradingStrategyBuilder implements TradingStrategyBuilde
         return new MockTradingStrategy(slippagePercentage,
                 entryRuleBuilder.buildDefault(indicatorCache),
                 exitRuleBuilder.buildDefault(indicatorCache),
-                entryOrderType, reportCache, positionSizingStrategy);
+                entryOrderType, reportCache, indicatorCache.atr(14), positionSizingStrategy);
     }
 }

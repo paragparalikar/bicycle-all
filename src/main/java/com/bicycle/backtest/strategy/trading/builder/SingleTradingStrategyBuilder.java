@@ -30,7 +30,7 @@ public class SingleTradingStrategyBuilder implements TradingStrategyBuilder {
         return null == tradingStrategy ? tradingStrategy = new MockTradingStrategy(slippagePercentage,
                         entryRuleBuilder.buildDefault(cache),
                         exitRuleBuilder.buildDefault(cache),
-                        entryOrderType, reportCache, positionSizingStrategy)
+                        entryOrderType, reportCache, cache.atr(14), positionSizingStrategy)
                 : tradingStrategy;
     }
 

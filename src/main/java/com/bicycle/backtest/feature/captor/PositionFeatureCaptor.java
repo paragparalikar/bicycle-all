@@ -17,11 +17,11 @@ public class PositionFeatureCaptor implements FeatureCaptor {
     public void captureValues(Position position, List<Float> values) {
         values.add(position.getClosePercentProfitLoss());
         values.add((float) position.getBarCount());
-        values.add(position.getMfe()/position.getEntryPrice());
+        values.add(position.getMfe());
         values.add((float) position.getMfeBarCount());
-        values.add(position.getMae()/position.getEntryPrice());
+        values.add(position.getMae());
         values.add((float) position.getMaeBarCount());
-        values.add(position.getEtd()/position.getEntryPrice());
+        values.add(position.getEtd());
         values.add((float)position.getEtdBarCount());
     }
 }
