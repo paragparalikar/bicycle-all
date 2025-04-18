@@ -26,8 +26,11 @@ public class FeatureSelectionStage {
         final double[] importance = model.importance();
         final Map<Integer, Double> map = new HashMap<>();
         for(int index = 0; index < importance.length; index++) map.put(index, importance[index]);
-        final List<Integer> indices = map.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).limit(featureCount).toList();
+        final List<Integer> indices = map.entrySet().stream().sorted(Map.Entry.<Integer, Double>comparingByValue().reversed()).map(Map.Entry::getKey).limit(featureCount).toList();
         for(int index : indices) System.out.printf("Selected feature : %8.4f %s\n", importance[index], dataFrame.column(index).name());
-        return new DataFrame(indices.stream().map(dataFrame::column).toArray(ValueVector[]::new));
+        final ValueVector y = formula.y(dataFrame);
+        dataFrame = new DataFrame(indices.stream().map(dataFrame::column).toArray(ValueVector[]::new));
+        dataFrame.add(y);
+        return dataFrame;
     }
 }

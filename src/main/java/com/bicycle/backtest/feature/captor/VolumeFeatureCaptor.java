@@ -12,10 +12,10 @@ public class VolumeFeatureCaptor implements FeatureCaptor {
     private final List<Indicator> indicators = new ArrayList<>();
 
     public VolumeFeatureCaptor(IndicatorCache cache, float multiplier, int... barCounts){
+        indicators.add(cache.volume().dividedBy(cache.prev(cache.volume(), 1)));
         for(int shortBarCount : barCounts) {
             final int longBarCount = (int) (shortBarCount * multiplier);
             indicators.add(cache.risingStrength(cache.volume(), shortBarCount));
-            indicators.add(cache.volume().dividedBy(cache.prev(cache.volume(), 1)));
             indicators.add(cache.volume().dividedBy(cache.prev(cache.ema(cache.volume(), shortBarCount), 1)));
             indicators.add(cache.ema(cache.volume(), shortBarCount).dividedBy(cache.ema(cache.volume(), longBarCount)));
         }
