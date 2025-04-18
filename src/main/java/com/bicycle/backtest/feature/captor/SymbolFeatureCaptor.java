@@ -11,19 +11,20 @@ import java.util.List;
 
 public class SymbolFeatureCaptor implements FeatureCaptor {
 
-    private final Indicator efficiency, volatility, spread, volume, turnover;
+    private final Indicator efficiency, volatility, spread, trueRange, volume, turnover;
 
     public SymbolFeatureCaptor(IndicatorCache cache, int barCount){
         this.efficiency = cache.crossNormalDeviation(cache.ema(cache.efficiency(14), barCount));
-        this.volatility = cache.crossNormalDeviation(cache.ema(cache.stdDev(cache.close(), 14), barCount));
-        this.spread = cache.crossNormalDeviation(cache.ema(cache.spread(), barCount));
+        this.volatility = cache.crossNormalDeviation(cache.ema(cache.stdDev(cache.close(), 14).dividedBy(cache.ema(cache.close(), 14)), barCount));
+        this.spread = cache.crossNormalDeviation(cache.ema(cache.spread(), barCount).dividedBy(cache.ema(cache.close(), barCount)));
+        this.trueRange = cache.crossNormalDeviation(cache.atr(barCount).dividedBy(cache.ema(cache.close(), barCount)));
         this.volume = cache.crossNormalDeviation(cache.ema(cache.volume(), barCount));
         this.turnover = cache.crossNormalDeviation(cache.ema(cache.volume().dividedBy(1000).multipliedBy(cache.typicalPrice()), barCount));
     }
 
     @Override
     public void captureHeaders(List<String> headers) {
-        headers.addAll(Arrays.asList("SYMBOL_EFFICIENCY", "SYMBOL_VOLATILITY", "SYMBOL_SPREAD", "SYMBOL_VOLUME", "SYMBOL_TURNOVER"));
+        headers.addAll(Arrays.asList("SYMBOL_EFFICIENCY", "SYMBOL_VOLATILITY", "SYMBOL_SPREAD", "SYMBOL_TRUE_RANGE", "SYMBOL_VOLUME", "SYMBOL_TURNOVER"));
     }
 
     @Override
@@ -33,6 +34,7 @@ public class SymbolFeatureCaptor implements FeatureCaptor {
         values.add(efficiency.getValue(symbol, timeframe));
         values.add(volatility.getValue(symbol, timeframe));
         values.add(spread.getValue(symbol, timeframe));
+        values.add(trueRange.getValue(symbol, timeframe));
         values.add(volume.getValue(symbol, timeframe));
         values.add(turnover.getValue(symbol, timeframe));
     }

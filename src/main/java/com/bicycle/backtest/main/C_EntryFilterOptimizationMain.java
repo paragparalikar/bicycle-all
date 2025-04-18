@@ -34,13 +34,15 @@ public class C_EntryFilterOptimizationMain {
             final List<String> headers = List.of("mtry","maxDepth","nodeSize","score");
             featureWriter.writeHeaders(headers);
             System.out.println(String.join(",", headers));
-            for(int mtry = 1; mtry <= 5; mtry++){
-                for(int maxDepth = 1; maxDepth <= 5; maxDepth += 2){
-                    for(int nodeSize = 5; nodeSize <= 50; nodeSize += 5){
-                        final RandomForest.Options options = new RandomForest.Options(100, mtry, maxDepth, 0, nodeSize);
-                        final double score = compute(10, formula, dataFrame, options);
-                        System.out.printf("%d,%d,%d,%f\n", mtry, maxDepth, nodeSize, score);
-                        featureWriter.writeValues(List.of((float)mtry, (float)maxDepth, (float)nodeSize, (float)score));
+            for(int mtry = 1; mtry <= 3; mtry++){
+                for(int maxDepth = 1; maxDepth <= 4; maxDepth += 2){
+                    for(int nodeSize = 10; nodeSize <= 50; nodeSize += 10){
+                        for(int ntrees = 50; ntrees <= 1000; ntrees += 50){
+                            final RandomForest.Options options = new RandomForest.Options(ntrees, mtry, maxDepth, 0, nodeSize);
+                            final double score = compute(10, formula, dataFrame, options);
+                            System.out.printf("%d,%d,%d,%f\n", mtry, maxDepth, nodeSize, score);
+                            featureWriter.writeValues(List.of((float)mtry, (float)maxDepth, (float)nodeSize, (float)score));
+                        }
                     }
                 }
             }

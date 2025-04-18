@@ -3,6 +3,7 @@ package com.bicycle.backtest.main;
 import com.bicycle.backtest.Backtest;
 import com.bicycle.backtest.feature.FeatureAwareTradingStrategyBuilder;
 import com.bicycle.backtest.feature.captor.*;
+import com.bicycle.backtest.feature.writer.DataFrameFeatureWriter;
 import com.bicycle.backtest.feature.writer.DelimitedFileFeatureWriter;
 import com.bicycle.backtest.feature.writer.FeatureWriter;
 import com.bicycle.backtest.report.AccumulatorReport;
@@ -22,7 +23,7 @@ import com.bicycle.util.Dates;
 public class B_EntryFilterFeatureGenerationMain {
 
     public static void main(String[] args) throws Exception {
-        try(final FeatureWriter featureWriter = new DelimitedFileFeatureWriter("entry-features.tsv", "\t")){
+        try(final FeatureWriter featureWriter = new DataFrameFeatureWriter()){
             final TradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder(featureWriter);
             final Backtest backtest = new Backtest()
                     .setStartDate(Dates.toEpochMillis(2010, 1, 1))
