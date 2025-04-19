@@ -14,11 +14,11 @@ import java.util.Map;
 public class FeatureSelectionStage {
 
     public DataFrame execute(int featureCount, Formula formula, DataFrame dataFrame) {
-        return execute(featureCount, formula, dataFrame, new RandomForest.Options(100, 2,3,0,50));
+        return execute(featureCount, formula, dataFrame, new RandomForest.Options(1000, 2,2,0,30));
     }
 
     public DataFrame execute(int featureCount, Formula formula, DataFrame dataFrame, RandomForest.Options options) {
-        System.out.println("--------------- Initiating feature selection stage ---------------");
+        System.out.println("\n--------------- Initiating feature selection stage ---------------");
         System.out.printf("Selecting %d features\n", featureCount);
         System.out.printf("Using RandomForest.Options : ntrees=%d, mtry=%d, maxDepth=%d, maxNodes=%d, nodeSize=%d\n",
                 options.ntrees(), options.mtry(), options.maxDepth(), options.maxNodes(), options.nodeSize());

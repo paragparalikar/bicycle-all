@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 public class HyperParameterOptimizationStage {
 
     public RandomForest.Options execute(int folds, Formula formula, DataFrame dataFrame, BiFunction<int[], int[], Double> evaluator) throws Exception {
-        System.out.println("--------------- Initiating hyper-parameter optimization stage ---------------");
+        System.out.println("\n--------------- Initiating hyper-parameter optimization stage ---------------");
         double maxScore = Double.MIN_VALUE;
         RandomForest.Options maxOptions = null;
 
@@ -57,7 +57,7 @@ public class HyperParameterOptimizationStage {
             final DataFrame test = dataFrame.get(Index.of(bag.oob()));
             final double trainResult = evaluate(formula, train, model, evaluator);
             final double testResult = evaluate(formula, test, model, evaluator);
-            sum += ((trainResult + testResult) / Math.abs(trainResult - testResult));
+            sum += ((trainResult + testResult) / Math.pow(1 + Math.abs(trainResult - testResult), 2));
         }
         return sum / k;
     }

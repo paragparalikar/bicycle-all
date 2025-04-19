@@ -16,13 +16,15 @@ import smile.validation.metric.Precision;
 public class EntryFilterWorkflow {
 
     public static void main(String[] args) throws Exception {
+        final String targetVariableName = "MFE";
+        final Formula formula = Formula.lhs(targetVariableName);
         final RuleBuilder entryRuleBuilder = createEntryRuleBuilder();
         final RuleBuilder exitRuleBuilder = createExitRuleBuilder();
         DataFrame dataFrame = new FeatureGenerationStage().execute(OrderType.BUY, entryRuleBuilder, exitRuleBuilder);
-        dataFrame = new FeatureImputationStage().execute(dataFrame);
-        dataFrame = new FeatureDiscretizationStage().execute(dataFrame, "MFE");
-        dataFrame = new FeatureSelectionStage().execute(36, Formula.lhs("MFE"), dataFrame);
-        RandomForest.Options options = new HyperParameterOptimizationStage().execute(10, Formula.lhs("MFE"), dataFrame, Precision::of);
+        dataFrame = new FeatureImputationStage().execute(targetVariableName, dataFrame);
+        dataFrame = new FeatureDiscretizationStage().execute(dataFrame, targetVariableName);
+        dataFrame = new FeatureSelectionStage().execute(36, formula, dataFrame);
+        RandomForest.Options options = new HyperParameterOptimizationStage().execute(10, formula, dataFrame, Precision::of);
     }
 
     private static RuleBuilder createEntryRuleBuilder(){

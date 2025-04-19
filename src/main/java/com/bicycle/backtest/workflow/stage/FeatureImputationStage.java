@@ -7,9 +7,10 @@ import java.util.List;
 
 public class FeatureImputationStage {
 
-    public DataFrame execute(DataFrame dataFrame){
-        System.out.println("--------------- Initiating feature imputation stage ---------------");
-        final List<String> ineligibleColumnNames = Arrays.asList("PNL", "BAR_COUNT", "MFE_BAR_COUNT", "MAE", "MAE_BAR_COUNT", "ETD","EDT_BAR_COUNT");
+    public DataFrame execute(String targetVariableName, DataFrame dataFrame){
+        System.out.println("\n--------------- Initiating feature imputation stage ---------------");
+        final List<String> ineligibleColumnNames = Arrays.asList("PNL", "BAR_COUNT", "MFE", "MFE_BAR_COUNT", "MAE", "MAE_BAR_COUNT", "ETD","EDT_BAR_COUNT");
+        ineligibleColumnNames.remove(targetVariableName);
         dataFrame = dataFrame.drop(ineligibleColumnNames.toArray(String[]::new));
         ineligibleColumnNames.forEach(name -> System.out.println("Dropped column " + name));
         System.out.println("Dropping all rows having null values");

@@ -27,7 +27,7 @@ public class FeatureGenerationStage {
 
     public DataFrame execute(OrderType orderType, RuleBuilder entryRuleBuilder, RuleBuilder exitRuleBuilder,
                              long startDate, long endDate, float percentagePositionSize, boolean limitPositionSizeToAvailableMargin) throws Exception {
-        System.out.println("--------------- Initiating feature selection stage ---------------");
+        System.out.println("\n--------------- Initiating feature selection stage ---------------");
         System.out.printf("Using below configuration for feature generation:\n" +
                 "Start Date          : %s\n" +
                 "End Date            : %s\n" +
@@ -72,6 +72,7 @@ public class FeatureGenerationStage {
                 new SymbolFeatureCaptor(cache, 50),
                 new BarFeatureCaptor(cache, barCount),
                 new BarSequenceFeatureCaptor(cache, barCounts),
+                new EfficiencyFeatureCaptor(cache, barCounts),
                 new TrendFeatureCaptor(cache, multiplier, barCounts),
                 new VolatilityFeatureCaptor(cache, multiplier, barCounts),
                 new VolumeFeatureCaptor(cache, multiplier, barCounts)

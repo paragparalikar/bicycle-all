@@ -21,14 +21,12 @@ Steps for creating a trading strategy:
 Create ClassiefierRule that loads the model and provides the classification.
 
 
-
-Rank symbols based on:
-1. Average standard deviation / close
-2. Average spread / close
-3. Average efficiency
-4. Average volume
-5. Average turnover
-
+Improvements for future:
+1. Portfolio construction using un-correlated strategies with non-overlapping positions
+2. Positing queueing and ranking using LTR algorithms
+3. Capital allocation using LTR algorithms
+4. Evaluate if Weighted RandomForest provides better results
+5. Evaluate if stacking, boosting of RandomForest provides better results
 
 
 
@@ -46,16 +44,9 @@ When onBar method is called the indicator will add the delegate indicator value 
 
 
 
-direct - rising-strength(rsi(close,20),20)                  means uptrend
-inverse - (variance(close,30) / variance(close,120))        means low volatility
-inverse - (ema(volume,30) / ema(volume,120))                means oversold region
-direct - ibs                                                means headed upward
-
-maxDepth <= 4
+ntrees = 950
+maxDepth = 2
 mtry = 2
-
-SPREAD > 0
-VOLATILITY > 0
-VOLUME < 1
+nodeSize = 50
 
 
