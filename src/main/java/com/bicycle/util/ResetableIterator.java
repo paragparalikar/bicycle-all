@@ -28,7 +28,7 @@ public interface ResetableIterator {
         final List<List<Float>> result = new ArrayList<>();
         iterators.forEach(ResetableIterator::reset);
         do {
-            final List<Float> values = new ArrayList<>(iterators.size() + 1);
+            final List<Float> values = new ArrayList<>(iterators.size() + 9);
             for(ResetableIterator iterator : iterators){
                 if(iterator instanceof FloatIterator floatIterator) values.add(floatIterator.value());
                 else if(iterator instanceof IntegerIterator integerIterator) values.add((float) integerIterator.value());
