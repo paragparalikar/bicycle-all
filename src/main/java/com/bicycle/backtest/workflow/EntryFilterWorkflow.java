@@ -29,14 +29,14 @@ public class EntryFilterWorkflow {
 
     private static RuleBuilder createEntryRuleBuilder(){
         return new SingletonRuleBuilder(cache -> new LiquidityRule(cache)
-                .and(cache.rsi(cache.close(), 3).crossAbove(cache.constant(15), cache))
+                .and(cache.rsi(cache.close(), 2).crossAbove(cache.constant(55), cache))
         );
     }
 
     private static RuleBuilder createExitRuleBuilder(){
         return new SingletonRuleBuilder(cache -> new WaitForBarCountRule(10, cache)
-                .or(new StopLossRule(false, 2, cache.atr(14)))
-                .or(new StopGainRule(5, cache.atr(14)))
+                .or(new StopLossRule(false, 1.5f, cache.atr(14)))
+                .or(new StopGainRule(2, cache.atr(14)))
         );
     }
 
