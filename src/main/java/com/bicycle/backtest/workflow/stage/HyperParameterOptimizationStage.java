@@ -27,8 +27,8 @@ public class HyperParameterOptimizationStage {
 
             for(int mtry = 1; mtry <= 3; mtry++){
                 for(int maxDepth = 2; maxDepth <= 4; maxDepth += 2){
-                    for(int nodeSize = 10; nodeSize <= 50; nodeSize += 10){
-                        for(int ntrees = 50; ntrees <= 1000; ntrees += 50){
+                    for(int nodeSize = 20; nodeSize <= 40; nodeSize += 10){
+                        for(int ntrees = 500; ntrees <= 1000; ntrees += 100){
                             final RandomForest.Options options = new RandomForest.Options(ntrees, mtry, maxDepth, 0, nodeSize);
                             final double score = compute(folds, formula, dataFrame, options, evaluator, false);
                             System.out.printf("%10d%10d%10d%10d%10.4f\n", ntrees, mtry, maxDepth, nodeSize, score);
