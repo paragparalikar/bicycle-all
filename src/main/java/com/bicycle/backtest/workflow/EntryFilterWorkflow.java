@@ -21,7 +21,7 @@ public class EntryFilterWorkflow {
         final RuleBuilder entryRuleBuilder = createEntryRuleBuilder();
         final RuleBuilder exitRuleBuilder = createExitRuleBuilder();
         DataFrame dataFrame = new FeatureGenerationStage().execute(OrderType.BUY, entryRuleBuilder, exitRuleBuilder);
-        dataFrame = new FeatureImputationStage().execute(targetVariableName, dataFrame);
+        dataFrame = new FeatureImputationStage().execute(formula, dataFrame);
         dataFrame = new FeatureDiscretizationStage().execute(dataFrame, targetVariableName);
         dataFrame = new FeatureSelectionStage().execute(36, formula, dataFrame);
         RandomForest.Options options = new HyperParameterOptimizationStage().execute(10, formula, dataFrame, Precision::of);
