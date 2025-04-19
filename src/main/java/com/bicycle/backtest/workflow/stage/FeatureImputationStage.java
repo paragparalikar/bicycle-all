@@ -11,7 +11,9 @@ public class FeatureImputationStage {
 
     public DataFrame execute(Formula formula, DataFrame dataFrame){
         System.out.println("\n--------------- Initiating feature imputation stage ---------------");
-        final List<String> ineligibleColumnNames = new ArrayList<>(Arrays.asList("PNL", "BAR_COUNT", "MFE", "MFE_BAR_COUNT", "MAE", "MAE_BAR_COUNT", "ETD","EDT_BAR_COUNT"));
+        final List<String> ineligibleColumnNames = new ArrayList<>(Arrays.asList("PNL", "BAR_COUNT", "MFE", "MFE_BAR_COUNT",
+                "MAE", "MAE_BAR_COUNT", "ETD","EDT_BAR_COUNT", "SYMBOL_EFFICIENCY", "SYMBOL_VOLATILITY", "SYMBOL_SPREAD",
+                "SYMBOL_TRUE_RANGE", "SYMBOL_VOLUME", "SYMBOL_TURNOVER"));
         ineligibleColumnNames.remove(formula.y(dataFrame).name());
         dataFrame = dataFrame.drop(ineligibleColumnNames.toArray(String[]::new));
         ineligibleColumnNames.forEach(name -> System.out.println("Dropped column " + name));

@@ -16,7 +16,7 @@ import smile.validation.metric.Precision;
 public class EntryFilterWorkflow {
 
     public static void main(String[] args) throws Exception {
-        final String targetVariableName = "MFE";
+        final String targetVariableName = "PNL";
         final Formula formula = Formula.lhs(targetVariableName);
         final RuleBuilder entryRuleBuilder = createEntryRuleBuilder();
         final RuleBuilder exitRuleBuilder = createExitRuleBuilder();
@@ -29,16 +29,14 @@ public class EntryFilterWorkflow {
 
     private static RuleBuilder createEntryRuleBuilder(){
         return new SingletonRuleBuilder(cache -> new LiquidityRule(cache)
-                .and(cache.close().greaterThanOrEquals(cache.ema(cache.close(), 200)))
                 .and(cache.rsi(cache.close(), 3).crossAbove(cache.constant(15), cache))
         );
     }
 
     private static RuleBuilder createExitRuleBuilder(){
-        return new SingletonRuleBuilder(cache ->
-                new StopGainRule(5, cache.atr(14))
-                        .or(new StopLossRule(false, 2, cache.atr(14))) // try with trail = true
-                        .or(new WaitForBarCountRule(22, cache))
+        return new SingletonRuleBuilder(cache -> new WaitForBarCountRule(10, cache)
+                .or(new StopLossRule(false, 2, cache.atr(14)))
+                .or(new StopGainRule(5, cache.atr(14)))
         );
     }
 

@@ -3,7 +3,9 @@ package com.bicycle.backtest.workflow.stage;
 import com.bicycle.backtest.Backtest;
 import com.bicycle.backtest.feature.FeatureAwareTradingStrategyBuilder;
 import com.bicycle.backtest.feature.captor.*;
+import com.bicycle.backtest.feature.writer.CompositeFeatureWriter;
 import com.bicycle.backtest.feature.writer.DataFrameFeatureWriter;
+import com.bicycle.backtest.feature.writer.DelimitedFileFeatureWriter;
 import com.bicycle.backtest.feature.writer.FeatureWriter;
 import com.bicycle.backtest.report.AccumulatorReport;
 import com.bicycle.backtest.report.FullReport;
@@ -33,7 +35,9 @@ public class FeatureGenerationStage {
                 "End Date            : %s\n" +
                 "Position Size       : %4.2f\n" +
                 "Limit position size : %b\n", Dates.format(startDate), Dates.format(endDate), percentagePositionSize, limitPositionSizeToAvailableMargin);
-        try(DataFrameFeatureWriter featureWriter = new DataFrameFeatureWriter()){
+        try(DataFrameFeatureWriter dataFrameFeatureWriter = new DataFrameFeatureWriter();
+            FeatureWriter fileFeatureWriter = new DelimitedFileFeatureWriter("features.tsv","\t");
+            FeatureWriter featureWriter = new CompositeFeatureWriter(dataFrameFeatureWriter, fileFeatureWriter)){
             final TradingStrategyBuilder tradingStrategyBuilder = createTradingStrategyBuilder(orderType, entryRuleBuilder, exitRuleBuilder, featureWriter);
             final Backtest backtest = new Backtest()
                     .setStartDate(startDate)
@@ -44,7 +48,7 @@ public class FeatureGenerationStage {
                     .setTradingStrategyBuilder(tradingStrategyBuilder);
             final ReportCache reportCache = backtest.run();
             System.out.println(((SingletonReportCache) reportCache).getReport());
-            final DataFrame dataFrame = featureWriter.getDataFrame();
+            final DataFrame dataFrame = dataFrameFeatureWriter.getDataFrame();
             System.out.printf("Generated %d features and %d rows\n", dataFrame.ncol(), dataFrame.nrow());
             return dataFrame;
         }
