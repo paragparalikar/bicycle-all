@@ -28,7 +28,7 @@ public class SymbolFeatureCaptor implements FeatureCaptor {
     }
 
     @Override
-    public void captureValues(Position position, List<Float> values) {
+    public void captureValues(Position position, List<Object> values) {
         final Symbol symbol = position.getSymbol();
         final Timeframe timeframe = position.getTimeframe();
         values.add(efficiency.getValue(symbol, timeframe));

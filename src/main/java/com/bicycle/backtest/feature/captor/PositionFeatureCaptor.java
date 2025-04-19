@@ -14,7 +14,7 @@ public class PositionFeatureCaptor implements FeatureCaptor {
     }
 
     @Override
-    public void captureValues(Position position, List<Float> values) {
+    public void captureValues(Position position, List<Object> values) {
         values.add(position.getClosePercentProfitLoss());
         values.add((float) position.getBarCount());
         values.add(position.getMfe());

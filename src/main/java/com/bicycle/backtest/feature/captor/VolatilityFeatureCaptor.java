@@ -38,7 +38,7 @@ public class VolatilityFeatureCaptor implements FeatureCaptor {
     }
 
     @Override
-    public void captureValues(Position position, List<Float> values) {
+    public void captureValues(Position position, List<Object> values) {
         for(Indicator indicator : indicators) values.add(indicator.getValue(position.getSymbol(), position.getTimeframe()));
     }
 }

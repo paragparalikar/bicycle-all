@@ -18,7 +18,7 @@ public class CompositeFeatureCaptor implements FeatureCaptor {
     }
 
     @Override
-    public void captureValues(Position position, List<Float> values) {
+    public void captureValues(Position position, List<Object> values) {
         for(FeatureCaptor featureCaptor : featureCaptors) featureCaptor.captureValues(position, values);
     }
 }

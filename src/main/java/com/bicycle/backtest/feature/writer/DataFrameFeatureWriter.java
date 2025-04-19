@@ -22,7 +22,7 @@ public class DataFrameFeatureWriter implements FeatureWriter {
     }
 
     @Override
-    public void writeValues(List<Float> values) {
+    public void writeValues(List<Object> values) {
         tuples.add(Tuple.of(structType, values.toArray()));
     }
 

@@ -16,7 +16,7 @@ public class CompositeFeatureWriter implements FeatureWriter {
     }
 
     @Override
-    public void writeValues(List<Float> values) {
+    public void writeValues(List<Object> values) {
         for(FeatureWriter delegate : delegates) delegate.writeValues(values);
     }
 

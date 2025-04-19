@@ -17,11 +17,11 @@ import java.util.List;
 public class TradingStrategyOptimizationWorkflow {
 
     public static void main(String[] args) throws Exception {
-        final IntegerIterator rsiBarCountIterator = new IntegerIterator("RSI-BAR-COUNT", 3, 2, 5, 1);
-        final FloatIterator rsiLevelIterator = new FloatIterator("RSI-LEVEL", 15, 5, 40, 5);
-        final IntegerIterator emaBarCountIterator = new IntegerIterator("EMA-BAR-COUNT", 50, 50, 200, 50);
-        final FloatIterator trailingStopIterator = new FloatIterator("STOP-LOSS", 2, 1, 3, 0.5f);
-        final FloatIterator trailingGainIterator = new FloatIterator("STOP-GAIN", 2, 1, 6, 0.5f);
+        final IntegerIterator rsiBarCountIterator = new IntegerIterator("RSI-BAR-COUNT", 2, 2, 3, 1);
+        final FloatIterator rsiLevelIterator = new FloatIterator("RSI-LEVEL", 40, 30, 70, 5);
+        final IntegerIterator emaBarCountIterator = new IntegerIterator("EMA-BAR-COUNT", 200, 200, 200, 200);
+        final FloatIterator trailingStopIterator = new FloatIterator("STOP-LOSS", 1.6f, 1, 3, 0.5f);
+        final FloatIterator trailingGainIterator = new FloatIterator("STOP-GAIN", 2f, 1, 3, 0.5f);
         final IntegerIterator atrBarCountIterator = new IntegerIterator("ATR-BAR-COUNT", 14, 14, 14, 14);
 
         final ClosePriceIndicatorBuilder closePriceIndicatorBuilder = new ClosePriceIndicatorBuilder();

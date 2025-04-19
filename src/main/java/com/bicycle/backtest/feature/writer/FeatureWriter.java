@@ -6,6 +6,6 @@ public interface FeatureWriter extends AutoCloseable {
 
     void writeHeaders(List<String> headers);
 
-    void writeValues(List<Float> values);
+    void writeValues(List<Object> values);
 
 }

@@ -47,7 +47,7 @@ public class TradingStrategyOptimizationStage {
                 final List<Float> features = parameters.get(index);
                 final Report report = reportCache.get(null, tradingStrategies.get(index));
                 captureValues(features, report);
-                featureWriter.writeValues(features);
+                featureWriter.writeValues((List)features);
             }
         }
     }
@@ -59,7 +59,7 @@ public class TradingStrategyOptimizationStage {
         values.add(report.getCAGR());
         values.add(report.getExposure());
         values.add(report.getCAGR() / report.getExposure());
-        values.add(report.getCAGR() * 1000 / (report.getExposure() * report.getAvgDrawdown()));
+        values.add(report.getCAGR() / ((1 + report.getExposure()) * (1 + report.getAvgDrawdown())));
         values.add((float) report.getClosedPositionCount());
     }
 

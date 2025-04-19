@@ -43,7 +43,7 @@ public class DelimitedFileFeatureWriter implements FeatureWriter {
 
     @Override
     @SneakyThrows
-    public void writeValues(List<Float> values) {
+    public void writeValues(List<Object> values) {
         final String line = values.stream()
                 .map(String::valueOf)
                 .map(this::blankIfInfinityOrNaN)

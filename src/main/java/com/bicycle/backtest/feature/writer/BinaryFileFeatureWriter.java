@@ -10,7 +10,7 @@ public class BinaryFileFeatureWriter implements FeatureWriter {
     }
 
     @Override
-    public void writeValues(List<Float> values) {
+    public void writeValues(List<Object> values) {
 
     }
 

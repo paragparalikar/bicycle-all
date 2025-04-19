@@ -13,6 +13,6 @@ public interface FeatureCaptor {
 
     void captureHeaders(List<String> headers);
 
-    void captureValues(Position position, List<Float> values);
+    void captureValues(Position position, List<Object> values);
 
 }

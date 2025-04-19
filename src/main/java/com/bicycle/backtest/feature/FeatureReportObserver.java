@@ -18,7 +18,7 @@ public class FeatureReportObserver implements ObservableReport.Observer {
     private volatile boolean headersWritten;
     private final FeatureWriter featureWriter;
     private final FeatureCaptor onOpenFeatureCaptor, onCloseFeatureCaptor;
-    private final Map<Integer, List<Float>> cache = new ConcurrentHashMap<>();
+    private final Map<Integer, List<Object>> cache = new ConcurrentHashMap<>();
 
     public FeatureReportObserver(FeatureCaptor onOpenFeatureCaptor, FeatureCaptor onCloseFeatureCaptor, FeatureWriter featureWriter){
         this.featureWriter = featureWriter;
@@ -36,13 +36,13 @@ public class FeatureReportObserver implements ObservableReport.Observer {
 
     @Override
     public void onOpen(MockPosition position, Report report) {
-        final List<Float> features = cache.computeIfAbsent(position.getId(), key -> new ArrayList<>());
+        final List<Object> features = cache.computeIfAbsent(position.getId(), key -> new ArrayList<>());
         onOpenFeatureCaptor.captureValues(position, features);
     }
 
     @Override
     public void onClose(MockPosition position, Report report) {
-        final List<Float> features = cache.get(position.getId());
+        final List<Object> features = cache.get(position.getId());
         onCloseFeatureCaptor.captureValues(position, features);
         featureWriter.writeValues(features);
         features.clear();
