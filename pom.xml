@@ -17,7 +17,7 @@
         <brotli.version>0.1.2</brotli.version>
         <antlr4.version>4.10</antlr4.version>
         <fastutil.version>8.5.13</fastutil.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <jackson.version>2.15.2</jackson.version>
         <disruptor.version>4.0.0</disruptor.version>
         <googleauth.version>1.5.0</googleauth.version>
@@ -27,6 +27,7 @@
         <async-http-client.version>3.0.0.Beta2</async-http-client.version>
         <maven-shade-plugin.version>3.5.1</maven-shade-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven.compiler.proc>full</maven.compiler.proc>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <smile.version>4.3.0</smile.version>
@@ -140,9 +141,12 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
+                            <version>1.18.38</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-proc:full</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

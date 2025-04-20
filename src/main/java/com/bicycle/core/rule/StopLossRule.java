@@ -29,7 +29,7 @@ public class StopLossRule implements Rule {
             // Below line is there because we are calling tryEnter and tryExit only on close.
             // If the rule is satisfied before the close of the bar, we would act in real trading, instead of waiting for the close.
             final float allowedMae = -1 * atrValue * atrMultiple;  // MAE is always negative
-            trade.setExitPrice(trade.getEntryPrice() - trade.getEntryType().multiplier() * allowedMae);
+            trade.setExitPrice(trade.getEntryPrice() + trade.getEntryType().multiplier() * allowedMae);
             return true;
         }
         return false;
