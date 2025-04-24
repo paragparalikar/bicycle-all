@@ -12,68 +12,44 @@ public class BarFeatureCaptor implements FeatureCaptor {
     private final List<Indicator> indicators = new ArrayList<>();
 
     public BarFeatureCaptor(IndicatorCache cache, int barCount){
-        final Indicator atrIndicator = cache.prev(cache.atr(barCount), 1);
 
         // Features for current bar
         indicators.add(cache.ibs());
-        indicators.add(cache.body().dividedBy(atrIndicator));
-        indicators.add(cache.spread().dividedBy(atrIndicator));
-        indicators.add(cache.upperWick().dividedBy(atrIndicator));
-        indicators.add(cache.lowerWick().dividedBy(atrIndicator));
-        indicators.add(cache.body().dividedBy(cache.spread()));
+        addAll(barCount, cache, cache.body(), cache.spread(), cache.upperWick(), cache.lowerWick());
 
         // Features for previous bar
-        indicators.add(cache.prev(cache.ibs(), 1));
-        indicators.add(cache.prev(cache.body(), 1).dividedBy(atrIndicator));
-        indicators.add(cache.prev(cache.spread(), 1).dividedBy(atrIndicator));
-        indicators.add(cache.prev(cache.upperWick(), 1).dividedBy(atrIndicator));
-        indicators.add(cache.prev(cache.lowerWick(), 1).dividedBy(atrIndicator));
-        indicators.add(cache.prev(cache.body(), 1).dividedBy(cache.prev(cache.spread(), 1)));
+        indicators.addAll(indicators.stream().map(feature -> cache.prev(feature, 1)).toList());
 
         // Relationship of current bar with previous bar
-        indicators.add(cache.trueRange().dividedBy(atrIndicator));
-        indicators.add(cache.open().minus(cache.prev(cache.close(), 1)).dividedBy(atrIndicator));
-        indicators.add(cache.high().minus(cache.prev(cache.high(), 1)).dividedBy(atrIndicator));
-        indicators.add(cache.low().minus(cache.prev(cache.low(), 1)).dividedBy(atrIndicator));
-        indicators.add(cache.close().minus(cache.prev(cache.close(), 1)).dividedBy(atrIndicator));
-        indicators.add(cache.typicalPrice().minus(cache.prev(cache.typicalPrice(), 1)).dividedBy(atrIndicator));
-        indicators.add(cache.ibs().dividedBy(cache.prev(cache.ibs(), 1)));
-        indicators.add(cache.spread().dividedBy(cache.prev(cache.spread(), 1)));
-        indicators.add(cache.upperWick().dividedBy(cache.prev(cache.upperWick(), 1)));
-        indicators.add(cache.lowerWick().dividedBy(cache.prev(cache.lowerWick(), 1)));
-        indicators.add(cache.body().dividedBy(cache.prev(cache.body(), 1)));
+        addAll(barCount, cache, cache.trueRange(), cache.ibs(),
+                cache.ibs().minus(cache.prev(cache.ibs(),  1)),
+                cache.typicalPrice().minus(cache.prev(cache.typicalPrice(), 1)),
+                cache.trueRange().minus(cache.prev(cache.trueRange(), 1)),
+                cache.open().minus(cache.prev(cache.open(), 1)),
+                cache.open().minus(cache.prev(cache.close(), 1)),
+                cache.open().minus(cache.prev(cache.high(), 1)),
+                cache.open().minus(cache.prev(cache.low(), 1)),
+                cache.high().minus(cache.prev(cache.open(), 1)),
+                cache.high().minus(cache.prev(cache.close(), 1)),
+                cache.high().minus(cache.prev(cache.high(), 1)),
+                cache.high().minus(cache.prev(cache.low(), 1)),
+                cache.low().minus(cache.prev(cache.open(), 1)),
+                cache.low().minus(cache.prev(cache.close(), 1)),
+                cache.low().minus(cache.prev(cache.high(), 1)),
+                cache.low().minus(cache.prev(cache.low(), 1)),
+                cache.close().minus(cache.prev(cache.open(), 1)),
+                cache.close().minus(cache.prev(cache.close(), 1)),
+                cache.close().minus(cache.prev(cache.high(), 1)),
+                cache.close().minus(cache.prev(cache.low(), 1)));
+    }
 
-        // Relationship of current bar with last N bars
-        final Indicator tpEMA = cache.prev(cache.ema(cache.typicalPrice(), barCount), 1);
-        final Indicator openEMA = cache.prev(cache.ema(cache.open(), barCount), 1);
-        final Indicator highEMA = cache.prev(cache.ema(cache.high(), barCount), 1);
-        final Indicator lowEMA = cache.prev(cache.ema(cache.low(), barCount), 1);
-        final Indicator closeEMA = cache.prev(cache.ema(cache.close(), barCount), 1);
-        final Indicator ibsEMA = cache.prev(cache.ema(cache.ibs(), barCount), 1);
-        final Indicator spreadEMA = cache.prev(cache.ema(cache.spread(), barCount), 1);
-        final Indicator upperWickEMA = cache.prev(cache.ema(cache.upperWick(), barCount), 1);
-        final Indicator lowerWickEMA = cache.prev(cache.ema(cache.lowerWick(), barCount), 1);
-        final Indicator bodyEMA = cache.prev(cache.ema(cache.body(), barCount), 1);
-
-        indicators.add(cache.typicalPrice().minus(tpEMA).dividedBy(atrIndicator));
-        indicators.add(cache.typicalPrice().minus(highEMA).dividedBy(atrIndicator));
-        indicators.add(cache.typicalPrice().minus(lowEMA).dividedBy(atrIndicator));
-        indicators.add(cache.open().minus(openEMA).dividedBy(atrIndicator));
-        indicators.add(cache.high().minus(highEMA).dividedBy(atrIndicator));
-        indicators.add(cache.high().minus(tpEMA).dividedBy(atrIndicator));
-        indicators.add(cache.high().minus(lowEMA).dividedBy(atrIndicator));
-        indicators.add(cache.low().minus(lowEMA).dividedBy(atrIndicator));
-        indicators.add(cache.low().minus(tpEMA).dividedBy(atrIndicator));
-        indicators.add(cache.low().minus(highEMA).dividedBy(atrIndicator));
-        indicators.add(cache.close().minus(closeEMA).dividedBy(atrIndicator));
-        indicators.add(cache.close().minus(highEMA).dividedBy(atrIndicator));
-        indicators.add(cache.close().minus(lowEMA).dividedBy(atrIndicator));
-        indicators.add(cache.close().minus(tpEMA).dividedBy(atrIndicator));
-        indicators.add(cache.spread().dividedBy(spreadEMA));
-        indicators.add(cache.upperWick().dividedBy(upperWickEMA));
-        indicators.add(cache.lowerWick().dividedBy(lowerWickEMA));
-        indicators.add(cache.body().dividedBy(bodyEMA));
-        indicators.add(cache.ibs().dividedBy(ibsEMA));
+    private void addAll(int barCount, IndicatorCache cache, Indicator...indicators){
+        for(Indicator indicator : indicators) {
+            final Indicator emaIndicator = cache.ema(indicator, barCount);
+            final Indicator prevEmaIndicator = cache.prev(emaIndicator, 1);
+            final Indicator ratioWithPrevEmaIndicator = indicator.dividedBy(prevEmaIndicator);
+            this.indicators.add(ratioWithPrevEmaIndicator);
+        }
     }
 
     @Override

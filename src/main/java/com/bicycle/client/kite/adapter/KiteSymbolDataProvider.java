@@ -36,29 +36,29 @@ public class KiteSymbolDataProvider implements SymbolDataProvider {
 
 
 
-    public Predicate<Symbol> excludeEtf(){
+    public static Predicate<Symbol> excludeEtf(){
         return symbol -> !symbol.code().endsWith("BEES")
                 && !symbol.code().contains("ETF")
                 && !symbol.name().contains("ETF");
     }
 
-    public Predicate<Symbol> excludeGoldBonds(){
+    public static Predicate<Symbol> excludeGoldBonds(){
         return symbol -> !symbol.code().endsWith("-GB");
     }
 
-    public Predicate<Symbol> excludeTreasuryBills(){
+    public static Predicate<Symbol> excludeTreasuryBills(){
         return symbol -> !symbol.code().equals("-TB");
     }
 
-    public Predicate<Symbol> indices(){
+    public static Predicate<Symbol> indices(){
         return symbol -> "INDICES".equalsIgnoreCase(symbol.segment());
     }
 
-    public Predicate<Symbol> equities(){
+    public static Predicate<Symbol> equities(){
         return symbol -> "EQ".equals(symbol.type());
     }
 
-    public Predicate<Symbol> equitiesAndIndices(){
+    public static Predicate<Symbol> equitiesAndIndices(){
         return symbol -> !symbol.code().contains("BEES")
                 && !symbol.name().contains("BEES")
                 && !symbol.code().contains("ETF")

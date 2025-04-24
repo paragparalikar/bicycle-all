@@ -13,9 +13,11 @@ public class EfficiencyFeatureCaptor implements FeatureCaptor {
 
     public EfficiencyFeatureCaptor(IndicatorCache cache, int... barCounts){
         for(int shortBarCount : barCounts) {
-            indicators.add(cache.efficiency(shortBarCount));
-            indicators.add(cache.risingStrength(cache.efficiency(shortBarCount), shortBarCount));
-            indicators.add(cache.fallingStrength(cache.efficiency(shortBarCount), shortBarCount));
+            final Indicator indicator = cache.efficiency(shortBarCount);
+            indicators.add(indicator);
+            indicators.add(cache.risingStrength(indicator, shortBarCount));
+            indicators.add(cache.fallingStrength(indicator, shortBarCount));
+            indicators.add(indicator.dividedBy(cache.prev(cache.ema(indicator, shortBarCount), 1)));
         }
     }
 

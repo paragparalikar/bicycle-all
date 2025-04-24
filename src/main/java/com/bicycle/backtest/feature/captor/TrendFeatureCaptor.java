@@ -20,19 +20,15 @@ public class TrendFeatureCaptor implements FeatureCaptor {
             indicators.add(cache.fallingStrength(shortEMA, shortBarCount));
             indicators.add(cache.risingStrength(longEMA, shortBarCount));
             indicators.add(cache.fallingStrength(longEMA, shortBarCount));
-            indicators.add(cache.typicalPrice().dividedBy(shortEMA));
-            //indicators.add(cache.typicalPrice().dividedBy(longEMA));
             indicators.add(cache.close().dividedBy(shortEMA));
-            //indicators.add(cache.close().dividedBy(longEMA));
             indicators.add(shortEMA.dividedBy(longEMA));
             indicators.add(cache.rsi(cache.close(), shortBarCount));
             indicators.add(cache.risingStrength(cache.rsi(cache.close(), shortBarCount), shortBarCount));
             indicators.add(cache.fallingStrength(cache.rsi(cache.close(), shortBarCount), shortBarCount));
             indicators.add(cache.prev(cache.rsi(cache.close(), shortBarCount), 1));
-            indicators.add(cache.cci(shortBarCount).dividedBy(shortEMA));
+            indicators.add(cache.cci(shortBarCount).minus(cache.prev(cache.cci(shortBarCount), 1)));
             indicators.add(cache.risingStrength(cache.cci(shortBarCount), shortBarCount));
             indicators.add(cache.fallingStrength(cache.cci(shortBarCount), shortBarCount));
-            indicators.add(cache.prev(cache.cci(shortBarCount), 1).dividedBy(shortEMA));
         }
     }
 
