@@ -28,7 +28,9 @@ public class FeatureClusteringStage {
         System.out.println("\n--------------- Initiating feature clustering stage ---------------");
         final DataFrame transformedDataFrame = RobustStandardizer.fit(dataFrame).apply(dataFrame);
         final double[][] data = transformedDataFrame.toMatrix().transpose().toArray();
+        System.out.println("Data has been transformed, now initiating clustering, this could take a while...");
         final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, dataFrame.ncol(), 100);
+        System.out.printf("Clustering completed, found %d clusters\n", clusterer.k());
         final Map<double[], String> vectorNames = transformedDataFrame.columns().stream().collect(
                 Collectors.toMap(ValueVector::toDoubleArray, ValueVector::name));
         final String[] centroids = new String[clusterer.k()];
