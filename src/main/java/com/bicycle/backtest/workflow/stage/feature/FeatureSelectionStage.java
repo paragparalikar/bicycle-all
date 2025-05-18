@@ -14,7 +14,7 @@ import java.util.Map;
 public class FeatureSelectionStage {
 
     public DataFrame execute(int featureCount, Formula formula, DataFrame dataFrame) {
-        return execute(featureCount, formula, dataFrame, new RandomForest.Options(1000, 2,2,0,30));
+        return execute(featureCount, formula, dataFrame, new RandomForest.Options(700, 2,2,0,10));
     }
 
     public DataFrame execute(int featureCount, Formula formula, DataFrame dataFrame, RandomForest.Options options) {

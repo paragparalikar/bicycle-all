@@ -7,7 +7,7 @@ import smile.data.vector.ValueVector;
 public class FeatureDiscretizationStage {
 
     public DataFrame execute(DataFrame dataFrame, String... names) {
-        System.out.println("\n--------------- Initiating feature selection stage ---------------");
+        System.out.println("\n--------------- Initiating feature discretization stage ---------------");
         for(String name : names){
             final int[] values = discretizeByMedian(dataFrame.column(name).toDoubleArray());
             dataFrame = dataFrame.drop(name).add(ValueVector.of(name, values));

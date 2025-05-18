@@ -25,10 +25,10 @@ public class HyperParameterOptimizationStage {
             featureWriter.writeHeaders(headers);
             System.out.printf("%10s%10s%10s%10s%10s\n", "ntrees","mtry","maxDepth","nodeSize","score");
 
-            for(int mtry = 1; mtry <= 4; mtry++){
-                for(int maxDepth = 2; maxDepth <= 6; maxDepth += 2){
-                    for(int nodeSize = 20; nodeSize <= 100; nodeSize += 10){
-                        for(int ntrees = 500; ntrees <= 1000; ntrees += 100){
+            for(int mtry = 1; mtry <= 2; mtry++){
+                for(int maxDepth = 2; maxDepth <= 5; maxDepth += 2){
+                    for(int nodeSize = 5; nodeSize <= 30; nodeSize += 5){
+                        for(int ntrees = 700; ntrees <= 900; ntrees += 100){
                             final RandomForest.Options options = new RandomForest.Options(ntrees, mtry, maxDepth, 0, nodeSize);
                             final double score = compute(folds, formula, dataFrame, options, evaluator, false);
                             System.out.printf("%10d%10d%10d%10d%10.4f\n", ntrees, mtry, maxDepth, nodeSize, score);
