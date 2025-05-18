@@ -1,10 +1,12 @@
 package com.bicycle.backtest.workflow;
 
-import com.bicycle.backtest.workflow.stage.*;
+import com.bicycle.backtest.workflow.stage.feature.FeatureDiscretizationStage;
+import com.bicycle.backtest.workflow.stage.feature.FeatureGenerationStage;
+import com.bicycle.backtest.workflow.stage.feature.FeatureImputationStage;
+import com.bicycle.backtest.workflow.stage.feature.FeatureSelectionStage;
+import com.bicycle.backtest.workflow.stage.model.HyperParameterOptimizationStage;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.LiquidityRule;
-import com.bicycle.core.rule.StopGainRule;
-import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.core.rule.WaitForBarCountRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;

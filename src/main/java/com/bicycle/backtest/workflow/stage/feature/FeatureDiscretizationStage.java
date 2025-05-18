@@ -1,4 +1,4 @@
-package com.bicycle.backtest.workflow.stage;
+package com.bicycle.backtest.workflow.stage.feature;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import smile.data.DataFrame;

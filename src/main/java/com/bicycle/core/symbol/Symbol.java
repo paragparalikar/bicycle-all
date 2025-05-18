@@ -14,6 +14,14 @@ public record Symbol(
         float tickSize, 
         int lotSize) {
 
+    public static final String INDIA_VIX = "INDIA VIX";
+    public static final String NIFTY_50 = "NIFTY 50";
+    public static final String NIFTY_BANK = "NIFTY BANK";
+    public static final String NIFTY_NEXT_50 = "NIFTY NEXT 50";
+    public static final String NIFTY_MID_SELECT = "NIFTY MID SELECT";
+    public static final String NIFTY_FIN_SERVICE = "NIFTY FIN SERVICE";
+
+
     @Override
     public int hashCode() {
         return token;

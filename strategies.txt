@@ -1,0 +1,4 @@
+1. NIFTY 50 - Daily - Long
+Buy when price crosses upper Donchian channel (5) ie highest high of last 5 days
+Sell when price crosses middle Donchian channel (5) ie average of upper and lower bands
+OR Trailing stop of 5 ATR is hit.

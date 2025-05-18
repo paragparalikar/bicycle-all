@@ -1,10 +1,9 @@
-package com.bicycle.core.bar.downloader;
+package com.bicycle.backtest.workflow.stage.bar;
 
 import com.bicycle.client.kite.adapter.KiteBrokerClientFactory;
 import com.bicycle.client.kite.adapter.KiteSymbolDataProvider;
-import com.bicycle.client.yahoo.adapter.YahooBarDataProvider;
-import com.bicycle.client.yahoo.adapter.YahooSymbolDataProvider;
 import com.bicycle.core.bar.Timeframe;
+import com.bicycle.core.bar.downloader.BarDataDownloader;
 import com.bicycle.core.bar.provider.BarDataProvider;
 import com.bicycle.core.bar.provider.LoadBalancedBarDataProvider;
 import com.bicycle.core.bar.repository.BarRepository;
@@ -18,37 +17,23 @@ import com.bicycle.core.symbol.provider.SymbolDataProvider;
 import com.bicycle.core.symbol.repository.CacheSymbolRepository;
 import com.bicycle.core.symbol.repository.SymbolRepository;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Predicate;
 
-public class BarDataDownloaderMain {
+public class BarDataDownloadStage {
 
-    public static void main(String[] args) {
-        downloadYahooData();
-        downloadKiteData();
-    }
-
-    private static void downloadYahooData(){
-        final BarDataProvider barDataProvider = new YahooBarDataProvider();
-        final SymbolDataProvider symbolDataProvider = new YahooSymbolDataProvider();
-        final BarDataDownloader barDataDownloader = createBarDataDownloader(barDataProvider, symbolDataProvider);
-        barDataDownloader.download(List.of(Exchange.CDS, Exchange.MCX, Exchange.SNP500, Exchange.NASDAQ, Exchange.DOWJONES,
-                Exchange.FTSE, Exchange.NIKKEI, Exchange.HANGSENG, Exchange.SSE, Exchange.DAX, Exchange.CAC), List.of(Timeframe.D));
-
-    }
-
-    private static void downloadKiteData(){
+    public void execute(Collection<Exchange> exchanges, Collection<Timeframe> timeframes, Predicate<Symbol> symbolPredicate){
+        System.out.println("\n--------------- Initiating bar data download stage ---------------");
         final KiteBrokerClientFactory brokerClientFactory = new KiteBrokerClientFactory();
         final PortfolioRepository portfolioRepository = new FileSystemPortfolioRepository();
         final BarDataProvider barDataProvider = new LoadBalancedBarDataProvider(portfolioRepository, brokerClientFactory);
-        final SymbolDataProvider symbolDataProvider = createSymbolDataProvider();
+        final SymbolDataProvider symbolDataProvider = createSymbolDataProvider(symbolPredicate);
         final BarDataDownloader barDataDownloader = createBarDataDownloader(barDataProvider, symbolDataProvider);
-        barDataDownloader.download(List.of(Exchange.NSE), List.of(Timeframe.D));
+        barDataDownloader.download(exchanges, timeframes);
     }
 
-    private static SymbolDataProvider createSymbolDataProvider() {
+    private static SymbolDataProvider createSymbolDataProvider(Predicate<Symbol> symbolPredicate) {
         final KiteSymbolDataProvider kiteSymbolDataProvider = new KiteSymbolDataProvider();
-        final Predicate<Symbol> symbolPredicate = kiteSymbolDataProvider.equitiesAndIndices();
         return new FilteredSymbolDataProvider(kiteSymbolDataProvider, symbolPredicate);
     }
 

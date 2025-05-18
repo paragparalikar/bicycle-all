@@ -2,10 +2,9 @@ package com.bicycle.backtest.workflow;
 
 import com.bicycle.backtest.strategy.trading.builder.SingleTradingStrategyBuilder;
 import com.bicycle.backtest.strategy.trading.builder.TradingStrategyBuilder;
-import com.bicycle.backtest.workflow.stage.TradingStrategyReportStage;
+import com.bicycle.backtest.workflow.stage.strategy.TradingStrategyReportStage;
 import com.bicycle.core.order.OrderType;
 import com.bicycle.core.rule.LiquidityRule;
-import com.bicycle.core.rule.StopGainRule;
 import com.bicycle.core.rule.StopLossRule;
 import com.bicycle.core.rule.builder.RuleBuilder;
 import com.bicycle.core.rule.builder.SingletonRuleBuilder;

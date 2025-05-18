@@ -1,4 +1,4 @@
-package com.bicycle.backtest.workflow.stage;
+package com.bicycle.backtest.workflow.stage.feature;
 
 import lombok.RequiredArgsConstructor;
 import smile.classification.RandomForest;

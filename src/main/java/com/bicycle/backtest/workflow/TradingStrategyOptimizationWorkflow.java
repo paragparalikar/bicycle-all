@@ -1,7 +1,7 @@
 package com.bicycle.backtest.workflow;
 
 import com.bicycle.backtest.strategy.trading.builder.RuleTradingStrategyBuilder;
-import com.bicycle.backtest.workflow.stage.TradingStrategyOptimizationStage;
+import com.bicycle.backtest.workflow.stage.strategy.TradingStrategyOptimizationStage;
 import com.bicycle.core.indicator.builder.ClosePriceIndicatorBuilder;
 import com.bicycle.core.indicator.builder.ConstantIndicatorBuilder;
 import com.bicycle.core.indicator.builder.EMAIndicatorBuilder;

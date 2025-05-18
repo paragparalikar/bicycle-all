@@ -1,4 +1,4 @@
-package com.bicycle.backtest.workflow.stage;
+package com.bicycle.backtest.workflow.stage.model;
 
 import com.bicycle.backtest.feature.writer.DelimitedFileFeatureWriter;
 import com.bicycle.backtest.feature.writer.FeatureWriter;

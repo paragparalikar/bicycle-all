@@ -1,4 +1,4 @@
-package com.bicycle.backtest.workflow.stage;
+package com.bicycle.backtest.workflow.stage.feature;
 
 import com.bicycle.backtest.Backtest;
 import com.bicycle.backtest.feature.FeatureAwareTradingStrategyBuilder;

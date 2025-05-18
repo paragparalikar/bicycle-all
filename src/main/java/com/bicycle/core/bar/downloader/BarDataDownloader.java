@@ -6,7 +6,6 @@ import com.bicycle.core.bar.provider.BarDataProvider;
 import com.bicycle.core.bar.provider.query.BarQuery;
 import com.bicycle.core.bar.provider.query.BarQueryTransformer;
 import com.bicycle.core.bar.repository.BarRepository;
-import com.bicycle.core.bar.repository.FileSystemBarRepository;
 import com.bicycle.core.symbol.Exchange;
 import com.bicycle.core.symbol.Symbol;
 import com.bicycle.core.symbol.repository.SymbolRepository;
@@ -49,9 +48,6 @@ public class BarDataDownloader {
                 symbolRepository.findByExchange(exchange).parallelStream()
                         .forEach(symbol -> download(symbol, timeframe, 0));
                 System.out.printf("Finished downloading data for %s %s\n", exchange.name(), timeframe.name());
-                if(Exchange.NSE.equals(exchange) && barRepository instanceof FileSystemBarRepository fileSystemBarRepository){
-                    fileSystemBarRepository.transpose(exchange, timeframe);
-                }
             }
         }
     }
