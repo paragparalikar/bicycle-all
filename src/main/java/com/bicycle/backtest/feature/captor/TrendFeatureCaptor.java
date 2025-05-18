@@ -39,6 +39,9 @@ public class TrendFeatureCaptor implements FeatureCaptor {
 
     @Override
     public void captureValues(Position position, List<Object> values) {
-        for(Indicator indicator : indicators) values.add(indicator.getValue(position.getSymbol(), position.getTimeframe()));
+        for(Indicator indicator : indicators) {
+            final float value = indicator.getValue(position.getSymbol(), position.getTimeframe());
+            values.add(Float.isNaN(value) ? null : value);
+        }
     }
 }

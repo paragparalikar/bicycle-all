@@ -20,7 +20,7 @@ import smile.data.DataFrame;
 public class FeatureGenerationStage {
 
     public DataFrame execute(OrderType orderType, RuleBuilder entryRuleBuilder, RuleBuilder exitRuleBuilder) throws Exception {
-        final long startDate = Dates.toEpochMillis(2010, 1, 1);
+        final long startDate = Dates.toEpochMillis(2020, 1, 1);
         final long endDate = Dates.toEpochMillis(2020, 12, 31);
         final float percentagePositionSize = 2;
         final boolean limitPositionSizeToAvailableMargin = false;

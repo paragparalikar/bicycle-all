@@ -6,10 +6,7 @@ import smile.data.DataFrame;
 import smile.data.vector.ValueVector;
 import smile.feature.transform.RobustStandardizer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FeatureClusteringStage {
@@ -24,21 +21,22 @@ public class FeatureClusteringStage {
         return results;
     }
 
-    public DataFrame toCentroidsDataFrame(final DataFrame dataFrame){
+    public DataFrame toCentroidsDataFrame(final DataFrame dataFrame, String targetVariableName){
         System.out.println("\n--------------- Initiating feature clustering stage ---------------");
-        final DataFrame transformedDataFrame = RobustStandardizer.fit(dataFrame).apply(dataFrame);
+        final DataFrame featuresDataFrame = dataFrame.drop(targetVariableName);
+        final DataFrame transformedDataFrame = RobustStandardizer.fit(featuresDataFrame).apply(featuresDataFrame);
         final double[][] data = transformedDataFrame.toMatrix().transpose().toArray();
         System.out.println("Data has been transformed, now initiating clustering, this could take a while...");
-        final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, dataFrame.ncol(), 100);
+        final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, transformedDataFrame.ncol(), 100);
         System.out.printf("Clustering completed, found %d clusters\n", clusterer.k());
-        final Map<double[], String> vectorNames = transformedDataFrame.columns().stream().collect(
-                Collectors.toMap(ValueVector::toDoubleArray, ValueVector::name));
-        final String[] centroids = new String[clusterer.k()];
-        for(int index = 0; index < clusterer.k(); index++){
-            centroids[index] = vectorNames.get(clusterer.center(index));
-            System.out.printf("Centroid for Cluster %d : %s\n", index, centroids[index]);
-        }
-        return dataFrame.select(centroids);
+        final List<String> centroids = Arrays.stream(clusterer.group())
+                .distinct()
+                .mapToObj(transformedDataFrame::column)
+                .map(ValueVector::name)
+                .peek(name -> System.out.printf("Centroid : %s\n", name))
+                .collect(Collectors.toCollection(ArrayList::new));
+        centroids.add(targetVariableName);
+        return dataFrame.select(centroids.toArray(String[]::new));
     }
 
     private List<List<String>> cluster(final DataFrame dataFrame, final CentroidClustering<double[], double[]> clusterer){

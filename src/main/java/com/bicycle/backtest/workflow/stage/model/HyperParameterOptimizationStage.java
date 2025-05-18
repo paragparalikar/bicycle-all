@@ -25,9 +25,9 @@ public class HyperParameterOptimizationStage {
             featureWriter.writeHeaders(headers);
             System.out.printf("%10s%10s%10s%10s%10s\n", "ntrees","mtry","maxDepth","nodeSize","score");
 
-            for(int mtry = 1; mtry <= 3; mtry++){
-                for(int maxDepth = 2; maxDepth <= 4; maxDepth += 2){
-                    for(int nodeSize = 20; nodeSize <= 40; nodeSize += 10){
+            for(int mtry = 1; mtry <= 4; mtry++){
+                for(int maxDepth = 2; maxDepth <= 6; maxDepth += 2){
+                    for(int nodeSize = 20; nodeSize <= 100; nodeSize += 10){
                         for(int ntrees = 500; ntrees <= 1000; ntrees += 100){
                             final RandomForest.Options options = new RandomForest.Options(ntrees, mtry, maxDepth, 0, nodeSize);
                             final double score = compute(folds, formula, dataFrame, options, evaluator, false);
@@ -71,6 +71,7 @@ public class HyperParameterOptimizationStage {
 
     private void printInfo(RandomForest model, double trainResult, double testResult, double score){
         final ClassificationMetrics metrics = model.metrics();
+
         System.out.printf("%15.2f%15.2f%15.2f%15d%15.2f%15.2f%15.2f%15.2f%15.2f%15.2f%15.2f%15.2f%15.2f\n",
                 trainResult, testResult, score, metrics.error(), metrics.accuracy(),
                 metrics.sensitivity(), metrics.specificity(), metrics.precision(), metrics.f1(), metrics.mcc(), metrics.auc(),

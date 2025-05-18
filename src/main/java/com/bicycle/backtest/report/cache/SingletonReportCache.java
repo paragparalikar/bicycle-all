@@ -19,7 +19,7 @@ public class SingletonReportCache implements ReportCache {
 
     @Override
     public void compute(long date) {
-        report.compute(date);
+        if(null != report) report.compute(date);
     }
     
     @Override
