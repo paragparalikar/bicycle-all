@@ -18,7 +18,7 @@ public class FeatureClusteringStage {
         System.out.println("\n--------------- Initiating feature clustering stage ---------------");
         final DataFrame transformedDataFrame = RobustStandardizer.fit(dataFrame).apply(dataFrame);
         final double[][] data = transformedDataFrame.toMatrix().transpose().toArray();
-        final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, 150, 100);
+        final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, dataFrame.ncol(), 100);
         final List<List<String>> results = cluster(transformedDataFrame, clusterer);
         print(results);
         return results;
@@ -28,7 +28,7 @@ public class FeatureClusteringStage {
         System.out.println("\n--------------- Initiating feature clustering stage ---------------");
         final DataFrame transformedDataFrame = RobustStandardizer.fit(dataFrame).apply(dataFrame);
         final double[][] data = transformedDataFrame.toMatrix().transpose().toArray();
-        final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, 500, 100);
+        final CentroidClustering<double[], double[]> clusterer = GMeans.fit(data, dataFrame.ncol(), 100);
         final Map<double[], String> vectorNames = transformedDataFrame.columns().stream().collect(
                 Collectors.toMap(ValueVector::toDoubleArray, ValueVector::name));
         final String[] centroids = new String[clusterer.k()];
