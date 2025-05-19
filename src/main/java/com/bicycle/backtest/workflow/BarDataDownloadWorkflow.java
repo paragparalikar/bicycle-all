@@ -15,11 +15,16 @@ import java.util.Objects;
 public class BarDataDownloadWorkflow {
 
     public static void main(String[] args) {
-        //final Collection<String> symbolCodes = getComponentCodes();
+        final Collection<String> components = getComponentCodes();
+        final Collection<String> indices = getIndices();
         new BarDataDownloadStage().execute(
                 List.of(Exchange.NSE),
-                List.of(Timeframe.M10, Timeframe.M5, Timeframe.M3, Timeframe.M1),
-                symbol -> Symbol.INDIA_VIX.equalsIgnoreCase(symbol.code()));
+                List.of(Timeframe.D),
+                KiteSymbolDataProvider.equitiesAndIndices());
+    }
+
+    private static List<String> getIndices(){
+        return List.of(Symbol.NIFTY_50, Symbol.NIFTY_BANK, Symbol.INDIA_VIX);
     }
 
     private static List<String> getComponentCodes(){
