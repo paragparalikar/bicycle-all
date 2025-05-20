@@ -1,52 +1,19 @@
-Steps for creating a trading strategy:
-
-1. Define a bare minimum entry signal and exit after fixed number of bars.
-2. Generate a tsv file for signal parameters as features and average MFE as target.
-2. Select entry signal parameters for maximum average MFE, use Orange for visualization.
-3. Generate tsv feature file with all the features and average MFE as target.
-4. Use Orange to rank all features using Mutual Information. Select top n features that make sense.
-5. Create a feature group specifically for these selected features.
-6. For each hyperparameter set,
-    Train RandomForest classifier on training set.
-    Test RandomForest on test set.
-    Calculate Robustness Score = (Ptrain - Ptest)/Abs(Ptrain - Ptest)
-7. Create a tsv with hyperparameters as features and above metric as target variable.
-8. Use Orange to visualize and select most robust hyperparameter set maximizing this metric.
-9. Optimize different exit signals with different parameters using Optimizer. (for RARBADD)
-10. Validate this final trading strategy with MonteCarlo - Position permutation
+1. Improve classification performance
+    a. Balance class weights before classification
+    b. Add features by percent and ATR
+    c. Add market features
+    d. Use feature selection stage before feature clustering
+    e. Evaluate if statistical feature selection gives better performance
+2. Add precision, recall and F1 scores to Hyperparameter optimization stage report
+3. Strategy evaluation pre and post meta-labeling
+4. Strategy discovery using the decision trees over features found
+5. Create ClassiefierRule that loads the model and provides the classification.
+6. At startup, mae and mfe values for all positions must be updated for trailing stop to work
 
 
-
-
-Create ClassiefierRule that loads the model and provides the classification.
 
 
 Improvements for future:
 1. Portfolio construction using un-correlated strategies with non-overlapping positions
-2. Positing queueing and ranking using LTR algorithms
-3. Capital allocation using LTR algorithms
-4. Evaluate if Weighted RandomForest provides better results
-5. Evaluate if stacking, boosting of RandomForest provides better results
-
-
-
-
-
-1. All Indicators must implement onTick method, FloatSeries to implement set method.
-This required so that the indicator values are available during the bar, not just at close of the bar.
-Caller should call onTick method for every tick, while onBar method must be called only when the bar is changed.
-PreviousValueIndicator and other indicators which store the past values, will set the delegate indicator value in series.
-(This will need FloatSeries to implement set() method that allows overwriting current value, instead of inserting in new slot)
-When onBar method is called the indicator will add the delegate indicator value to the series.
-
-2. At startup, mae and mfe values for all positions must be updated for trailing stop to work
-
-
-
-
-ntrees = 950
-maxDepth = 2
-mtry = 2
-nodeSize = 50
-
-
+2. Positing queueing and ranking using model confidence
+3. Capital allocation using model confidence
