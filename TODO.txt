@@ -9,7 +9,18 @@
 4. Strategy discovery using the decision trees over features found
 5. Create ClassiefierRule that loads the model and provides the classification.
 6. At startup, mae and mfe values for all positions must be updated for trailing stop to work
+7. Develop Long Breakout strategy with fat tails for manual trading
+8. Create indicators:
+    a. TickIndicator - MarketBreadthIndicator
+    b. MarketMoneyIndicator
+    d. VOLDIndicator - MarketVolumeIndicator
+    e. ShockIndicator
+    f. RejectionIndicator
+    g. DeltaIndicator
+    h. WeightedEnsembleIndicator
+    i. VolatilityContractionIndicator - RSI(StdDev)
 
+    ADX, Aroon, KAMA, Laguerre, CCI
 
 
 
